@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cursa", "Cursa\Cursa.csproj", "{0C730130-C336-448F-B838-4D441D7A1C20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{5C48C232-DC7F-4325-8CF0-63B70CA342AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C730130-C336-448F-B838-4D441D7A1C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C730130-C336-448F-B838-4D441D7A1C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C730130-C336-448F-B838-4D441D7A1C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C730130-C336-448F-B838-4D441D7A1C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C48C232-DC7F-4325-8CF0-63B70CA342AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C48C232-DC7F-4325-8CF0-63B70CA342AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C48C232-DC7F-4325-8CF0-63B70CA342AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C48C232-DC7F-4325-8CF0-63B70CA342AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F91C0987-21C1-48BA-A1E6-A9FB2C518799}
+	EndGlobalSection
+EndGlobal

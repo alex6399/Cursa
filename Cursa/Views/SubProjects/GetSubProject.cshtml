@@ -1,0 +1,89 @@
+﻿@model Cursa.ViewModels.SubProjectVM.SubProjectComplexDisplayViewModel
+
+@{
+    ViewData["Title"] = "Подпроекты для проекта: ";
+}
+
+<h4>@ViewData["Title"] @Model.ProjectName</h4>
+
+<p>
+    <a asp-action="Create" asp-route-projectId="@Model.ProjectId">Добавить подпроект...</a>
+</p>
+<table id="subprojectDatatable" class="table" style="width:100%">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.ProjectName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Employee.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.StatusName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Contract.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.Description)
+        </th>
+        <th>
+        </th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+    <tr>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.Name)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.Code)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.Employee.FullName)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.StatusName)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.Contract.Name)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SubProjectVM.Description)
+        </th>
+ <th>
+        </th>
+    </tr>
+    </tfoot>
+</table>
+<script>
+        let projectId=@Model.ProjectId;
+        </script>
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/subprojectDatatable.js"></script>
+}
+
+<style>
+    div.dataTables_wrapper {
+            width: 1300px;
+            margin: 0 auto;
+        }
+</style>

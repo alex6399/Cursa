@@ -1,0 +1,89 @@
+﻿@model DataLayer.Entities.Product
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SerialNum" class="control-label"></label>
+                <input asp-for="SerialNum" class="form-control" />
+                <span asp-validation-for="SerialNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CertifiedNum" class="control-label"></label>
+                <input asp-for="CertifiedNum" class="form-control" />
+                <span asp-validation-for="CertifiedNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductTypeId" class="control-label"></label>
+                <select asp-for="ProductTypeId" class="form-control" asp-items="ViewBag.ProductTypeId"></select>
+                <span asp-validation-for="ProductTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubProjectId" class="control-label"></label>
+                <select asp-for="SubProjectId" class="form-control" asp-items="ViewBag.SubProjectId"></select>
+                <span asp-validation-for="SubProjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsFormed" /> @Html.DisplayNameFor(model => model.IsFormed)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManufacturingDate" class="control-label"></label>
+                <input asp-for="ManufacturingDate" class="form-control" />
+                <span asp-validation-for="ManufacturingDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippedDate" class="control-label"></label>
+                <input asp-for="ShippedDate" class="form-control" />
+                <span asp-validation-for="ShippedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedDate" class="control-label"></label>
+                <input asp-for="ModifiedDate" class="form-control" />
+                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedUserId" class="control-label"></label>
+                <select asp-for="CreatedUserId" class="form-control" asp-items="ViewBag.CreatedUserId"></select>
+                <span asp-validation-for="CreatedUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedUserId" class="control-label"></label>
+                <select asp-for="ModifiedUserId" class="form-control" asp-items="ViewBag.ModifiedUserId"></select>
+                <span asp-validation-for="ModifiedUserId" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

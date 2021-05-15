@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Cursa.ViewModels.EmployeesVM.EmployeesViewModel>
+
+@{
+    ViewData["Title"] = "Сотрудники";
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create">Создать</a>
+</p>
+<table id="employeeDatatable" class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepartmentName)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tfoot>
+    <th>
+        @Html.DisplayNameFor(model => model.Id)
+    </th>
+    <th class="search">
+        @Html.DisplayNameFor(model => model.FullName)
+    </th>
+    <th class="search">
+        @Html.DisplayNameFor(model => model.Phone)
+    </th>
+    <th>
+    </th>
+    </tfoot>
+</table>
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/employeeDatatable.js"></script>
+}
+
