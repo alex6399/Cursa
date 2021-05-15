@@ -24,7 +24,11 @@ namespace DataLayer.Entities
         public SubProject SubProject { get; set; }
         [Display(Name = "Сформирован")]
         public bool IsFormed { get; set; } // сформирован?
+        [Display(Name = "Дата заказа")]
+        public DateTime? OrderDate { get; set; }
+        [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingDate { get; set; }// дата изготовления
+        [Display(Name = "Дата отгрузки")]
         public DateTime? ShippedDate { get; set; }// дата отгрузки
         [Display(Name = "Описание")]
         [MaxLength(300)]

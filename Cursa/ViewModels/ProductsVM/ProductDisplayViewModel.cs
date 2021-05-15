@@ -13,8 +13,11 @@ namespace Cursa.ViewModels.ProductsVM
         public string CertifiedNum { get; set; }
         [Display(Name = "Подпроект")]
         public BaseViewModel SubProject { get; set; }
-        [Display(Name = "Описание")]
-        [MaxLength(300,ErrorMessage = "Превышен допустимый лимит символов")]
-        public string Description { get; set; }
+        [Display(Name = "Заказано")]
+        public DateTime? OrderDate { get; set; }
+        [Display(Name = "Изготовлено")]
+        public DateTime? ManufacturingDate { get; set; }
+        [Display(Name = "Отгружено")]
+        public DateTime? ShippedDate { get; set; }
     }
 }
