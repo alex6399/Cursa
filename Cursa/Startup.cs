@@ -12,6 +12,8 @@ using Cursa.UnitOfWorks;
 using DataLayer;
 using DataLayer.Entities;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Cursa
@@ -43,6 +45,10 @@ namespace Cursa
                     options.Lockout.MaxFailedAccessAttempts = 5;
                 })
                 .AddEntityFrameworkStores<EfDbContext>();
+            services.Configure<CookieAuthenticationOptions>(opt =>
+            {
+                opt.LoginPath = new PathString("/Login/Login");
+            });
             services.AddAutoMapper(typeof(Startup));
             services.AddHttpContextAccessor();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
