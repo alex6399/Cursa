@@ -1,4 +1,4 @@
-﻿@model DataLayer.Entities.SubProject
+﻿@model Cursa.ViewModels.SubProjectVM.SubProjectCreateEditViewModel
 
 @{
     ViewData["Title"] = "Создать подпроект";
@@ -11,7 +11,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProjectId" />
+            <input type="hidden" asp-for="ProjectId"/>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control"/>
@@ -27,6 +27,14 @@
                 <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"></select>
             </div>
             <div class="form-group">
+                <label asp-for="ContractorId" class="control-label"></label>
+                <select asp-for="ContractorId" class="form-control" asp-items="ViewBag.ContractorId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContractId" class="control-label"></label>
+                <select asp-for="ContractId" class="form-control" asp-items="ViewBag.ContractId"></select>
+            </div>
+            <div class="form-group">
                 <label asp-for="StatusId" class="control-label"></label>
                 <select asp-for="StatusId" class="form-control" asp-items="ViewBag.StatusId"></select>
             </div>
@@ -36,15 +44,6 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ContractId" class="control-label"></label>
-                <select asp-for="ContractId" class="form-control" asp-items="ViewBag.ContractId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control"/>
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary"/>
             </div>
         </form>
@@ -52,7 +51,7 @@
 </div>
 
 <div>
-    <a asp-controller="SubProjects" asp-action="GetSubProjectById" asp-route-projectId="@Model.ProjectId">Назад</a>
+    <a asp-controller="SubProjects" asp-action="GetSubProject" asp-route-projectId="@Model.ProjectId">Назад</a>
 </div>
 
 @section Scripts {

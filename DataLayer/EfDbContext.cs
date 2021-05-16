@@ -224,7 +224,12 @@ namespace DataLayer
             var entities = ChangeTracker.Entries().Where(
                 x => x.Entity is BaseEntityTracking
                      && (x.State == EntityState.Added || x.State == EntityState.Modified));
-            var userId = Convert.ToInt32(_httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int? userId=null;
+            if (_httpContext != null)
+            {
+                userId = Convert.ToInt32(_httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            }
+
             foreach (var entity in entities)
             {
                 if (entity.Entity is BaseEntityTracking baseEntityTracking)

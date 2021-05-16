@@ -16,6 +16,7 @@ namespace Cursa.AutoMapper
                     x => x.MapFrom(m => m.Status.NameStatus))
                 .ForMember(dest => dest.Employee,
                     act => act.MapFrom(src =>src.Employee ));
+            CreateMap<SubProject, SubProjectCreateEditViewModel>().ReverseMap();
             CreateMap<SubProject, BaseViewModel>();
         }
     }

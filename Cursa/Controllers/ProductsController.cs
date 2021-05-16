@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cursa.ViewModels.Base;
-using Cursa.ViewModels.EmployeesVM;
 using Cursa.ViewModels.ProductsVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataLayer;
 using DataLayer.Entities;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
@@ -82,9 +79,6 @@ namespace Cursa.Controllers
                 var searchNameValue = Request.Form["columns[2][search][value]"].FirstOrDefault();
                 var searchSerialNumValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
                 var searchCertifiedNumValue = Request.Form["columns[4][search][value]"].FirstOrDefault();
-                // var searchStatusValue = Request.Form["columns[5][search][value]"].FirstOrDefault();
-                // var searchContractValue = Request.Form["columns[6][search][value]"].FirstOrDefault();
-                // var searchDescriptionValue = Request.Form["columns[7][search][value]"].FirstOrDefault();
                 var pageSize = length != null ? Convert.ToInt32(length) : 0;
                 var skip = start != null ? Convert.ToInt32(start) : 0;
                 var id = Request.Form["subProjectId"].FirstOrDefault();
@@ -190,35 +184,39 @@ namespace Cursa.Controllers
         {
             if (ModelState.IsValid)
             {
-                var product = _mapper.Map<ProductCreateViewModel, Product>(productDto);
-                _context.Add(product);
-                try
+                if (_context.Products.Any(x => x.SerialNum == productDto.SerialNum))
                 {
-                    await _context.SaveChangesAsync(); // TODO нужна проверка на уникальность серийного номера...
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("Name", "Подпроект уже существует");
                 }
-                catch (DbUpdateException e)
+
+                if (_context.Products.Any(x => x.CertifiedNum == productDto.CertifiedNum))
                 {
-                    var exception = e.InnerException;
-                    if (exception != null && exception.Message.Contains("IX_Products_SerialNum"))
-                    {
-                        ModelState.AddModelError("SerialNum", "Такой номер уже используется");
-                    }
+                    ModelState.AddModelError("Code", "Код уже используется");
+                }
 
-                    // TODO причем это не выполнится за 1 операцию с предыдущим if
-                    if (exception != null && exception.Message.Contains("IX_Products_CertifiedNum"))
+                if (ModelState.IsValid)
+                {
+                    var product = _mapper.Map<ProductCreateViewModel, Product>(productDto);
+                    _context.Add(product);
+                    try
                     {
-                        ModelState.AddModelError("CertifiedNum", "Такой номер уже используется");
+                        await _context.SaveChangesAsync(); // TODO нужна проверка на уникальность серийного номера...
+                        return RedirectToAction("GetProductsForSubProject", new {subProjectId = product.SubProjectId});
                     }
+                    catch (DbUpdateException e)
+                    {
+                        var exception = e.InnerException;
+                        if (exception != null && exception.Message.Contains("IX_Products_SerialNum"))
+                        {
+                            ModelState.AddModelError("SerialNum", "Такой номер уже используется");
+                        }
 
-                    /*
-                    ViewData["ProductTypeId"] =
-                        new SelectList(_context.ProductTypes, "Id", "Name", productDto.ProductTypeId);
-                    ViewData["SubProjectId"] =
-                        new SelectList(_context.SubProjects, "Id", "Code", productDto.SubProjectId);
-                    // TODO как лучше селекты во view передавать, так или через ViewModel
-                    return View(productDto); // TODO как исправить это дублирование
-                    */
+                        // TODO причем это не выполнится за 1 операцию с предыдущим if
+                        if (exception != null && exception.Message.Contains("IX_Products_CertifiedNum"))
+                        {
+                            ModelState.AddModelError("CertifiedNum", "Такой номер уже используется");
+                        }
+                    }
                 }
             }
 
@@ -238,7 +236,9 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
+            //var product = await _context.Products.FindAsync(id);
             var product = await _context.Products.FindAsync(id);
+            var productDTO = _mapper.Map<Product, ProductCreateViewModel>(product);
             if (product == null)
             {
                 return NotFound();
@@ -246,7 +246,7 @@ namespace Cursa.Controllers
 
             ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
             ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Code", product.SubProjectId);
-            return View(product);
+            return View(productDTO);
         }
 
         // POST: Products/Edit/5
@@ -256,15 +256,16 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
             [Bind("Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,Id,Description")]
-            Product product)
+            ProductCreateViewModel productDTO)
         {
-            if (id != product.Id)
+            if (id != productDTO.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var product = _mapper.Map<ProductCreateViewModel, Product>(productDTO);
                 try
                 {
                     _context.Update(product);
@@ -281,13 +282,27 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Products_SerialNum"))
+                    {
+                        ModelState.AddModelError("SerialNum", "Такой номер уже используется");
+                    }
+
+                    // TODO причем это не выполнится за 1 операцию с предыдущим if
+                    if (exception != null && exception.Message.Contains("IX_Products_CertifiedNum"))
+                    {
+                        ModelState.AddModelError("CertifiedNum", "Такой номер уже используется");
+                    }
+                }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
-            ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Name", product.SubProjectId);
-            return View(product);
+            ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name", productDTO.ProductTypeId);
+            ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Name", productDTO.SubProjectId);
+            return View(productDTO);
         }
 
         // GET: Products/Delete/5
@@ -318,9 +333,19 @@ namespace Cursa.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation("{ExceptionMessage}", e.Message);
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данную продукцию имеются ссылки");
+            }
+
+            return View(product);
         }
 
         private bool ProductExists(int id)

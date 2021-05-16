@@ -51,14 +51,15 @@ namespace Cursa.Controllers
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
-                var projectsData = _context.Projects.Select(x => new ProjectViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Code = x.Code,
-                    Owner = x.Owner.Name,
-                    Employee = x.Employee.LastName
-                });
+                // var projectsData = _context.Projects.Select(x => new ProjectViewModel
+                // {
+                //     Id = x.Id,
+                //     Name = x.Name,
+                //     Code = x.Code,
+                //     OwnerName = x.Owner.Name,
+                //     EmployeeFullName = x.Employee.LastName
+                // });
+                var projectsData = _mapper.ProjectTo<ProjectViewModel>(_context.Projects);
 
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
@@ -299,6 +300,7 @@ namespace Cursa.Controllers
             }
             catch (DbUpdateException e)
             {
+                _logger.LogInformation("{ExceptionMessage}",e.Message);
                 ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный проект имеются ссылки");
             }
             return View(project);

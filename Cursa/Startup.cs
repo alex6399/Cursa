@@ -30,6 +30,7 @@ namespace Cursa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddDbContext<EfDbContext>(options =>
                 options.UseNpgsql(
                     Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("DataLayer")));
@@ -50,7 +51,7 @@ namespace Cursa
                 opt.LoginPath = new PathString("/Login/Login");
             });
             services.AddAutoMapper(typeof(Startup));
-            services.AddHttpContextAccessor();
+            
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc()
                 .AddFluentValidation(options =>
@@ -86,8 +87,9 @@ namespace Cursa
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
             IdentityDataInitializer.SeedData(userManager, roleManager);
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

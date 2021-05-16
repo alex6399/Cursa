@@ -858,7 +858,7 @@ namespace DataLayer.Migrations
                     b.Property<int?>("ContractId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ContractorId")
+                    b.Property<int?>("ContractorId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("CreatedDate")
@@ -1426,9 +1426,7 @@ namespace DataLayer.Migrations
 
                     b.HasOne("DataLayer.Entities.Contractor", "Contractor")
                         .WithMany("SubProjects")
-                        .HasForeignKey("ContractorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContractorId");
 
                     b.HasOne("DataLayer.Entities.User", "CreatedUser")
                         .WithMany("CreatedSubProjects")

@@ -21,6 +21,7 @@ namespace Cursa.ViewModels.ProjectVM
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Ответственный")]
         public int EmployeeId { get; set; }
+        [Display(Name = "Описание")]
         public string Description { get; set; }
     }
 }

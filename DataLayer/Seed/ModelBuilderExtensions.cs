@@ -1,4 +1,5 @@
 ﻿using DataLayer.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Seed
@@ -7,6 +8,46 @@ namespace DataLayer.Seed
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<IdentityRole<int>>().HasData(
+            //    new IdentityRole<int>
+            //    {
+            //        Id = 1,
+            //        Name = "Администратор",
+            //        NormalizedName = "АДМИНИСТРАТОР"
+
+            //    },
+            //    new IdentityRole<int>
+            //    {
+            //        Id = 2,
+            //        Name = "Менеджер",
+            //        NormalizedName = "МЕНЕДЖЕР"
+            //    }
+            //);
+            //var hasher = new PasswordHasher<User>();
+            //modelBuilder.Entity<User>().HasData(
+            //    new User
+            //    {
+            //        Id = 1,
+            //        UserName = "admin@admin.com",
+            //        NormalizedUserName = "admin@admin.com",
+            //        Email = "admin@admin.com",
+            //        FirstName = "Админ",
+            //        MiddleName = "Админ",
+            //        LastName = "Админ",
+            //        IsLockout = true,
+            //        SecurityStamp = "",
+            //        PasswordHash = hasher.HashPassword(null, "Password0-")
+            //    }
+            //);
+            //modelBuilder.Entity<IdentityUserRole<int>>().HasData(
+            //    new IdentityUserRole<int>
+            //    {
+            //        RoleId = 1,
+            //        UserId = 1
+            //    }
+            //);
+
+
             modelBuilder.Entity<ModuleType>().HasData(
                 new ModuleType
                 {

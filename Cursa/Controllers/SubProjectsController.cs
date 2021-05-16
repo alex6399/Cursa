@@ -53,6 +53,7 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
+
             return View(new SubProjectComplexDisplayViewModel
             {
                 ProjectId = result.Id,
@@ -60,30 +61,30 @@ namespace Cursa.Controllers
             });
         }
 
-        public async Task<IActionResult> GetSubProjectById(int? projectId) // TODO нужно переделать под Datatable
-        {
-            if (projectId == null)
-            {
-                _logger.LogInformation("Страница не найдена");
-                return NotFound();
-            }
-
-            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            var efDbContext = _context.SubProjects
-                .Include(s => s.Employee)
-                .Include(s => s.Project)
-                .Include(s => s.Status)
-                .Where(sp => sp.ProjectId == projectId);
-            ViewData["ProjectId"] = project.Id; // TODO какие-то приколы с Nullable (int?) 
-            // без проверки на null возвращается всегда null
-            ViewData["ProjectName"] = project.Name;
-            return View(await efDbContext.ToListAsync());
-        }
+        // public async Task<IActionResult> GetSubProjectById(int? projectId) // TODO нужно переделать под Datatable
+        // {
+        //     if (projectId == null)
+        //     {
+        //         _logger.LogInformation("Страница не найдена");
+        //         return NotFound();
+        //     }
+        //
+        //     var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+        //     if (project == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     var efDbContext = _context.SubProjects
+        //         .Include(s => s.Employee)
+        //         .Include(s => s.Project)
+        //         .Include(s => s.Status)
+        //         .Where(sp => sp.ProjectId == projectId);
+        //     ViewData["ProjectId"] = project.Id; // TODO какие-то приколы с Nullable (int?) 
+        //     // без проверки на null возвращается всегда null
+        //     ViewData["ProjectName"] = project.Name;
+        //     return View(await efDbContext.ToListAsync());
+        // }
 
 
         [HttpPost]
@@ -209,28 +210,62 @@ namespace Cursa.Controllers
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName");
             ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus");
             ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name");
+            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
-            return View(new SubProject {ProjectId = (int) projectId});
+            return View(new SubProjectCreateEditViewModel
+            {
+                ProjectId = (int) projectId
+            });
         }
 
         // POST: SubProjects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,ContractId,Description")]
-            SubProject subProject)
+        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,ContractId,ContractorId,Description")]
+            SubProjectCreateEditViewModel subProjectDTO)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(subProject);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(GetSubProjectById), routeValues: new {projectId = subProject.ProjectId});
+                if (_context.SubProjects.Any(x => x.Name == subProjectDTO.Name))
+                {
+                    ModelState.AddModelError("Name", "Подпроект уже существует");
+                }
+
+                if (_context.SubProjects.Any(x => x.Code == subProjectDTO.Code))
+                {
+                    ModelState.AddModelError("Code", "Код уже используется");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    var subProject = _mapper.Map<SubProjectCreateEditViewModel, SubProject>(subProjectDTO);
+                    _context.Add(subProject);
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(GetSubProject), new {projectId = subProjectDTO.ProjectId});
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        var exception = e.InnerException;
+                        if (exception != null && exception.Message.Contains("IX_SubProjects_Name"))
+                        {
+                            ModelState.AddModelError("Name", "Подпроект уже существует");
+                        }
+
+                        if (exception != null && exception.Message.Contains("IX_SubProjects_Code"))
+                        {
+                            ModelState.AddModelError("Code", "Такой код уже используется");
+                        }
+                    }
+                }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", subProject.ProjectId);
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProject.ContractId);
-            ViewData["StatusId"] = new SelectList(_context.Set<Status>(), "Id", "NameStatus", subProject.StatusId);
-            return View(subProject);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
+            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProjectDTO.ContractId);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
+            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
+            return View(subProjectDTO);
         }
 
         // GET: SubProjects/Edit/5
@@ -242,36 +277,39 @@ namespace Cursa.Controllers
             }
 
             var subProject = await _context.SubProjects.FindAsync(id);
+            var subProjectDTO = _mapper.Map<SubProject, SubProjectCreateEditViewModel>(subProject);
             if (subProject == null)
             {
                 return NotFound();
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", subProject.ProjectId);
             ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProject.ContractId);
-            ViewData["StatusId"] = new SelectList(_context.Set<Status>(), "Id", "NameStatus", subProject.StatusId);
-            return View(subProject);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProject.StatusId);
+            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
+            return View(subProjectDTO);
         }
 
         // POST: SubProjects/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,ContractId,Description,CreatedDate")]
-            SubProject subProject)
+            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,ContractId,ContractorId,Description,CreatedDate")]
+            SubProjectCreateEditViewModel subProjectDTO)
         {
-            if (id != subProject.Id)
+            if (id != subProjectDTO.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var subProject = _mapper.Map<SubProjectCreateEditViewModel, SubProject>(subProjectDTO);
                 try
                 {
                     _context.Update(subProject);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(GetSubProject), new {projectId = subProjectDTO.ProjectId});
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -284,15 +322,26 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_SubProjects_Name"))
+                    {
+                        ModelState.AddModelError("Name", "Подпроект уже существует");
+                    }
 
-                return RedirectToAction(nameof(GetSubProject), routeValues: new {projectId = subProject.ProjectId});
+                    if (exception != null && exception.Message.Contains("IX_SubProjects_Code"))
+                    {
+                        ModelState.AddModelError("Code", "Такой код уже используется");
+                    }
+                }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", subProject.ProjectId);
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProject.ContractId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProject.StatusId);
-            return View(subProject);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
+            ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
+            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProjectDTO.ContractId);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
+            return View(subProjectDTO);
         }
 
         // GET: SubProjects/Delete/5
@@ -322,9 +371,19 @@ namespace Cursa.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var subProject = await _context.SubProjects.FindAsync(id);
-            _context.SubProjects.Remove(subProject);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.SubProjects.Remove(subProject);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogInformation("{ExceptionMessage}", e.Message);
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный подпроект имеются ссылки");
+            }
+
+            return View(subProject);
         }
 
         private bool SubProjectExists(int id)
