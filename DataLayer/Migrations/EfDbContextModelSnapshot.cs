@@ -113,21 +113,6 @@ namespace DataLayer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.ContractorSubProject", b =>
-                {
-                    b.Property<int>("ContractorId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SubProjectId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ContractorId", "SubProjectId");
-
-                    b.HasIndex("SubProjectId");
-
-                    b.ToTable("ContractorSubProjects");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -596,6 +581,9 @@ namespace DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int>("ProductTypeId")
                         .HasColumnType("integer");
 
@@ -784,6 +772,9 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("ModifiedUserId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Projects");
@@ -867,6 +858,9 @@ namespace DataLayer.Migrations
                     b.Property<int?>("ContractId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ContractorId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -903,13 +897,21 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.HasIndex("ContractId");
+
+                    b.HasIndex("ContractorId");
 
                     b.HasIndex("CreatedUserId");
 
                     b.HasIndex("EmployeeId");
 
                     b.HasIndex("ModifiedUserId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("ProjectId");
 
@@ -1237,25 +1239,6 @@ namespace DataLayer.Migrations
                     b.Navigation("ModifiedUser");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.ContractorSubProject", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Contractor", "Contractor")
-                        .WithMany("ContractorSubProjects")
-                        .HasForeignKey("ContractorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataLayer.Entities.SubProject", "SubProject")
-                        .WithMany("ContractorSubProjects")
-                        .HasForeignKey("SubProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contractor");
-
-                    b.Navigation("SubProject");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Employee", b =>
                 {
                     b.HasOne("DataLayer.Entities.User", "CreatedUser")
@@ -1369,9 +1352,9 @@ namespace DataLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("DataLayer.Entities.SubProject", "SubProject")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("SubProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CreatedUser");
@@ -1441,6 +1424,12 @@ namespace DataLayer.Migrations
                         .WithMany("SubProjects")
                         .HasForeignKey("ContractId");
 
+                    b.HasOne("DataLayer.Entities.Contractor", "Contractor")
+                        .WithMany("SubProjects")
+                        .HasForeignKey("ContractorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataLayer.Entities.User", "CreatedUser")
                         .WithMany("CreatedSubProjects")
                         .HasForeignKey("CreatedUserId");
@@ -1468,6 +1457,8 @@ namespace DataLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Contract");
+
+                    b.Navigation("Contractor");
 
                     b.Navigation("CreatedUser");
 
@@ -1564,7 +1555,7 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Contractor", b =>
                 {
-                    b.Navigation("ContractorSubProjects");
+                    b.Navigation("SubProjects");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Department", b =>
@@ -1613,7 +1604,7 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.SubProject", b =>
                 {
-                    b.Navigation("ContractorSubProjects");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.User", b =>

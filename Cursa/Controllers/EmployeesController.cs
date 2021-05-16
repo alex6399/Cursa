@@ -35,6 +35,7 @@ namespace Cursa.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult GetEmployee()
         {
             try
@@ -146,7 +147,7 @@ namespace Cursa.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogCritical(e.Message);
+                    _logger.LogError("{ExceptionMessage}",e.Message);
                 }
             }
 

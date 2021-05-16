@@ -19,6 +19,7 @@ namespace Cursa.ViewModels.ProjectVM
         [Required]
         [Display(Name = "Ответственный")]
         public int EmployeeId { get; set; }
+        [Display(Name = "Описание")]
         public string Description { get; set; }
     }
 }

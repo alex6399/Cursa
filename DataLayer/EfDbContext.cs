@@ -45,24 +45,8 @@ namespace DataLayer
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
-
-            //start many to many Contractor SubProject 
-            modelBuilder.Entity<ContractorSubProject>().HasKey(csp
-                => new {csp.ContractorId, csp.SubProjectId});
-            modelBuilder.Entity<ContractorSubProject>().ToTable("ContractorSubProjects");
-
-            modelBuilder.Entity<ContractorSubProject>()
-                .HasOne(eau => eau.Contractor)
-                .WithMany(ea => ea.ContractorSubProjects)
-                .HasForeignKey(eau => eau.ContractorId);
-
-            modelBuilder.Entity<ContractorSubProject>()
-                .HasOne(eau => eau.SubProject)
-                .WithMany(u => u.ContractorSubProjects)
-                .HasForeignKey(eau => eau.SubProjectId);
-            // end
-
-            //start many to many Contractor SubProject 
+            
+            //start many to many 
             modelBuilder.Entity<OrderEmployee>().HasKey(or
                 => new {or.EmployeeId, or.OrderCardId, or.StatusParticipationId});
             modelBuilder.Entity<OrderEmployee>().ToTable("OrderEmployees");
@@ -161,6 +145,10 @@ namespace DataLayer
                 .HasOne(sp => sp.Project)
                 .WithMany(p => p.SubProjects)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Entities.Product>()
+                .HasOne(p => p.SubProject)
+                .WithMany(o => o.Products)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Entities.Owner>()
                 .HasMany(p => p.Projects)
@@ -184,6 +172,19 @@ namespace DataLayer
                 .IsUnique();
             modelBuilder.Entity<Product>()
                 .HasIndex(x => x.CertifiedNum)
+                .IsUnique();
+            
+            modelBuilder.Entity<Project>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<Project>()
+                .HasIndex(x => x.Code)
+                .IsUnique();
+            modelBuilder.Entity<SubProject>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<SubProject>()
+                .HasIndex(x => x.Code)
                 .IsUnique();
 
             // End: unique constraint

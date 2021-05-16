@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
+using Cursa.ViewModels.Base;
 using Cursa.ViewModels.EmployeesVM;
 using Cursa.ViewModels.ProductsVM;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,101 @@ namespace Cursa.Controllers
             return View(projectsData);
         }
 
+        [HttpGet]
+        public IActionResult GetProductsForSubProject(int? subProjectId)
+        {
+            if (subProjectId == null)
+            {
+                return NotFound();
+            }
+
+            var subProject = _context.SubProjects.FirstOrDefault(p => p.Id == subProjectId);
+            if (subProject == null)
+            {
+                return NotFound();
+            }
+
+            // var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
+            //     .AsNoTracking());
+            //.Where(subProject => subProject.ProjectId == projectId));
+            return View(new ProductDisplayViewModel()
+            {
+                SubProject = new BaseViewModel()
+                {
+                    Id = subProject.Id,
+                    Name = subProject.Name
+                }
+            });
+        }
+        // get products for a subproject
+
+        [HttpPost]
+        public IActionResult FindProductsForSubproject()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request
+                    .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
+                var searchNameValue = Request.Form["columns[2][search][value]"].FirstOrDefault();
+                var searchSerialNumValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
+                var searchCertifiedNumValue = Request.Form["columns[4][search][value]"].FirstOrDefault();
+                // var searchStatusValue = Request.Form["columns[5][search][value]"].FirstOrDefault();
+                // var searchContractValue = Request.Form["columns[6][search][value]"].FirstOrDefault();
+                // var searchDescriptionValue = Request.Form["columns[7][search][value]"].FirstOrDefault();
+                var pageSize = length != null ? Convert.ToInt32(length) : 0;
+                var skip = start != null ? Convert.ToInt32(start) : 0;
+                var id = Request.Form["subProjectId"].FirstOrDefault();
+                var subProjectId = id != null ? Convert.ToInt32(id) : 0;
+
+                var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
+                    .AsNoTracking()
+                    .Where(p => p.SubProjectId == subProjectId));
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
+                }
+
+                if (!string.IsNullOrEmpty(searchGlobalValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
+                                                           || m.SerialNum.Contains(searchGlobalValue)
+                                                           || m.CertifiedNum.Contains(searchGlobalValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchNameValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchNameValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchSerialNumValue))
+                {
+                    projectsData = projectsData.Where(m => m.SerialNum.Contains(searchSerialNumValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchCertifiedNumValue))
+                {
+                    projectsData = projectsData.Where(m => m.CertifiedNum.Contains(searchCertifiedNumValue));
+                }
+
+                var recordsTotal = projectsData.Count();
+                var data = projectsData.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new
+                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
+                return Ok(jsonData);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error search:{ExceptionMessage}", e.Message);
+                return NotFound();
+            }
+        }
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -60,11 +157,25 @@ namespace Cursa.Controllers
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public IActionResult Create(int? subProjectId)
         {
+            if (subProjectId == null)
+            {
+                return NotFound();
+            }
+
+            var subProject = _context.SubProjects.FirstOrDefault(p => p.Id == subProjectId);
+            if (subProject == null)
+            {
+                return NotFound();
+            }
+
             ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name");
-            ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Code");
-            return View(new ProductCreateViewModel());
+            ViewBag.TitleSubProject = "для подпроекта: " + subProject.Name;
+            return View(new ProductCreateViewModel()
+            {
+                SubProjectId = (int) subProjectId
+            });
         }
 
         // POST: Products/Create
@@ -114,7 +225,7 @@ namespace Cursa.Controllers
             ViewData["ProductTypeId"] =
                 new SelectList(_context.ProductTypes, "Id", "Name", productDto.ProductTypeId);
             ViewData["SubProjectId"] =
-                new SelectList(_context.SubProjects, "Id", "Code", productDto.SubProjectId);
+                new SelectList(_context.SubProjects, "Id", "Name", productDto.SubProjectId);
             return View(productDto);
         }
 
@@ -175,7 +286,7 @@ namespace Cursa.Controllers
             }
 
             ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
-            ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Code", product.SubProjectId);
+            ViewData["SubProjectId"] = new SelectList(_context.SubProjects, "Id", "Name", product.SubProjectId);
             return View(product);
         }
 

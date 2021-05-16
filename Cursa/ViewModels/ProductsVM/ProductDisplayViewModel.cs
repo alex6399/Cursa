@@ -7,9 +7,9 @@ namespace Cursa.ViewModels.ProductsVM
 {
     public class ProductDisplayViewModel:BaseViewModel
     {
-        [Display(Name = "Серийный номер")]
+        [Display(Name = "Серийный №")]
         public string SerialNum { get; set; }
-        [Display(Name = "Зав. номер")]
+        [Display(Name = "Зав. №")]
         public string CertifiedNum { get; set; }
         [Display(Name = "Подпроект")]
         public BaseViewModel SubProject { get; set; }

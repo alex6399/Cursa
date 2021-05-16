@@ -29,20 +29,10 @@ namespace Cursa.Controllers
         }
 
         // GET: Projects
-        public async Task<IActionResult> Index()
-        {
-            var projects = _context.Projects.AsNoTracking().Select(p => new ProjectViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Owner = p.Owner.Name,
-                Code = p.Code,
-                Employee = p.Employee.GetFullName
-            });
-            return View(await projects.ToListAsync());
-        }
+        public IActionResult Index() => View(new ProjectViewModel());
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult GetProject()
         {
             try
@@ -50,9 +40,14 @@ namespace Cursa.Controllers
                 var draw = Request.Form["draw"].FirstOrDefault();
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
-                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumn = Request
+                    .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
                 var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
+                var searchNameValue = Request.Form["columns[1][search][value]"].FirstOrDefault();
+                var searchCodeValue = Request.Form["columns[2][search][value]"].FirstOrDefault();
+                var searchOwnerValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
+                var searchEmployeeValue = Request.Form["columns[4][search][value]"].FirstOrDefault();
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
@@ -69,17 +64,40 @@ namespace Cursa.Controllers
                 {
                     projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
                 }
-                if (!string.IsNullOrEmpty(searchValue))
+
+                if (!string.IsNullOrEmpty(searchGlobalValue))
                 {
-                    projectsData = projectsData.Where(m => m.Name.Contains(searchValue)
-                                                           || m.Code.Contains(searchValue)
-                                                           || m.Employee.Contains(searchValue)
-                                                           || m.Owner.Contains(searchValue));
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
+                                                           || m.Code.Contains(searchGlobalValue)
+                                                           || m.Owner.Contains(searchGlobalValue)
+                                                           || m.Employee.Contains(searchGlobalValue));
                 }
-                int recordsTotal = 0;
+
+                if (!string.IsNullOrEmpty(searchNameValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchNameValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchCodeValue))
+                {
+                    projectsData = projectsData.Where(m => m.Code.Contains(searchCodeValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchOwnerValue))
+                {
+                    projectsData = projectsData.Where(m => m.Owner.Contains(searchOwnerValue));
+                }
+
+                if (!string.IsNullOrEmpty(searchEmployeeValue))
+                {
+                    projectsData = projectsData.Where(m => m.Employee.Contains(searchEmployeeValue));
+                }
+
+                var recordsTotal = 0;
                 recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
-                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+                var jsonData = new
+                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
                 return Ok(jsonData);
             }
             catch (Exception)
@@ -121,34 +139,51 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,OwnerId,Code,EmployeeId,Description")] ProjectCreateViewModel project)
+        public async Task<IActionResult> Create([Bind("Id,Name,OwnerId,Code,EmployeeId,Description")]
+            ProjectCreateViewModel projectDTO)
         {
-            
             if (ModelState.IsValid)
             {
-                if (_context.Projects.Any(x => x.Code == project.Code))
+                if (_context.Projects.Any(x => x.Code == projectDTO.Code))
                 {
-                    ModelState.AddModelError("Code",
-                        "Данный код уже используется");
+                    ModelState.AddModelError("Code", "Код уже используется");
                 }
-                
-                _context.Add(new Project
+
+                if (_context.Projects.Any(x => x.Name == projectDTO.Name))
                 {
-                    Id = project.Id,
-                    Name = project.Name,
-                    OwnerId = project.OwnerId,
-                    Code = project.Code,
-                    EmployeeId = project.EmployeeId,
-                    Description = project.Description
-                    
-                });
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("Name", "Проект уже существует");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    var project = _mapper.Map<ProjectCreateViewModel, Project>(projectDTO);
+                    _context.Add(project);
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        var exception = e.InnerException;
+                        if (exception != null && exception.Message.Contains("IX_Projects_Name"))
+                        {
+                            ModelState.AddModelError("Name", "Проект уже существует");
+                        }
+
+                        if (exception != null && exception.Message.Contains("IX_Projects_Code"))
+                        {
+                            ModelState.AddModelError("Code", "Такой код уже используется");
+                        }
+                    }
+                }
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", project.EmployeeId);
-            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", project.OwnerId);
-            return View(project);
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", projectDTO.EmployeeId);
+            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
+            return View(projectDTO);
         }
+
         [HttpGet]
         public JsonResult IsCodeProjectExist(string code)
         {
@@ -164,24 +199,15 @@ namespace Cursa.Controllers
             }
 
             var project = await _context.Projects.FindAsync(id);
-
-
             if (project == null)
             {
                 return NotFound();
             }
+
+            var projectDTO = _mapper.Map<Project, ProjectEditViewModel>(project);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", project.EmployeeId);
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", project.OwnerId);
-            return View(new ProjectEditViewModel
-            {
-                Id = project.Id,
-                Name = project.Name,
-                OwnerId = project.OwnerId,
-                Code = project.Code,
-                EmployeeId = project.EmployeeId,
-                Description = project.Description
-
-            });
+            return View(projectDTO);
         }
 
         // POST: Projects/Edit/5
@@ -189,36 +215,27 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,OwnerId,Code,EmployeeId,Description,CreatedDate")] ProjectEditViewModel project)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,Name,OwnerId,Code,EmployeeId,Description,CreatedDate")]
+            ProjectEditViewModel projectDTO)
         {
-            if (id != project.Id)
+            if (id != projectDTO.Id)
             {
                 return NotFound();
-            }
-            
-            var projectDuplicateByCode = _context.Projects.FirstOrDefault(
-                x => x.Id == id && x.Code.Equals(project.Code));
-
-            if (projectDuplicateByCode == null)
-            {
-                ModelState.AddModelError(key: "Code", errorMessage: "Данный код уже используется");
             }
 
             if (ModelState.IsValid)
             {
-                projectDuplicateByCode.Name = project.Name;
-                projectDuplicateByCode.EmployeeId = project.EmployeeId;
-                projectDuplicateByCode.OwnerId = project.OwnerId;
-                projectDuplicateByCode.Code = project.Code;
-                projectDuplicateByCode.Description = project.Description;
+                var project = _mapper.Map<ProjectEditViewModel, Project>(projectDTO);
                 try
                 {
-                    _context.Update(projectDuplicateByCode);
+                    _context.Update(project);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(projectDuplicateByCode.Id))
+                    if (!ProjectExists(project.Id))
                     {
                         return NotFound();
                     }
@@ -227,11 +244,25 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Projects_Name"))
+                    {
+                        ModelState.AddModelError("Name", "Проект уже существует");
+                    }
+
+                    // TODO причем это не выполнится за 1 операцию с предыдущим if
+                    if (exception != null && exception.Message.Contains("IX_Projects_Code"))
+                    {
+                        ModelState.AddModelError("Code", "Такой код уже используется");
+                    }
+                }
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", project.EmployeeId);
-            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", project.OwnerId);
-            return View(project);
+
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", projectDTO.EmployeeId);
+            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
+            return View(projectDTO);
         }
 
         // GET: Projects/Delete/5
@@ -261,8 +292,16 @@ namespace Cursa.Controllers
         {
             var project = await _context.Projects.FindAsync(id);
             _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException e)
+            {
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный проект имеются ссылки");
+            }
+            return View(project);
         }
 
         private bool ProjectExists(int id)

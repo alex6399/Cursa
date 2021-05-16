@@ -1,0 +1,89 @@
+﻿@model Cursa.ViewModels.ProductsVM.ProductDisplayViewModel
+
+@{
+    ViewData["Title"] = "Продукция для подпроекта: ";
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" asp-route-subProjectId="@Model.SubProject.Id">Добавить...</a>
+</p>
+<table id="productDatatable" class="table">
+    <thead>
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            Подпроект
+        </th>
+        <th>
+            Продукция
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SerialNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CertifiedNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.ManufacturingDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippedDate)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th class="search">
+            Продукция
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.SerialNum)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.CertifiedNum)
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+    </tr>
+    </tfoot>
+</table>
+
+
+<script>
+        let subProjectId=@Model.SubProject.Id;
+</script>
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/productDatatable.js"></script>
+}
+
+<style>
+    div.dataTables_wrapper {
+            width: 1300px;
+            margin: 0 auto;
+        }
+</style>

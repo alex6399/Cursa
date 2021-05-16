@@ -3,7 +3,7 @@
 //     });
 // });
 $(document).ready(function () {
-    let table = $('#subprojectDatatable').DataTable({
+    let table = $('#productDatatable').DataTable({
         "scrollXInner": true,
         initComplete: function () {
             this.api().columns().every(function () {
@@ -23,11 +23,12 @@ $(document).ready(function () {
         "serverSide": true,
         "filter": true,
         "ajax": {
-            "url": "/SubProjects/FindSubProjects",
+            "url": "/Products/FindProductsForSubproject",
             "type": "POST",
-            "datatype": "json",
+            "datatype": "json"
+            ,
             "data": {
-                "projectId": projectId
+                "subProjectId": subProjectId
             }
         },
         "language": {
@@ -43,20 +44,20 @@ $(document).ready(function () {
                 "searchable": false
             },
             {
-                "targets": [8],
+                "targets": [1,8],
                 "orderable": false
             }
         ],
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
             {
-                "data": "projectName", "name": "ProjectName", "autoWidth": true
+                "data": "subProject.name", "name": "subProject.name", "autoWidth": true
             },
             {
                 "data": "name", "name": "Name", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display" || type === "filter") {
-                        return '<a href="/Products/GetProductsForSubProject?subProjectId=' +// TODO добавить ссылку на документы
+                        return '<a href="/Products/Details/' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
                             row.id +
                             '" >' +
                             row.name +
@@ -65,32 +66,33 @@ $(document).ready(function () {
                     return data;
                 }
             },
-            {"data": "code", "name": "Code", "autoWidth": true},
-            {"data": "employee.fullName", "name": "employee.fullName", "width": "250px"},
-            {"data": "statusName", "name": "StatusName", "autoWidth": true},
+            {"data": "serialNum", "name": "SerialNum", "autoWidth": true},
+            {"data": "certifiedNum", "name": "CertifiedNum", "width": "250px"},
+            {"data": "orderDate", "name": "OrderDate", "autoWidth": true},
+            // {
+            //     "data": "contract.name", "name": "contract.name", "autoWidth": true,
+            //     // "defaultContent":"Данные не указаны",
+            //     "render": function (data, type, row) {
+            //         if (data != null) {
+            //             if (type === "display" || type === "filter") {
+            //                 return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
+            //                     row.id +
+            //                     '" >' +
+            //                     row.contract.name +
+            //                     "</a>";
+            //             }
+            //             return data;
+            //         }
+            //         if (!data) {
+            //             return "Не указано";
+            //         }
+            //     }
+            // },
+            {"data": "manufacturingDate", "name": "ManufacturingDate", "autoWidth": true},
+            {"data": "shippedDate", "name": "ShippedDate", "autoWidth": true},
             {
-                "data": "contract.name", "name": "contract.name", "autoWidth": true,
-                // "defaultContent":"Данные не указаны",
                 "render": function (data, type, row) {
-                    if (data != null) {
-                        if (type === "display" || type === "filter") {
-                            return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
-                                row.id +
-                                '" >' +
-                                row.contract.name +
-                                "</a>";
-                        }
-                        return data;
-                    }
-                    if (!data) {
-                        return "Не указано";
-                    }
-                }
-            },
-            {"data": "description", "name": "Description", "autoWidth": true},
-            {
-                "render": function (data, type, row) {
-                    return '<a href="/SubProjects/Details/' + row.id + '"  ><svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 21 21">\n' +
+                    return '<a href="/Products/Details/' + row.id + '"  ><svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">\n' +
                         '  <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>\n' +
                         '  <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>\n' +
                         '</svg></a>';
@@ -98,7 +100,7 @@ $(document).ready(function () {
             }
         ]
     });
-    $('#subprojectDatatable tfoot th.search').each(function () {
+    $('#productDatatable tfoot th.search').each(function () {
         let title = $(this).text();
         $(this).html('<input type="text" placeholder="Поиск" class="form-control form-control-sm" />');
     });

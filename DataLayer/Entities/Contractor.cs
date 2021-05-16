@@ -9,6 +9,6 @@ namespace DataLayer.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
-        public virtual ICollection<ContractorSubProject> ContractorSubProjects{ get; set; }
+        public virtual ICollection<SubProject> SubProjects{ get; set; }
     }
 }

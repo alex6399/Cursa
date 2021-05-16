@@ -32,10 +32,12 @@ namespace DataLayer.Entities
         public int? ContractId { get; set; }
         [Display(Name = "Договор")] 
         public virtual Contract Contract { get; set; }
-        [Display(Name = "Описание")] 
+        [Display(Name = "Описание")]
+        public int ContractorId { get; set; }
+        public virtual Contractor Contractor { get; set; }
         public string Description { get; set; }
         [Display(Name = "Дата сдачи")]
         public DateTime EndDate { get; set; }
-        public virtual ICollection<ContractorSubProject> ContractorSubProjects { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

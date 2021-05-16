@@ -53,9 +53,6 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
-
-            ViewData["ProjectId"] = result.Id;
-            ViewData["ProjectId"] = result.Name;
             return View(new SubProjectComplexDisplayViewModel
             {
                 ProjectId = result.Id,
@@ -200,7 +197,6 @@ namespace Cursa.Controllers
         {
             if (projectId == null)
             {
-                _logger.LogInformation("Страница не найдена");
                 return NotFound();
             }
 
