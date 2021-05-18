@@ -1,10 +1,10 @@
-﻿@model IEnumerable<DataLayer.Entities.ModuleType>
+﻿@model IEnumerable<DataLayer.Entities.Module>
 
 @{
-    ViewData["Title"] = "Модули";
+    ViewData["Title"] = "Index";
 }
 
-<h4>@ViewData["Title"]</h4>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,11 +13,24 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.ModuleType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.DestinationOrderCard)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SerialNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Place)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualOrderCard)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ManufacturingData)
+            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -25,11 +38,24 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.ModuleType.Code)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.DestinationOrderCard.Name)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SerialNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Place)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualOrderCard.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ManufacturingData)
+            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

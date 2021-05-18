@@ -6,17 +6,17 @@ namespace Cursa.ViewModels.ProjectVM
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100, ErrorMessage = "Максимальная длина")]
         [Display(Name = "Наименование проекта")]
         public string Name { get; set; }
         [Display(Name = "Владелец")]
         public int? OwnerId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100)]
         [Display(Name = "Код")]
         public string Code { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Ответственный")]
         public int EmployeeId { get; set; }
         [Display(Name = "Описание")]

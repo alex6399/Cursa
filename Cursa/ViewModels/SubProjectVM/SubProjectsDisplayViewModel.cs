@@ -17,7 +17,7 @@ namespace Cursa.ViewModels.SubProjectVM
         public EmployeePartDisplayViewModel Employee { get; set; }
 
         [Display(Name = "Статус")] public string StatusName { get; set; }
-        [Display(Name = "Договор")] public ContractPartDisplayViewModel Contract { get; set; }
+        [Display(Name = "Договор №")] public string Contract { get; set; }
         [Display(Name = "Описание")] public string Description { get; set; }
     }
 
@@ -27,9 +27,9 @@ namespace Cursa.ViewModels.SubProjectVM
         [Display(Name = "Ответственный")] public string FullName { get; set; }
     }
 
-    public class ContractPartDisplayViewModel
-    {
-        public int Id { get; set; }
-        [Display(Name = "Договор")] public string Name { get; set; }
-    }
+    // public class ContractPartDisplayViewModel
+    // {
+    //     public int Id { get; set; }
+    //     [Display(Name = "Договор")] public string Name { get; set; }
+    // }
 }

@@ -27,7 +27,7 @@ namespace DataLayer.Entities
         public int EmployeeId { get; set; }
         [Display(Name = "Ответственный")]
         public virtual Employee Employee { get; set; }
-        [Display(Name = "Описание")]
+        [Display(Name = "Примечание")]
         public string Description { get; set; }
         public virtual ICollection<SubProject> SubProjects { get; set; }
     }

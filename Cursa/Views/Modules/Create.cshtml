@@ -1,4 +1,4 @@
-﻿@model DataLayer.Entities.ModuleType
+﻿@model DataLayer.Entities.Module
 
 @{
     ViewData["Title"] = "Create";
@@ -13,14 +13,44 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="ModuleTypeId" class="control-label"></label>
+                <select asp-for="ModuleTypeId" class ="form-control" asp-items="ViewBag.ModuleTypeId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="DestinationOrderCardId" class="control-label"></label>
+                <select asp-for="DestinationOrderCardId" class ="form-control" asp-items="ViewBag.DestinationOrderCardId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SerialNumber" class="control-label"></label>
+                <input asp-for="SerialNumber" class="form-control" />
+                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Place" class="control-label"></label>
+                <input asp-for="Place" class="form-control" />
+                <span asp-validation-for="Place" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActualOrderCardId" class="control-label"></label>
+                <select asp-for="ActualOrderCardId" class ="form-control" asp-items="ViewBag.ActualOrderCardId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ManufacturingData" class="control-label"></label>
+                <input asp-for="ManufacturingData" class="form-control" />
+                <span asp-validation-for="ManufacturingData" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedDate" class="control-label"></label>
+                <input asp-for="ModifiedDate" class="form-control" />
+                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedUserId" class="control-label"></label>
+                <select asp-for="CreatedUserId" class ="form-control" asp-items="ViewBag.CreatedUserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedUserId" class="control-label"></label>
+                <select asp-for="ModifiedUserId" class ="form-control" asp-items="ViewBag.ModifiedUserId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

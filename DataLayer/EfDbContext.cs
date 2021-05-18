@@ -28,13 +28,20 @@ namespace DataLayer
         public DbSet<Project> Projects { get; set; }
         public DbSet<SubProject> SubProjects { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
-        public DbSet<Contract> Contracts { get; set; }
+        // public DbSet<Contract> Contracts { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductSubType> ProductSubTypes { get; set; }
-        public DbSet<SystemUnit> SystemUnits { get; set; }
-        public DbSet<SystemUnitType> SystemUnitTypes { get; set; }
-        public DbSet<ModuleType> Modules { get; set; }
+        
+        
+        public DbSet<Module> Modules { get; set; }
+        public DbSet<ModuleType> ModulesTypes { get; set; }
+        public DbSet<ModuleSubTypes> ModulesSubTypes { get; set; }
+        // public DbSet<OrderCardTemplate> OrderCardTemplates { get; set; }
+        // public DbSet<OrderCardTemplateModuleTypes> OrderCardTemplateModuleTypes { get; set; }
+        
+        
+        
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Status> Statuses { get; set; }
@@ -46,21 +53,64 @@ namespace DataLayer
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
             
-            //start many to many 
-            modelBuilder.Entity<OrderEmployee>().HasKey(or
-                => new {or.EmployeeId, or.OrderCardId, or.StatusParticipationId});
-            modelBuilder.Entity<OrderEmployee>().ToTable("OrderEmployees");
-
-            modelBuilder.Entity<OrderEmployee>()
-                .HasOne(or => or.OrderCard)
-                .WithMany(ea => ea.OrderEmployees)
-                .HasForeignKey(or => or.OrderCardId);
-
-            modelBuilder.Entity<OrderEmployee>()
-                .HasOne(or => or.Employee)
-                .WithMany(u => u.OrderEmployees)
-                .HasForeignKey(or => or.EmployeeId);
-            // end
+            // //start many to many 
+            // modelBuilder.Entity<OrderEmployee>().HasKey(or
+            //     => new {or.EmployeeId, or.OrderCardId, or.StatusParticipationId});
+            // modelBuilder.Entity<OrderEmployee>().ToTable("OrderEmployees");
+            //
+            // modelBuilder.Entity<OrderEmployee>()
+            //     .HasOne(or => or.OrderCard)
+            //     .WithMany(ea => ea.OrderEmployees)
+            //     .HasForeignKey(or => or.OrderCardId);
+            //
+            // modelBuilder.Entity<OrderEmployee>()
+            //     .HasOne(or => or.Employee)
+            //     .WithMany(u => u.OrderEmployees)
+            //     .HasForeignKey(or => or.EmployeeId);
+            // // end
+            
+            // //Start: many to many OrderCard < - > ModulesType
+            // modelBuilder.Entity<OrderCardModules>().HasKey(or
+            //     => new {or.OrderCardId, or.ModuleId});
+            // modelBuilder.Entity<OrderCardModules>().ToTable("OrderCardModules");
+            //
+            // modelBuilder.Entity<OrderCardModules>()
+            //     .HasOne(or => or.OrderCard)
+            //     .WithMany(ea => ea.OrderCardModulesCollection)
+            //     .HasForeignKey(or => or.OrderCardId);
+            //
+            // modelBuilder.Entity<OrderCardModules>()
+            //     .HasOne(or => or.Module)
+            //     .WithMany(u => u.OrderCardModulesCollection)
+            //     .HasForeignKey(or => or.ModuleId);
+            // //End: many to many OrderCard < - > ModulesType
+            
+            // //Start: many to many OrderCardTemplate < - > ModulesType
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>().HasKey(or
+            //     => new {or.OrderCardTemplateId, or.ModuleTypeId});
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>().ToTable("OrderCardTemplateModules");
+            //
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>()
+            //     .HasOne(or => or.OrderCardsTemplate)
+            //     .WithMany(ea => ea.OrderCardTemplateModulesCollection)
+            //     .HasForeignKey(or => or.OrderCardTemplateId);
+            //
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>()
+            //     .HasOne(or => or.ModulesType)
+            //     .WithMany(u => u.OrderCardTemplateModulesCollection)
+            //     .HasForeignKey(or => or.ModuleTypeId);
+            // //End: many to many OrderCardTemplate < - > ModulesType
+            
+            //Start: Configure One-to-Many Module -> OrderCard 
+            modelBuilder.Entity<Module>()
+                .HasOne<OrderCard>(p => p.DestinationOrderCard)
+                .WithMany(u => u.Modules)
+                .HasForeignKey(p => p.DestinationOrderCardId);
+            // modelBuilder.Entity<Module>()
+            //     .HasOne<OrderCard>(p => p.ActualOrderCard)
+            //     .WithMany(u => u.Modules)
+            //     .HasForeignKey(p => p.ActualOrderCardId);
+            // //End: Configure One-to-Many Module -> OrderCard
 
             //Start: Configure One-to-Many User -> Project 
             modelBuilder.Entity<Project>()
@@ -83,17 +133,7 @@ namespace DataLayer
                 .WithMany(u => u.ModifiedSubProjects)
                 .HasForeignKey(p => p.ModifiedUserId);
             //End: Configure One-to-Many User -> SubProject
-
-            //Start: Configure One-to-Many User -> Contract 
-            modelBuilder.Entity<Contract>()
-                .HasOne<User>(p => p.CreatedUser)
-                .WithMany(u => u.CreatedContracts)
-                .HasForeignKey(p => p.CreatedUserId);
-            modelBuilder.Entity<Contract>()
-                .HasOne<User>(p => p.ModifiedUser)
-                .WithMany(u => u.ModifiedContracts)
-                .HasForeignKey(p => p.ModifiedUserId);
-            //End: Configure One-to-Many User -> Contract
+            
 
             //Start: Configure One-to-Many User -> Employee
             modelBuilder.Entity<Employee>()
@@ -186,24 +226,27 @@ namespace DataLayer
             modelBuilder.Entity<SubProject>()
                 .HasIndex(x => x.Code)
                 .IsUnique();
+            modelBuilder.Entity<OrderCard>()
+                .HasIndex(x => x.Number)
+                .IsUnique();
 
             // End: unique constraint
 
-            modelBuilder.Entity<Employee>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<User>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Producer>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Contractor>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Owner>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Project>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<SubProject>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<OrderCard>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<ProductType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Status>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<StatusType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<ModuleType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Module>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Product>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Employee>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<User>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Producer>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Contractor>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Owner>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Project>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<SubProject>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<OrderCard>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<ProductType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Status>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<StatusType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<ModuleType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Module>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Product>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

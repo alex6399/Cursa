@@ -51,11 +51,6 @@
     <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Login\Login.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Modules\Create.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Modules\Delete.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Modules\Details.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Modules\Edit.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Modules\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Owners\Create.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Owners\Delete.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Owners\Details.cshtml" />
@@ -97,6 +92,11 @@
     <_ContentIncludedByDefault Remove="Views\TypeModules\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\_ViewImports.cshtml" />
     <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Modules\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Modules\Delete.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Modules\Details.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Modules\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Modules\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

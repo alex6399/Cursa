@@ -16,13 +16,14 @@ namespace DataLayer.Entities
         [Display(Name = "Номер карты заказа")]
         [MaxLength(100)]
         public string Number { get; set; }
+        [Display(Name = "Прикрепить")]
         public string Path { get; set; }// нужен ли он сейчас
         [Display(Name = "Продукт")]
         public int ProductId { get; set; }
         [Display(Name = "Продукт")]
         public Product Product { get; set; }
         [Display(Name = "Дата завершения")]
-        public DateTime EndDate { get; set; }
-        public virtual ICollection<OrderEmployee> OrderEmployees { get; set; }
+        public DateTime? EndDate { get; set; }
+        public virtual ICollection<Module> Modules { get; set; }
     }
 }

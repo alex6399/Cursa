@@ -1,4 +1,4 @@
-﻿@model DataLayer.Entities.Module
+﻿@model DataLayer.Entities.OrderCard
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,41 +6,36 @@
 
 <h1>Edit</h1>
 
-<h4>Module</h4>
+<h4>OrderCard</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ModuleTypeId" class="control-label"></label>
-                <select asp-for="ModuleTypeId" class="form-control" asp-items="ViewBag.ModuleTypeId"></select>
-                <span asp-validation-for="ModuleTypeId" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DestinationOrderCardId" class="control-label"></label>
-                <select asp-for="DestinationOrderCardId" class="form-control" asp-items="ViewBag.DestinationOrderCardId"></select>
-                <span asp-validation-for="DestinationOrderCardId" class="text-danger"></span>
+                <label asp-for="Number" class="control-label"></label>
+                <input asp-for="Number" class="form-control" />
+                <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SerialNumber" class="control-label"></label>
-                <input asp-for="SerialNumber" class="form-control" />
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                <label asp-for="Path" class="control-label"></label>
+                <input asp-for="Path" class="form-control" />
+                <span asp-validation-for="Path" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Place" class="control-label"></label>
-                <input asp-for="Place" class="form-control" />
-                <span asp-validation-for="Place" class="text-danger"></span>
+                <label asp-for="ProductId" class="control-label"></label>
+                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActualOrderCardId" class="control-label"></label>
-                <select asp-for="ActualOrderCardId" class="form-control" asp-items="ViewBag.ActualOrderCardId"></select>
-                <span asp-validation-for="ActualOrderCardId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ManufacturingData" class="control-label"></label>
-                <input asp-for="ManufacturingData" class="form-control" />
-                <span asp-validation-for="ManufacturingData" class="text-danger"></span>
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedDate" class="control-label"></label>

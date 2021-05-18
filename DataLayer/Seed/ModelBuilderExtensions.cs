@@ -47,77 +47,124 @@ namespace DataLayer.Seed
             //    }
             //);
 
-
+            modelBuilder.Entity<ModuleSubTypes>().HasData(
+                new ModuleSubTypes
+                {
+                    Id = 1,
+                    Name = "УСО аналоговый"
+                    
+                },
+                new ModuleSubTypes
+                {
+                    Id = 2,
+                    Name = "УСО дискретный"
+                    
+                },
+                new ModuleSubTypes
+                {
+                    Id = 3,
+                    Name = "Блок системный"
+                }
+            );
             modelBuilder.Entity<ModuleType>().HasData(
                 new ModuleType
                 {
                     Id = 1,
-                    Name = "Модуль ввода аналоговый 4-канальный IA - 4k42 - M ЛДАР.468155.047"
+                    Name = "IA - 4k42 - M ",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.468155.047",
+                    CountChanel = 4,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 2,
-                    Name = "Модуль ввода аналоговый 8-канальный IA-8k42 ЛДАР.468155.049"
+                    Name = "IA-8k42",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.468155.049",
+                    CountChanel = 8,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 3,
-                    Name = "Модуль вывода аналоговый 4-канальный OA - 4k42 - M ЛДАР.468155.046"
+                    Name = "OA - 4k42 - M",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.468155.046",
+                    CountChanel = 4,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 4,
-                    Name = "Модуль ввода дискретный 8 - канальный ID - 8k24 - M ЛДАР.469219.043"
+                    Name = "ID - 8k24 - M ",
+                    ModuleSubTypesId = 2,
+                    Code="ЛДАР.469219.043",
+                    CountChanel = 8,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 5,
-                    Name = "Модуль ввода дискретный 16 - канальный ID - 16k24 ЛДАР.469219.060"
+                    Name = "ID - 16k24 ",
+                    ModuleSubTypesId = 2,
+                    Code="ЛДАР.469219.060",
+                    CountChanel = 16,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 6,
-                    Name = "Модуль вывода дискретный 5 - канальный OD - 5k - M ЛДАР.468154.050"
+                    Name = "OD - 5k - M ",
+                    ModuleSubTypesId = 2,
+                    Code="ЛДАР.468154.050",
+                    CountChanel = 5,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 7,
-                    Name = "Модуль вывода дискретный 16 - канальный ОD - 16k24 ЛДАР.468154.055"
+                    Name = "ОD - 16k24 ",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.468154.055",
+                    CountChanel = 16,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 8,
-                    Name = "Модуль измерения частоты 3 - канальный IF - 3k ЛДАР.468155.048"
+                    Name = "IF - 3k ",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.468155.048",
+                    CountChanel = 3,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 9,
-                    Name = "Модуль адаптера USB/RS-485-4k ЛДАР.469239.104"
+                    Name = "USB/RS-485-4k",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.469239.104",
+                    CountChanel = 0,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 10,
-                    Name = "Модуль адаптера Com/RS-485 ЛДАР.469239.299"
+                    Name = "Com/RS-485",
+                    ModuleSubTypesId = 1,
+                    Code="ЛДАР.469239.299",
+                    CountChanel = 0,
+                    IsActiv=true
                 },
                 new ModuleType
                 {
                     Id = 11,
-                    Name = "Блок системный LPBS-15-М ЛДАР.469239.235"
-                },
-                new ModuleType
-                {
-                    Id = 12,
-                    Name = "Блок системный LPBS-7-М ЛДАР.469239.256"
-                },
-                new ModuleType
-                {
-                    Id = 13,
-                    Name = "Комплект ПО \"ЭЛАР - ПРО\""
-                },
-                new ModuleType
-                {
-                    Id = 14,
-                    Name = "Исполнительная система \"M - PLC\""
+                    Name = "LPBS-15-М",
+                    ModuleSubTypesId = 3,
+                    Code="ЛДАР.469239.235",
+                    CountChanel = 0,
+                    IsActiv=true
                 }
             );
 
@@ -140,19 +187,19 @@ namespace DataLayer.Seed
                 new Employee
                 {
                     Id=1,
-                    FirstName = "Александр",
-                    MiddleName = "Сергеевич",
-                    LastName = "Хватов",
+                    FirstName = "Андрей",
+                    MiddleName = "Александрович",
+                    LastName = "Вашин",
                     Phone = "+79173155974",
                     DepartmentId = 1
                 },
                 new Employee
                 {
                     Id = 2,
-                    FirstName = "Сергей",
-                    MiddleName = "Сергеевич",
-                    LastName = "Хватов",
-                    Phone = "+79173155975",
+                    FirstName = "Никита",
+                    MiddleName = "Петрович",
+                    LastName = "Кузебердин",
+                    Phone = "+79273180075",
                     DepartmentId = 1
                 },
                 new Employee
@@ -161,7 +208,7 @@ namespace DataLayer.Seed
                     FirstName = "Олег",
                     MiddleName = "Сергеевич",
                     LastName = "Хватов",
-                    Phone = "+79173155976",
+                    Phone = "+79193955666",
                     DepartmentId = 2
                 }
             );
@@ -278,38 +325,22 @@ namespace DataLayer.Seed
                     ProductSubTypeId = 1
                 });
             
-            modelBuilder.Entity<SystemUnitType>().HasData(
-                new SystemUnitType
-                {
-                    Id = 1,
-                    Name = " LPBS-15-М",
-                    MaxNumberModule = 15
-                });
-            
-            modelBuilder.Entity<SystemUnit>().HasData(
-                new SystemUnit
-                {
-                    Id = 1,
-                    Name = "LPBS",
-                    SystemUnitTypeId = 1,
-                    MaxNumberModule = 15
-                });
-            modelBuilder.Entity<Contract>().HasData(
-                new Contract
-                {
-                    Id = 1,
-                    Name = "№: ТО -084Т18"
-                },
-                new Contract
-                {
-                    Id = 2,
-                    Name = "№: 20/16-КР-2016-СПб-1"
-                },
-                new Contract
-                {
-                    Id = 3,
-                    Name = "№: 77П-ТК/12/16"
-                });
+            // modelBuilder.Entity<Contract>().HasData(
+            //     new Contract
+            //     {
+            //         Id = 1,
+            //         Name = "№: ТО -084Т18"
+            //     },
+            //     new Contract
+            //     {
+            //         Id = 2,
+            //         Name = "№: 20/16-КР-2016-СПб-1"
+            //     },
+            //     new Contract
+            //     {
+            //         Id = 3,
+            //         Name = "№: 77П-ТК/12/16"
+            //     });
 
             //modelBuilder.Entity<Status>.HasData(new Status {Id=1, NameStatus = "В РАБОТЕ", StatusTypeId = 1,StatusType = new StatusType()});
             //modelBuilder.Entity<Status>.HasData(new Status {Id=1, NameStatus = "В РАБОТЕ", StatusTypeId = 1,StatusType = new StatusType()});

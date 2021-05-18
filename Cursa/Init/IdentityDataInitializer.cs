@@ -22,9 +22,9 @@ namespace Cursa.Init
                 var user = new User();
                 user.UserName = "admin@admin.com";
                 user.Email = "admin@admin.com";
-                user.FirstName = "Админ";
-                user.MiddleName = "Админ";
-                user.LastName = "Админ";
+                user.FirstName = "Иван";
+                user.MiddleName = "Иванович";
+                user.LastName = "Иванов";
                 user.IsLockout = true;
 
                 IdentityResult result = userManager.CreateAsync

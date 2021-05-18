@@ -19,57 +19,6 @@ namespace DataLayer.Migrations
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("DataLayer.Entities.Contract", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("CreatedUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("ModifiedUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUserId");
-
-                    b.HasIndex("ModifiedUserId");
-
-                    b.ToTable("Contracts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "№: ТО -084Т18"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "№: 20/16-КР-2016-СПб-1"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "№: 77П-ТК/12/16"
-                        });
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Contractor", b =>
                 {
                     b.Property<int>("Id")
@@ -78,9 +27,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -121,9 +68,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -160,9 +105,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
@@ -210,19 +153,19 @@ namespace DataLayer.Migrations
                         {
                             Id = 1,
                             DepartmentId = 1,
-                            FirstName = "Александр",
-                            LastName = "Хватов",
-                            MiddleName = "Сергеевич",
+                            FirstName = "Андрей",
+                            LastName = "Вашин",
+                            MiddleName = "Александрович",
                             Phone = "+79173155974"
                         },
                         new
                         {
                             Id = 2,
                             DepartmentId = 1,
-                            FirstName = "Сергей",
-                            LastName = "Хватов",
-                            MiddleName = "Сергеевич",
-                            Phone = "+79173155975"
+                            FirstName = "Никита",
+                            LastName = "Кузебердин",
+                            MiddleName = "Петрович",
+                            Phone = "+79273180075"
                         },
                         new
                         {
@@ -231,7 +174,7 @@ namespace DataLayer.Migrations
                             FirstName = "Олег",
                             LastName = "Хватов",
                             MiddleName = "Сергеевич",
-                            Phone = "+79173155976"
+                            Phone = "+79193955666"
                         });
                 });
 
@@ -242,16 +185,17 @@ namespace DataLayer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("ActualOrderCardId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("IsInstalled")
-                        .HasColumnType("boolean");
+                    b.Property<int>("DestinationOrderCardId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("ManufacturingData")
                         .HasColumnType("timestamp without time zone");
@@ -262,24 +206,62 @@ namespace DataLayer.Migrations
                     b.Property<int?>("ModifiedUserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OrderCardId")
+                    b.Property<int>("ModuleTypeId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Place")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SerialNumModule")
+                    b.Property<int?>("SerialNumber")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActualOrderCardId");
+
                     b.HasIndex("CreatedUserId");
+
+                    b.HasIndex("DestinationOrderCardId");
 
                     b.HasIndex("ModifiedUserId");
 
-                    b.HasIndex("OrderCardId");
+                    b.HasIndex("ModuleTypeId");
 
-                    b.ToTable("Module");
+                    b.ToTable("Modules");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.ModuleSubTypes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModulesSubTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "УСО аналоговый"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "УСО дискретный"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Блок системный"
+                        });
                 });
 
             modelBuilder.Entity("DataLayer.Entities.ModuleType", b =>
@@ -289,14 +271,26 @@ namespace DataLayer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("CountChanel")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1200)
                         .HasColumnType("character varying(1200)");
+
+                    b.Property<bool>("IsActiv")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ModuleSubTypesId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasMaxLength(120)
@@ -304,92 +298,120 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Modules");
+                    b.HasIndex("ModuleSubTypesId");
+
+                    b.ToTable("ModuleTypes");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            Code = "ЛДАР.468155.047",
+                            CountChanel = 4,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль ввода аналоговый 4-канальный IA - 4k42 - M ЛДАР.468155.047"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "IA - 4k42 - M "
                         },
                         new
                         {
                             Id = 2,
+                            Code = "ЛДАР.468155.049",
+                            CountChanel = 8,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль ввода аналоговый 8-канальный IA-8k42 ЛДАР.468155.049"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "IA-8k42"
                         },
                         new
                         {
                             Id = 3,
+                            Code = "ЛДАР.468155.046",
+                            CountChanel = 4,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль вывода аналоговый 4-канальный OA - 4k42 - M ЛДАР.468155.046"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "OA - 4k42 - M"
                         },
                         new
                         {
                             Id = 4,
+                            Code = "ЛДАР.469219.043",
+                            CountChanel = 8,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль ввода дискретный 8 - канальный ID - 8k24 - M ЛДАР.469219.043"
+                            IsActiv = true,
+                            ModuleSubTypesId = 2,
+                            Name = "ID - 8k24 - M "
                         },
                         new
                         {
                             Id = 5,
+                            Code = "ЛДАР.469219.060",
+                            CountChanel = 16,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль ввода дискретный 16 - канальный ID - 16k24 ЛДАР.469219.060"
+                            IsActiv = true,
+                            ModuleSubTypesId = 2,
+                            Name = "ID - 16k24 "
                         },
                         new
                         {
                             Id = 6,
+                            Code = "ЛДАР.468154.050",
+                            CountChanel = 5,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль вывода дискретный 5 - канальный OD - 5k - M ЛДАР.468154.050"
+                            IsActiv = true,
+                            ModuleSubTypesId = 2,
+                            Name = "OD - 5k - M "
                         },
                         new
                         {
                             Id = 7,
+                            Code = "ЛДАР.468154.055",
+                            CountChanel = 16,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль вывода дискретный 16 - канальный ОD - 16k24 ЛДАР.468154.055"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "ОD - 16k24 "
                         },
                         new
                         {
                             Id = 8,
+                            Code = "ЛДАР.468155.048",
+                            CountChanel = 3,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль измерения частоты 3 - канальный IF - 3k ЛДАР.468155.048"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "IF - 3k "
                         },
                         new
                         {
                             Id = 9,
+                            Code = "ЛДАР.469239.104",
+                            CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль адаптера USB/RS-485-4k ЛДАР.469239.104"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "USB/RS-485-4k"
                         },
                         new
                         {
                             Id = 10,
+                            Code = "ЛДАР.469239.299",
+                            CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Модуль адаптера Com/RS-485 ЛДАР.469239.299"
+                            IsActiv = true,
+                            ModuleSubTypesId = 1,
+                            Name = "Com/RS-485"
                         },
                         new
                         {
                             Id = 11,
+                            Code = "ЛДАР.469239.235",
+                            CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Блок системный LPBS-15-М ЛДАР.469239.235"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Блок системный LPBS-7-М ЛДАР.469239.256"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Комплект ПО \"ЭЛАР - ПРО\""
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Исполнительная система \"M - PLC\""
+                            IsActiv = true,
+                            ModuleSubTypesId = 3,
+                            Name = "LPBS-15-М"
                         });
                 });
 
@@ -401,14 +423,12 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("ModifiedDate")
@@ -439,29 +459,12 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("ModifiedUserId");
 
+                    b.HasIndex("Number")
+                        .IsUnique();
+
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderCards");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.OrderEmployee", b =>
-                {
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderCardId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StatusParticipationId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("EmployeeId", "OrderCardId", "StatusParticipationId");
-
-                    b.HasIndex("OrderCardId");
-
-                    b.HasIndex("StatusParticipationId");
-
-                    b.ToTable("OrderEmployees");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Owner", b =>
@@ -472,9 +475,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -518,31 +519,6 @@ namespace DataLayer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Producer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Producer");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -554,9 +530,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
@@ -679,9 +653,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -734,9 +706,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
@@ -788,9 +758,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("NameStatus")
                         .IsRequired()
@@ -815,9 +783,7 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("StatusTypeName")
                         .IsRequired()
@@ -855,16 +821,14 @@ namespace DataLayer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("ContractId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Contract")
+                        .HasColumnType("text");
 
                     b.Property<int?>("ContractorId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
@@ -900,8 +864,6 @@ namespace DataLayer.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.HasIndex("ContractId");
-
                     b.HasIndex("ContractorId");
 
                     b.HasIndex("CreatedUserId");
@@ -920,85 +882,6 @@ namespace DataLayer.Migrations
                     b.ToTable("SubProjects");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.SystemUnit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("ArrivalDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long>("CurrentNumberModule")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MaxNumberModule")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SerialNum")
-                        .HasColumnType("text");
-
-                    b.Property<int>("SystemUnitTypeId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SystemUnitTypeId");
-
-                    b.ToTable("SystemUnits");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArrivalDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CurrentNumberModule = 0L,
-                            MaxNumberModule = 15L,
-                            Name = "LPBS",
-                            SystemUnitTypeId = 1
-                        });
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.SystemUnitType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<long>("MaxNumberModule")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemUnitTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            MaxNumberModule = 15L,
-                            Name = " LPBS-15-М"
-                        });
-                });
-
             modelBuilder.Entity("DataLayer.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -1014,9 +897,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("CreatedUserId")
                         .HasColumnType("integer");
@@ -1224,21 +1105,6 @@ namespace DataLayer.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Contract", b =>
-                {
-                    b.HasOne("DataLayer.Entities.User", "CreatedUser")
-                        .WithMany("CreatedContracts")
-                        .HasForeignKey("CreatedUserId");
-
-                    b.HasOne("DataLayer.Entities.User", "ModifiedUser")
-                        .WithMany("ModifiedContracts")
-                        .HasForeignKey("ModifiedUserId");
-
-                    b.Navigation("CreatedUser");
-
-                    b.Navigation("ModifiedUser");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Employee", b =>
                 {
                     b.HasOne("DataLayer.Entities.User", "CreatedUser")
@@ -1264,25 +1130,52 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Module", b =>
                 {
+                    b.HasOne("DataLayer.Entities.OrderCard", "ActualOrderCard")
+                        .WithMany()
+                        .HasForeignKey("ActualOrderCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DataLayer.Entities.User", "CreatedUser")
                         .WithMany("CreatedModules")
                         .HasForeignKey("CreatedUserId");
+
+                    b.HasOne("DataLayer.Entities.OrderCard", "DestinationOrderCard")
+                        .WithMany("Modules")
+                        .HasForeignKey("DestinationOrderCardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DataLayer.Entities.User", "ModifiedUser")
                         .WithMany("ModifiedModules")
                         .HasForeignKey("ModifiedUserId");
 
-                    b.HasOne("DataLayer.Entities.OrderCard", "OrderCard")
+                    b.HasOne("DataLayer.Entities.ModuleType", "ModuleType")
                         .WithMany()
-                        .HasForeignKey("OrderCardId")
+                        .HasForeignKey("ModuleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("ActualOrderCard");
+
                     b.Navigation("CreatedUser");
+
+                    b.Navigation("DestinationOrderCard");
 
                     b.Navigation("ModifiedUser");
 
-                    b.Navigation("OrderCard");
+                    b.Navigation("ModuleType");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.ModuleType", b =>
+                {
+                    b.HasOne("DataLayer.Entities.ModuleSubTypes", "ModuleSubTypes")
+                        .WithMany()
+                        .HasForeignKey("ModuleSubTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ModuleSubTypes");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.OrderCard", b =>
@@ -1306,33 +1199,6 @@ namespace DataLayer.Migrations
                     b.Navigation("ModifiedUser");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.OrderEmployee", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Employee", "Employee")
-                        .WithMany("OrderEmployees")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataLayer.Entities.OrderCard", "OrderCard")
-                        .WithMany("OrderEmployees")
-                        .HasForeignKey("OrderCardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataLayer.Entities.Status", "StatusParticipation")
-                        .WithMany("OrderEmployee")
-                        .HasForeignKey("StatusParticipationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("OrderCard");
-
-                    b.Navigation("StatusParticipation");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Product", b =>
@@ -1420,10 +1286,6 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.SubProject", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Contract", "Contract")
-                        .WithMany("SubProjects")
-                        .HasForeignKey("ContractId");
-
                     b.HasOne("DataLayer.Entities.Contractor", "Contractor")
                         .WithMany("SubProjects")
                         .HasForeignKey("ContractorId");
@@ -1454,8 +1316,6 @@ namespace DataLayer.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Contract");
-
                     b.Navigation("Contractor");
 
                     b.Navigation("CreatedUser");
@@ -1467,17 +1327,6 @@ namespace DataLayer.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.SystemUnit", b =>
-                {
-                    b.HasOne("DataLayer.Entities.SystemUnitType", "SystemUnitType")
-                        .WithMany()
-                        .HasForeignKey("SystemUnitTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SystemUnitType");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.User", b =>
@@ -1546,11 +1395,6 @@ namespace DataLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Contract", b =>
-                {
-                    b.Navigation("SubProjects");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Contractor", b =>
                 {
                     b.Navigation("SubProjects");
@@ -1563,14 +1407,12 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Employee", b =>
                 {
-                    b.Navigation("OrderEmployees");
-
                     b.Navigation("SubProjects");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.OrderCard", b =>
                 {
-                    b.Navigation("OrderEmployees");
+                    b.Navigation("Modules");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Owner", b =>
@@ -1590,8 +1432,6 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Status", b =>
                 {
-                    b.Navigation("OrderEmployee");
-
                     b.Navigation("SubProjects");
                 });
 
@@ -1607,8 +1447,6 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.User", b =>
                 {
-                    b.Navigation("CreatedContracts");
-
                     b.Navigation("CreatedEmployees");
 
                     b.Navigation("CreatedModules");
@@ -1620,8 +1458,6 @@ namespace DataLayer.Migrations
                     b.Navigation("CreatedSubProjects");
 
                     b.Navigation("CreatedUsers");
-
-                    b.Navigation("ModifiedContracts");
 
                     b.Navigation("ModifiedEmployees");
 

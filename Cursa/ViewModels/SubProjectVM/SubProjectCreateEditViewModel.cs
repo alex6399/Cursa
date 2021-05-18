@@ -7,14 +7,14 @@ namespace Cursa.ViewModels.SubProjectVM
     public class SubProjectCreateEditViewModel
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Проект")]
         public int ProjectId { get; set; }
-        [Required] 
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
         [Display(Name = "Наименование подпроекта")]
         public string Name { get; set; }
-        [Required] 
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
         [Display(Name = "Код")]
         public string Code { get; set; }
@@ -22,8 +22,8 @@ namespace Cursa.ViewModels.SubProjectVM
         public int EmployeeId { get; set; }
         [Display(Name = "Статус")]
         public int StatusId { get; set; }
-        [Display(Name = "Договор")] 
-        public int? ContractId { get; set; }
+        [Display(Name = "Договор №")] 
+        public string Contract { get; set; }
         [Display(Name = "Контрагент")] 
         public int? ContractorId { get; set; }
         [Display(Name = "Примечание")]

@@ -32,7 +32,7 @@ namespace DataLayer.Entities
         public Department Department { get; set; }
         public virtual ICollection<SubProject> SubProjects { get; set; }
         //public virtual ICollection<ExternalApplicationEmployee> ExternalApplicationEmployees { get; set; }
-        public virtual ICollection<OrderEmployee> OrderEmployees { get; set; }
+        //public virtual ICollection<OrderEmployee> OrderEmployees { get; set; }
         public string GetFullName
         {
             get => LastName + " " + FirstName[0] + ". " + MiddleName[0] + ".";

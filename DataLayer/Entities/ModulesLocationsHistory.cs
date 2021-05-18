@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities
 {
-    public class InstanceModulesLocationsHistory
+    public class ModulesLocationsHistory
     {
         public int Id { get; set; }
         public int SubProjectId { get; set; }

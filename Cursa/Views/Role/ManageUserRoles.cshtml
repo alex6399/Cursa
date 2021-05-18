@@ -1,30 +1,27 @@
-﻿@model List<Cursa.ViewModels.AccountVM.UserRolesViewModel>
+﻿@model Cursa.ViewModels.AccountVM.UserRolesAndUserIdViewModel
 
-@{
-    var id = @ViewBag.userId;
-}
-
-<form asp-action="ManageUserRoles" method="post">
+<form asp-controller="Role" asp-action="ManageUserRoles" method="post">
     <div class="card">
         <div class="card-header">
             <h4>Конфигурация ролей пользователя</h4>
         </div>
         <div class="card-body">
-            @for (int i = 0; i < Model.Count; i++)
+         <input type="hidden" asp-for="Id" />
+            @for (int i = 0; i < Model.UserRolesViewModels.Count; i++)
             {
                 <div class="form-check m-1">
-                    <input type="hidden" asp-for="@Model[i].RoleId" />
-                    <input type="hidden" asp-for="@Model[i].RoleName" />
-                    <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                    <label class="form-check-label" asp-for="@Model[i].IsSelected">
-                        @Model[i].RoleName
+                    <input type="hidden" asp-for="@Model.UserRolesViewModels[i].RoleId" />
+                    <input type="hidden" asp-for="@Model.UserRolesViewModels[i].RoleName" />
+                    <input asp-for="@Model.UserRolesViewModels[i].IsSelected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@Model.UserRolesViewModels[i].IsSelected">
+                        @Model.UserRolesViewModels[i].RoleName
                     </label>
                 </div>
             }
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
         <div class="card-footer">
-            <input type="submit" value="Обновить" class="btn btn-primary"style="width:auto" />
+            <input type="submit" value="Обновить" class="btn btn-primary" style="width:auto" />
             <a asp-controller="Users" asp-action="Index" class="btn btn-primary" style="width:auto">Отмена</a>
         </div>
     </div>

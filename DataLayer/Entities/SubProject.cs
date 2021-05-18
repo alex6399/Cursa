@@ -29,12 +29,10 @@ namespace DataLayer.Entities
         [Display(Name = "Статус")]
         public virtual Status Status { get; set; }
         [Display(Name = "Договор")] 
-        public int? ContractId { get; set; }
-        [Display(Name = "Договор")] 
-        public virtual Contract Contract { get; set; }
-        [Display(Name = "Описание")]
+        public string Contract { get; set; }
         public int? ContractorId { get; set; }
         public virtual Contractor Contractor { get; set; }
+        [Display(Name = "Примечание")]
         public string Description { get; set; }
         [Display(Name = "Дата сдачи")]
         public DateTime EndDate { get; set; }

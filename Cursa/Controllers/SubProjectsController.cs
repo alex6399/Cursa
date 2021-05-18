@@ -125,7 +125,7 @@ namespace Cursa.Controllers
                                                            || m.Code.Contains(searchGlobalValue)
                                                            || m.Employee.FullName.Contains(searchGlobalValue)
                                                            || m.StatusName.Contains(searchGlobalValue)
-                                                           || m.Contract.Name.Contains(searchGlobalValue)
+                                                           || m.Contract.Contains(searchGlobalValue)
                                                            || m.Description.Contains(searchGlobalValue));
                 }
 
@@ -151,7 +151,7 @@ namespace Cursa.Controllers
 
                 if (!string.IsNullOrEmpty(searchContractValue))
                 {
-                    projectsData = projectsData.Where(m => m.Contract.Name.Contains(searchContractValue));
+                    projectsData = projectsData.Where(m => m.Contract.Contains(searchContractValue));
                 }
 
                 if (!string.IsNullOrEmpty(searchDescriptionValue))
@@ -209,7 +209,6 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName");
             ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus");
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
             return View(new SubProjectCreateEditViewModel
@@ -221,7 +220,7 @@ namespace Cursa.Controllers
         // POST: SubProjects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,ContractId,ContractorId,Description")]
+        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description")]
             SubProjectCreateEditViewModel subProjectDTO)
         {
             if (ModelState.IsValid)
@@ -262,7 +261,6 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProjectDTO.ContractId);
             ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             return View(subProjectDTO);
@@ -284,7 +282,6 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProject.ContractId);
             ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProject.StatusId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
             return View(subProjectDTO);
@@ -294,7 +291,7 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,ContractId,ContractorId,Description,CreatedDate")]
+            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,CreatedDate")]
             SubProjectCreateEditViewModel subProjectDTO)
         {
             if (id != subProjectDTO.Id)
@@ -339,7 +336,6 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
-            ViewData["ContractId"] = new SelectList(_context.Contracts, "Id", "Name", subProjectDTO.ContractId);
             ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
             return View(subProjectDTO);
         }

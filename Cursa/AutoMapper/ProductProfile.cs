@@ -10,6 +10,7 @@ namespace Cursa.AutoMapper
         public ProductProfile()
         {
             CreateMap<Product, ProductCreateViewModel>().ReverseMap();
+            CreateMap<Product, BaseViewModel>();
             CreateMap<Product, ProductDisplayViewModel>()
                 .ForMember(x => x.SubProject, x
                     => x.MapFrom(p => p.SubProject));

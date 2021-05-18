@@ -10,11 +10,16 @@ namespace DataLayer.Entities.Bases
     {
         [Display(Name = "Дата создания")]
         public DateTime? CreatedDate { get; set; }
+        
+        [Display(Name = "Создатель")]
+        public int? CreatedUserId { get; set; }
+        [Display(Name = "Создатель")]
+        public virtual User CreatedUser { get; set; }
         [Display(Name = "Дата последнего изменения")]
         public DateTime? ModifiedDate { get; set; }
-        public int? CreatedUserId { get; set; }
-        public virtual User CreatedUser { get; set; }
+        [Display(Name = "Автор последних изменений")]
         public int? ModifiedUserId { get; set; }
+        [Display(Name = "Автор последних изменений")]
         public virtual User ModifiedUser { get; set; }
     }
 }

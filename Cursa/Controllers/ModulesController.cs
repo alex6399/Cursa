@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using DataLayer;
 using DataLayer.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace Cursa.Controllers
 {
@@ -20,7 +22,13 @@ namespace Cursa.Controllers
         // GET: Modules
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Modules.ToListAsync());
+            var efDbContext = _context.Modules
+                .Include(x => x.ActualOrderCard)
+                .Include(x => x.CreatedUser)
+                .Include(x => x.DestinationOrderCard)
+                .Include(x => x.ModifiedUser)
+                .Include(x => x.ModuleType);
+            return View(await efDbContext.ToListAsync());
         }
 
         // GET: Modules/Details/5
@@ -32,6 +40,11 @@ namespace Cursa.Controllers
             }
 
             var @module = await _context.Modules
+                .Include(x => x.ActualOrderCard)
+                .Include(x => x.CreatedUser)
+                .Include(x => x.DestinationOrderCard)
+                .Include(x => x.ModifiedUser)
+                .Include(x => x.ModuleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@module == null)
             {
@@ -44,6 +57,11 @@ namespace Cursa.Controllers
         // GET: Modules/Create
         public IActionResult Create()
         {
+            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
+            ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
+            ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code");
             return View();
         }
 
@@ -52,15 +70,20 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] ModuleType moduleType)
+        public async Task<IActionResult> Create([Bind("ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,IsInstalled,ActualOrderCardId,ManufacturingData,CreatedDate,ModifiedDate,CreatedUserId,ModifiedUserId,Id")] Module module)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(moduleType);
+                _context.Add(module);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(moduleType);
+            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
+            ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", module.CreatedUserId);
+            ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
+            ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id", module.ModifiedUserId);
+            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
+            return View(module);
         }
 
         // GET: Modules/Edit/5
@@ -71,12 +94,17 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            var @module = await _context.Modules.FindAsync(id);
-            if (@module == null)
+            var module = await _context.Modules.FindAsync(id);
+            if (module == null)
             {
                 return NotFound();
             }
-            return View(@module);
+            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
+            ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", module.CreatedUserId);
+            ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
+            ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id", module.ModifiedUserId);
+            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
+            return View(module);
         }
 
         // POST: Modules/Edit/5
@@ -84,9 +112,9 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] ModuleType moduleType)
+        public async Task<IActionResult> Edit(int id, [Bind("ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,IsInstalled,ActualOrderCardId,ManufacturingData,CreatedDate,ModifiedDate,CreatedUserId,ModifiedUserId,Id")] Module module)
         {
-            if (id != moduleType.Id)
+            if (id != module.Id)
             {
                 return NotFound();
             }
@@ -95,12 +123,12 @@ namespace Cursa.Controllers
             {
                 try
                 {
-                    _context.Update(moduleType);
+                    _context.Update(module);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ModuleExists(moduleType.Id))
+                    if (!ModuleExists(module.Id))
                     {
                         return NotFound();
                     }
@@ -111,7 +139,12 @@ namespace Cursa.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(moduleType);
+            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
+            ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", module.CreatedUserId);
+            ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", @module.DestinationOrderCardId);
+            ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id", module.ModifiedUserId);
+            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
+            return View(module);
         }
 
         // GET: Modules/Delete/5
@@ -122,14 +155,19 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            var @module = await _context.Modules
+            var module = await _context.Modules
+                .Include(x => x.ActualOrderCard)
+                .Include(x=> x.CreatedUser)
+                .Include(x => x.DestinationOrderCard)
+                .Include(x => x.ModifiedUser)
+                .Include(x=> x.ModuleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (@module == null)
+            if (module == null)
             {
                 return NotFound();
             }
 
-            return View(@module);
+            return View(module);
         }
 
         // POST: Modules/Delete/5

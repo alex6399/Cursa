@@ -25,7 +25,9 @@ namespace Cursa.ViewModels.ProductsVM
         public string Description { get; set; }
         [Display(Name = "Сформирован")]
         public bool IsFormed { get; set; } // сформирован?
+        [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingDate { get; set; }// дата изготовления
+        [Display(Name = "Дата отгрузки")]
         public DateTime? ShippedDate { get; set; }// дата отгрузки
 
         /*// поля со значения для выпадающих списков

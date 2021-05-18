@@ -10,6 +10,7 @@ using Cursa.ViewModels.Users;
 using DataLayer;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 
@@ -23,7 +24,8 @@ namespace Cursa.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(EfDbContext context, IMapper mapper,UserManager<User> userManager,ILogger<UsersController> logger)
+        public UsersController(EfDbContext context, IMapper mapper, UserManager<User> userManager,
+            ILogger<UsersController> logger)
         {
             _context = context;
             _mapper = mapper;
@@ -75,7 +77,8 @@ namespace Cursa.Controllers
                 {
                     projectsData = projectsData.Where(m => m.PhoneNumber.Contains(searchPhoneValue));
                 }
-                if (!string.IsNullOrEmpty(searchEmailValue))    
+
+                if (!string.IsNullOrEmpty(searchEmailValue))
                 {
                     projectsData = projectsData.Where(m => m.Email.Contains(searchEmailValue));
                 }
@@ -92,6 +95,7 @@ namespace Cursa.Controllers
                 return NotFound();
             }
         }
+
         public IActionResult Create() => View(new RegisterViewModel());
 
         [HttpPost]
@@ -231,10 +235,18 @@ namespace Cursa.Controllers
             var user = await _userManager.FindByIdAsync(Convert.ToString(id));
             if (user != null)
             {
-                await _userManager.DeleteAsync(user);
+                try
+                {
+                    await _userManager.DeleteAsync(user);
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateException e)
+                {
+                    _logger.LogInformation("{ExceptionMessage}", e.Message);
+                    ModelState.AddModelError(String.Empty, "Невозможно удалить, на данного пользователя имеются ссылки");
+                }
             }
-
-            return RedirectToAction("Index");
+            return View(user);
         }
 
         [HttpGet]

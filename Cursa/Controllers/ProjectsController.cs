@@ -217,7 +217,7 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,Name,OwnerId,Code,EmployeeId,Description,CreatedDate")]
+            [Bind("Id,Name,OwnerId,Code,EmployeeId,Description")]
             ProjectEditViewModel projectDTO)
         {
             if (id != projectDTO.Id)

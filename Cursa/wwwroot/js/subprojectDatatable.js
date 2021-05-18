@@ -43,7 +43,7 @@ $(document).ready(function () {
                 "searchable": false
             },
             {
-                "targets": [8],
+                "targets": [1,8],
                 "orderable": false
             }
         ],
@@ -69,23 +69,24 @@ $(document).ready(function () {
             {"data": "employee.fullName", "name": "employee.fullName", "width": "250px"},
             {"data": "statusName", "name": "StatusName", "autoWidth": true},
             {
-                "data": "contract.name", "name": "contract.name", "autoWidth": true,
-                // "defaultContent":"Данные не указаны",
-                "render": function (data, type, row) {
-                    if (data != null) {
-                        if (type === "display" || type === "filter") {
-                            return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
-                                row.id +
-                                '" >' +
-                                row.contract.name +
-                                "</a>";
-                        }
-                        return data;
-                    }
-                    if (!data) {
-                        return "Не указано";
-                    }
-                }
+                "data": "contract", "name": "contract", "autoWidth": true
+                // ,
+                // // "defaultContent":"Данные не указаны",
+                // "render": function (data, type, row) {
+                //     if (data != null) {
+                //         if (type === "display" || type === "filter") {
+                //             return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
+                //                 row.id +
+                //                 '" >' +
+                //                 row.contract.name +
+                //                 "</a>";
+                //         }
+                //         return data;
+                //     }
+                //     if (!data) {
+                //         return "Не указано";
+                //     }
+                // }
             },
             {"data": "description", "name": "Description", "autoWidth": true},
             {
