@@ -40,28 +40,28 @@
             @Html.DisplayFor(model => model.Department.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
+            @Html.DisplayNameFor(model => model.CreatedDate):
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatedDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedDate)
+            @Html.DisplayNameFor(model => model.ModifiedDate):
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ModifiedDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedUser)
+            @Html.DisplayNameFor(model => model.CreatedUser):
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedUser.Id)
+            @Html.DisplayFor(model => model.CreatedUser.GetFullName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedUser)
+            @Html.DisplayNameFor(model => model.ModifiedUser):
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedUser.Id)
+            @Html.DisplayFor(model => model.ModifiedUser.GetFullName)
         </dd>
     </dl>
 </div>

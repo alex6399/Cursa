@@ -241,8 +241,17 @@ namespace Cursa.Controllers
         {
             var employee = await _context.Employees.FindAsync(id);
             _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogInformation("{ExceptionMessage}",e.Message);
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данного сотрудника имеются ссылки");
+            }
+            return View(employee);
         }
 
         private bool EmployeeExists(int id)

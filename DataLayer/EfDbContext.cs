@@ -231,9 +231,8 @@ namespace DataLayer
                 .IsUnique();
 
             // End: unique constraint
-
+            modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
             // modelBuilder.Entity<Employee>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            // modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
             // modelBuilder.Entity<User>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
             // modelBuilder.Entity<Producer>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
             // modelBuilder.Entity<Contractor>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");

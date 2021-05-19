@@ -5,11 +5,16 @@ using DataLayer.Entities.Bases;
 
 namespace DataLayer.Entities
 {
-    public class Department:BaseEntity
+    public class Department : BaseEntity
     {
-        [Required] [MaxLength(50)] 
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Display(Name = "Наименование")]
+        [MaxLength(50)]
         public string Name { get; set; }
+        [Display(Name = "Примечание")]
+
         public string Description { get; set; }
+        [Display(Name = "Дата создания")]
         public DateTime CreatedDate { get; set; }
         public ICollection<Employee> Employees { get; set; }
     }

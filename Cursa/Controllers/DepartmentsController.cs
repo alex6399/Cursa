@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DataLayer;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace Cursa.Controllers
@@ -11,10 +14,14 @@ namespace Cursa.Controllers
     public class DepartmentsController : Controller
     {
         private readonly EfDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public DepartmentsController(EfDbContext context)
+        public DepartmentsController(EfDbContext context,IMapper mapper, ILogger<EmployeesController> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: Departments
@@ -139,8 +146,17 @@ namespace Cursa.Controllers
         {
             var department = await _context.Departments.FindAsync(id);
             _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogInformation("{ExceptionMessage}",e.Message);
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный отдел имеются ссылки");
+            }
+            return View(department);
         }
 
         private bool DepartmentExists(int id)
