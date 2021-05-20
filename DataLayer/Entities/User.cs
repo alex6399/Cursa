@@ -25,7 +25,10 @@ namespace DataLayer.Entities
         [Display(Name = "Автор последних изменений")]
         public virtual User ModifiedUser { get; set; }
 
-        [Display(Name = "Заблокирован?")] public bool IsLockout { get; set; }
+        [Display(Name = "Сменить пароль ?")] public bool IsPasswordChange { get; set; }
+        [Display(Name = "Заблокирован ?")] public bool IsBanned { get; set; }
+        [Display(Name = "Системный ?")] public bool IsSystem { get; set; }
+
         public virtual ICollection<Project> CreatedProjects { get; set; }
         public virtual ICollection<Project> ModifiedProjects { get; set; }
         public virtual ICollection<SubProject> CreatedSubProjects { get; set; }

@@ -61,11 +61,31 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate")] Department department)
         {
+            //IX_Departments_Name
             if (ModelState.IsValid)
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (_context.Departments.Any(x => String.Equals(x.Name, department.Name, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    ModelState.AddModelError("Name", "Отдел уже существует");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Add(department);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        var exception = e.InnerException;
+                        if (exception != null && exception.Message.Contains("IX_Departments_Name"))
+                        {
+                            ModelState.AddModelError("Name", "Отдел уже существует");
+                        }
+                    }
+                }
             }
             return View(department);
         }
@@ -103,7 +123,7 @@ namespace Cursa.Controllers
                 try
                 {
                     _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,7 +136,15 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Departments_Name"))
+                    {
+                        ModelState.AddModelError("Name", "Отдел уже существует");
+                    }
+                }
+                
             }
             return View(department);
         }

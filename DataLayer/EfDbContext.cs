@@ -204,6 +204,12 @@ namespace DataLayer
                 .HasMany(p => p.Statuses)
                 .WithOne(o => o.StatusType)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            
+            modelBuilder.Entity<Entities.Department>()
+                .HasMany(p => p.Employees)
+                .WithOne(o => o.Department)
+                .OnDelete(DeleteBehavior.Restrict);
             //End: Огрничение на каскадное удаление 
 
             // Start: unique constraint
@@ -229,6 +235,10 @@ namespace DataLayer
             modelBuilder.Entity<OrderCard>()
                 .HasIndex(x => x.Number)
                 .IsUnique();
+            modelBuilder.Entity<Department>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            
 
             // End: unique constraint
             modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");

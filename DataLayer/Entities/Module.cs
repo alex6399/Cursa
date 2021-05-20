@@ -17,6 +17,7 @@ namespace DataLayer.Entities
         public int DestinationOrderCardId { get; set; }
         [Display(Name = "Изготовлен по карте заказа")]
         public virtual OrderCard DestinationOrderCard { get; set; }
+        
         [Display(Name = "Серийный №")]
         public int? SerialNumber { get; set; }
         [Display(Name = "№ места")]

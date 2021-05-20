@@ -20,16 +20,18 @@ namespace Cursa.Controllers
     public class UsersController : Controller
     {
         readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly EfDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(EfDbContext context, IMapper mapper, UserManager<User> userManager,
+        public UsersController(EfDbContext context, IMapper mapper, UserManager<User> userManager,SignInManager<User> signInManager,
             ILogger<UsersController> logger)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _signInManager = signInManager;
             _logger = logger;
         }
 
@@ -111,7 +113,7 @@ namespace Cursa.Controllers
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
                     UserName = model.Email,
-                    IsLockout = true
+                    IsPasswordChange = true
                 };
                 var resultCreateNewUser = await _userManager.CreateAsync(user, model.Password);
                 if (resultCreateNewUser.Succeeded)
@@ -284,7 +286,7 @@ namespace Cursa.Controllers
                         if (result.Succeeded)
                         {
                             user.PasswordHash = passwordHasher.HashPassword(user, model.NewPassword);
-                            user.IsLockout = true;
+                            user.IsPasswordChange = true;
                             await _userManager.UpdateAsync(user);
                             return RedirectToAction("Index");
                         }
@@ -326,26 +328,42 @@ namespace Cursa.Controllers
                 var user = await _userManager.FindByIdAsync(Convert.ToString(model.Id));
                 if (user != null)
                 {
-                    var result = await _userManager.ChangePasswordAsync(
-                        user,
-                        model.OldPassword,
-                        model.NewPassword);
-                    if (result.Succeeded)
+                    var resultAuth = await _signInManager.PasswordSignInAsync(
+                        userName: user.Email, model.OldPassword,
+                        false,
+                        lockoutOnFailure:true);
+                    if (resultAuth.Succeeded)
                     {
-                        user.IsLockout = false;
-                        var resultUpdate = await _userManager.UpdateAsync(user);
-                        if (resultUpdate.Succeeded)
+                        await _signInManager.SignOutAsync();
+                        var result = await _userManager.ChangePasswordAsync(
+                            user,
+                            model.OldPassword,
+                            model.NewPassword);
+                        if (result.Succeeded)
                         {
-                            return RedirectToAction("Login", "Login");
+                            user.IsPasswordChange = false;
+                            var resultUpdate = await _userManager.UpdateAsync(user);
+                            if (resultUpdate.Succeeded)
+                            {
+                                return RedirectToAction("Login", "Login");
+                            }
+                            else
+                            {
+                                ModelState.AddModelError(string.Empty, "Неверный");
+                            }
                         }
                         else
                         {
-                            ModelState.AddModelError(string.Empty, "Неверный");
+                            ModelState.AddModelError("OldPassword", "Неверный пароль!");
                         }
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Неверный пароль!");
+                        ModelState.AddModelError("OldPassword", "Неверный пароль!");
+                    }
+                    if (resultAuth.IsLockedOut)
+                    {
+                        ModelState.AddModelError(string.Empty, "Твой аккаунт заблокирован на 10 минут");
                     }
                 }
                 else

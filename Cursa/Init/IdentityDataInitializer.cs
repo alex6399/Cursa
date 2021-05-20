@@ -25,7 +25,9 @@ namespace Cursa.Init
                 user.FirstName = "Иван";
                 user.MiddleName = "Иванович";
                 user.LastName = "Иванов";
-                user.IsLockout = true;
+                user.IsPasswordChange = true;
+                user.IsSystem = true;
+                user.IsBanned = false;
 
                 IdentityResult result = userManager.CreateAsync
                     (user, "Password0-").Result;

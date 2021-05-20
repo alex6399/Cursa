@@ -35,26 +35,31 @@
     </thead>
     <tbody></tbody>
     <tfoot>
-            <tr>
-                <th>
-                     @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th class="search">
-                     @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th class="search">
-                    @Html.DisplayNameFor(model => model.Code)
-                </th>
-                <th class="search">
-                    @Html.DisplayNameFor(model => model.Owner)
-                </th>
-                <th class="search">
-                    @Html.DisplayNameFor(model => model.Employee)
-                </th>
-                <th></th>
-            </tr>
-        </tfoot>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.Code)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.Owner)
+        </th>
+        <th class="search">
+            @Html.DisplayNameFor(model => model.Employee)
+        </th>
+        <th></th>
+    </tr>
+    </tfoot>
 </table>
+
+<script>
+    let langPath = '@Url.Content("~/language/Russian.json")';
+</script>
+
 @section Scripts
 {
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>

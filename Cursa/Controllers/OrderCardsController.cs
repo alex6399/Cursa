@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -148,9 +149,15 @@ namespace Cursa.Controllers
 
             ViewBag.TitleProduct = "для : " + product.Name;
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+
+            var modules = _context.ModulesTypes
+                .Select(x => new OrderCardACreateEditModuleVM() {Id = x.Id, Name = x.Name})
+                .ToList();
+            
             return View(new OrderCardCreateEditVM()
             {
-                ProductId = product.Id
+                ProductId = product.Id,
+                Modules = modules
             });
         }
 
@@ -160,19 +167,36 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Name,Number,Path,ProductId,Id")]
-            OrderCardCreateEditVM orderCardDTO)
+            //[Bind("Name,Number,Path,ProductId,Id")]
+            [FromForm]
+            OrderCardCreateEditVM orderCardVM)
         {
             if (ModelState.IsValid)
             {
-                if (_context.OrderCards.Any(x => x.Number == orderCardDTO.Number))
+                if (_context.OrderCards.Any(x => x.Number == orderCardVM.Number))
                 {
                     ModelState.AddModelError("Number", "Такой cерийный № уже используется");
                 }
 
                 if (ModelState.IsValid)
                 {
-                    var cardOrder = _mapper.Map<OrderCardCreateEditVM, OrderCard>(orderCardDTO);
+                    var selectedModules = orderCardVM.Modules
+                                                                        .Where(x => x.Addresses.Any(a => a))
+                                                                        .ToList();
+
+                    foreach (var module in selectedModules)
+                    {
+                        var selectedPlaces = new List<int>();
+                        for (int i = 0; i < module.Addresses.Length; i++)
+                        {
+                            if (module.Addresses[i])
+                            {
+                                selectedPlaces.Add(i);
+                            }
+                        }
+                    
+                    }
+                    var cardOrder = _mapper.Map<OrderCardCreateEditVM, OrderCard>(orderCardVM);
                     try
                     {
                         _context.Add(cardOrder);
@@ -191,7 +215,7 @@ namespace Cursa.Controllers
             }
 
             // ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderCardDTO.ProductId);
-            return View(orderCardDTO);
+            return View(orderCardVM);
         }
 
         // GET: OrderCards/Edit/5

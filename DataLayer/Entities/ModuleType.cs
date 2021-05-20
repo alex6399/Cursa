@@ -21,7 +21,7 @@ namespace DataLayer.Entities
         public string Code { get; set; }
         [Display(Name = "Количество каналов")]
         public int CountChanel { get; set; }
-
+        [Display(Name = "Действующий ?")]
         public bool IsActiv { get; set; }
         public int ModuleSubTypesId{ get; set; }
         public ModuleSubTypes ModuleSubTypes { get; set; }
@@ -30,6 +30,9 @@ namespace DataLayer.Entities
         public string Description { get; set; }
         [Display(Name = "Дата создания")]
         public DateTime CreatedDate { get; set; }
+        [Display(Name = "Системный ?")]
+        public bool IsSystem { get; set; }
+
         // public virtual ICollection<OrderCardTemplateModuleTypes> OrderCardTemplateModulesCollection{ get; set; }
     }
 }

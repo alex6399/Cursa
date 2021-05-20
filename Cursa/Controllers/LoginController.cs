@@ -39,11 +39,11 @@ namespace Cursa.Controllers
                     await _signInManager.SignOutAsync();
                     var result = await _signInManager.PasswordSignInAsync(
                         userName: model.Email, model.Password,
-                        isPersistent:model.RememberMe,
-                        lockoutOnFailure:true);
+                        isPersistent: model.RememberMe,
+                        lockoutOnFailure: true);
                     if (result.Succeeded)
                     {
-                        if (user.IsLockout)
+                        if (user.IsPasswordChange)
                         {
                             await _signInManager.SignOutAsync();
                             return RedirectToAction(

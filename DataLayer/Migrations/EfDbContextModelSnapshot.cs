@@ -68,10 +68,15 @@ namespace DataLayer.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -80,6 +85,9 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Departments");
 
                     b.HasData(
@@ -87,12 +95,14 @@ namespace DataLayer.Migrations
                         {
                             Id = 1,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
                             Name = "Конструкторский"
                         },
                         new
                         {
                             Id = 2,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
                             Name = "Управление"
                         });
                 });
@@ -289,6 +299,9 @@ namespace DataLayer.Migrations
                     b.Property<bool>("IsActiv")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ModuleSubTypesId")
                         .HasColumnType("integer");
 
@@ -310,6 +323,7 @@ namespace DataLayer.Migrations
                             CountChanel = 4,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "IA - 4k42 - M "
                         },
@@ -320,6 +334,7 @@ namespace DataLayer.Migrations
                             CountChanel = 8,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "IA-8k42"
                         },
@@ -330,6 +345,7 @@ namespace DataLayer.Migrations
                             CountChanel = 4,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "OA - 4k42 - M"
                         },
@@ -340,6 +356,7 @@ namespace DataLayer.Migrations
                             CountChanel = 8,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 2,
                             Name = "ID - 8k24 - M "
                         },
@@ -350,6 +367,7 @@ namespace DataLayer.Migrations
                             CountChanel = 16,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 2,
                             Name = "ID - 16k24 "
                         },
@@ -360,6 +378,7 @@ namespace DataLayer.Migrations
                             CountChanel = 5,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 2,
                             Name = "OD - 5k - M "
                         },
@@ -370,6 +389,7 @@ namespace DataLayer.Migrations
                             CountChanel = 16,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "ОD - 16k24 "
                         },
@@ -380,6 +400,7 @@ namespace DataLayer.Migrations
                             CountChanel = 3,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "IF - 3k "
                         },
@@ -390,6 +411,7 @@ namespace DataLayer.Migrations
                             CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "USB/RS-485-4k"
                         },
@@ -400,6 +422,7 @@ namespace DataLayer.Migrations
                             CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 1,
                             Name = "Com/RS-485"
                         },
@@ -410,6 +433,7 @@ namespace DataLayer.Migrations
                             CountChanel = 0,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActiv = true,
+                            IsSystem = true,
                             ModuleSubTypesId = 3,
                             Name = "LPBS-15-М"
                         });
@@ -760,7 +784,10 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("NameStatus")
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
@@ -773,6 +800,40 @@ namespace DataLayer.Migrations
                     b.HasIndex("StatusTypeId");
 
                     b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
+                            Name = "В РАБОТЕ",
+                            StatusTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
+                            Name = "ЗАВЕРШЕН",
+                            StatusTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
+                            Name = "В РАБОТЕ",
+                            StatusTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsSystem = true,
+                            Name = "ЗАВЕРШЕН",
+                            StatusTypeId = 1
+                        });
                 });
 
             modelBuilder.Entity("DataLayer.Entities.StatusType", b =>
@@ -912,7 +973,13 @@ namespace DataLayer.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsLockout")
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPasswordChange")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSystem")
                         .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
@@ -1114,7 +1181,7 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("DataLayer.Entities.User", "ModifiedUser")

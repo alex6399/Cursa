@@ -222,8 +222,8 @@ namespace Cursa.Controllers
 
             ViewData["ProductTypeId"] =
                 new SelectList(_context.ProductTypes, "Id", "Name", productDto.ProductTypeId);
-            ViewData["SubProjectId"] =
-                new SelectList(_context.SubProjects, "Id", "Name", productDto.SubProjectId);
+            // ViewData["SubProjectId"] =
+            //     new SelectList(_context.SubProjects, "Id", "Name", productDto.SubProjectId);
             return View(productDto);
         }
 

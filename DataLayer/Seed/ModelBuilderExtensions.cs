@@ -74,7 +74,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.047",
                     CountChanel = 4,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -83,7 +84,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.049",
                     CountChanel = 8,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -92,7 +94,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.046",
                     CountChanel = 4,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -101,7 +104,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 2,
                     Code="ЛДАР.469219.043",
                     CountChanel = 8,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -110,7 +114,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 2,
                     Code="ЛДАР.469219.060",
                     CountChanel = 16,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -119,7 +124,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 2,
                     Code="ЛДАР.468154.050",
                     CountChanel = 5,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -128,7 +134,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.468154.055",
                     CountChanel = 16,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -137,7 +144,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.048",
                     CountChanel = 3,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -146,7 +154,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.469239.104",
                     CountChanel = 0,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -155,7 +164,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 1,
                     Code="ЛДАР.469239.299",
                     CountChanel = 0,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 },
                 new ModuleType
                 {
@@ -164,7 +174,8 @@ namespace DataLayer.Seed
                     ModuleSubTypesId = 3,
                     Code="ЛДАР.469239.235",
                     CountChanel = 0,
-                    IsActiv=true
+                    IsActiv=true,
+                    IsSystem = true
                 }
             );
 
@@ -172,13 +183,15 @@ namespace DataLayer.Seed
                 new Department
                 {
                     Id = 1,
-                    Name = "Конструкторский"
+                    Name = "Конструкторский",
+                    IsSystem = true
                     
                 },
                 new Department
                 {
                     Id = 2,
-                    Name = "Управление"
+                    Name = "Управление",
+                    IsSystem = true
                 }
             );
 
@@ -243,17 +256,7 @@ namespace DataLayer.Seed
                 }
             );
 
-            modelBuilder.Entity<StatusType>().HasData(
-                new StatusType
-                {
-                    Id = 1,
-                    StatusTypeName = "ПРОЕКТЫ"
-                },
-                new StatusType
-                {
-                    Id = 2,
-                    StatusTypeName = "ЗАКАЗ"
-                });
+           
 
 
             modelBuilder.Entity<Contractor>().HasData(
@@ -325,31 +328,48 @@ namespace DataLayer.Seed
                     ProductSubTypeId = 1
                 });
             
-            // modelBuilder.Entity<Contract>().HasData(
-            //     new Contract
-            //     {
-            //         Id = 1,
-            //         Name = "№: ТО -084Т18"
-            //     },
-            //     new Contract
-            //     {
-            //         Id = 2,
-            //         Name = "№: 20/16-КР-2016-СПб-1"
-            //     },
-            //     new Contract
-            //     {
-            //         Id = 3,
-            //         Name = "№: 77П-ТК/12/16"
-            //     });
+            modelBuilder.Entity<StatusType>().HasData(
+                new StatusType
+                {
+                    Id = 1,
+                    StatusTypeName = "ПРОЕКТЫ"
+                },
+                new StatusType
+                {
+                    Id = 2,
+                    StatusTypeName = "ЗАКАЗ"
+                });
 
-            //modelBuilder.Entity<Status>.HasData(new Status {Id=1, NameStatus = "В РАБОТЕ", StatusTypeId = 1,StatusType = new StatusType()});
-            //modelBuilder.Entity<Status>.HasData(new Status {Id=1, NameStatus = "В РАБОТЕ", StatusTypeId = 1,StatusType = new StatusType()});
-
-            //modelBuilder.Entity<Book>().HasData(
-            //    new Book { BookId = 1, AuthorId = 1, Title = "Hamlet" },
-            //    new Book { BookId = 2, AuthorId = 1, Title = "King Lear" },
-            //    new Book { BookId = 3, AuthorId = 1, Title = "Othello" }
-            //);
+            modelBuilder.Entity<Status>().HasData(
+                new Status
+                {
+                    Id=1,
+                    Name = "В РАБОТЕ",
+                    StatusTypeId = 1,
+                    IsSystem = true
+                },
+                new Status
+                {
+                    Id=2,
+                    Name = "ЗАВЕРШЕН",
+                    StatusTypeId = 1,
+                    IsSystem = true
+                },
+                new Status
+                {
+                    Id=3,
+                    Name = "В РАБОТЕ",
+                    StatusTypeId = 1,
+                    IsSystem = true
+                },
+                new Status
+                {
+                    Id=4,
+                    Name = "ЗАВЕРШЕН",
+                    StatusTypeId = 1,
+                    IsSystem = true
+                });
+            
         }
     }
 }
