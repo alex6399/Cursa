@@ -12,6 +12,6 @@ namespace DataLayer.Entities
         public int CharacteristicId { get; set; }
         public virtual Characteristic Characteristic { get; set; }
         public string Value { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }

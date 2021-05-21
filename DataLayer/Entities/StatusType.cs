@@ -11,7 +11,7 @@ namespace DataLayer.Entities
         [Required]
         [MaxLength(20,ErrorMessage = "Максимальная длина 20 символов")]
         public string StatusTypeName { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         public ICollection<Status> Statuses{ get; set; }
     }

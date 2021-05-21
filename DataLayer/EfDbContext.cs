@@ -232,6 +232,9 @@ namespace DataLayer
             modelBuilder.Entity<Owner>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
+            modelBuilder.Entity<Contractor>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
             // End: unique constraint
 
             // Start: default created datetime 

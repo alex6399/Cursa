@@ -16,7 +16,7 @@ namespace DataLayer.Entities
         [Display(Name = "Категория")]
         public StatusType StatusType { get; set; }
         [Display(Name = "Дата создания")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         [Display(Name = "Системный?")]
         public bool IsSystem { get; set; }
         public virtual ICollection<SubProject> SubProjects { get; set; }

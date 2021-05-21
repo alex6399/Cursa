@@ -12,7 +12,7 @@ namespace DataLayer.Entities
         [Display(Name="Отдел")]
         public string Name { get; set; }
         [Display(Name="Дата создания")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
        
     }

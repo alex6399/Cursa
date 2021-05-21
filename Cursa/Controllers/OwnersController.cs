@@ -216,6 +216,10 @@ namespace Cursa.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var owner = await _context.Owners.FindAsync(id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
             try
             {
                 _context.Owners.Remove(owner);
@@ -225,7 +229,7 @@ namespace Cursa.Controllers
             catch (DbUpdateException e)
             {
                 _logger.LogInformation("{ExceptionMessage}", e.Message);
-                ModelState.AddModelError(String.Empty, "Ошибка удаления!");
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, эта запись используется");
             }
 
             return View(owner);

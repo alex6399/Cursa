@@ -29,7 +29,7 @@ namespace DataLayer.Entities
         [Display(Name = "Примечание")]
         public string Description { get; set; }
         [Display(Name = "Дата создания")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         [Display(Name = "Системный ?")]
         public bool IsSystem { get; set; }
 

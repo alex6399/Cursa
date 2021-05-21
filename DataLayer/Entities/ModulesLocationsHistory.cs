@@ -13,8 +13,8 @@ namespace DataLayer.Entities
         public int SubProjectId { get; set; }
         public virtual SubProject SubProject { get; set; }
         public string Description { get; set; }
-        public DateTime InstallationDate { get; set; }
-        public DateTime ExpirationDate { get; set; }
+        public DateTime? InstallationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
         [Required] 
         public  int InstanceModulesId { get; set; }
         public virtual Module Module { get; set; }

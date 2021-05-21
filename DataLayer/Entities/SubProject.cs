@@ -35,7 +35,7 @@ namespace DataLayer.Entities
         [Display(Name = "Примечание")]
         public string Description { get; set; }
         [Display(Name = "Дата сдачи")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }
 }
