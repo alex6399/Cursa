@@ -89,10 +89,7 @@ namespace Cursa.Controllers
         }
 
         // GET: Departments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: Departments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

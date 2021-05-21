@@ -126,6 +126,7 @@ namespace Cursa.Controllers
                     }
                 }
             }
+
             return View(contractor);
         }
 
@@ -142,6 +143,7 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
+
             return View(contractor);
         }
 
@@ -184,8 +186,8 @@ namespace Cursa.Controllers
                         ModelState.AddModelError("Name", "Контрагент уже существует");
                     }
                 }
-                
             }
+
             return View(contractor);
         }
 
@@ -217,12 +219,14 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
+
             try
             {
                 _context.Contractors.Remove(contractor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }catch (DbUpdateException e)
+            }
+            catch (DbUpdateException e)
             {
                 _logger.LogInformation("{ExceptionMessage}", e.Message);
                 ModelState.AddModelError(String.Empty, "Невозможно удалить, эта запись используется");

@@ -339,7 +339,7 @@ namespace Cursa.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (DbUpdateException e)
             {
                 _logger.LogInformation("{ExceptionMessage}", e.Message);
                 ModelState.AddModelError(String.Empty, "Невозможно удалить, на данную продукцию имеются ссылки");

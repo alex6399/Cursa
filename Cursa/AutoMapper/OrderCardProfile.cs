@@ -10,12 +10,17 @@ namespace Cursa.AutoMapper
     {
         public OrderCardProfile()
         {
-            CreateMap<OrderCard, OrderCardCreateEditVM>().ReverseMap();
+            CreateMap<OrderCard, OrderCardCreateEditVM>()
+                .ForMember(dest => dest.ModulesVM, act =>
+                    act.Ignore()).ReverseMap();
+            // CreateMap<OrderCardCreateEditVM, OrderCard>()
+            //     .ForMember(dest=>dest.Modules)
+            
             CreateMap<OrderCard, OrderCardDisplayViewModel>()
                 .ForMember(dest => dest.ProductName,
                     act => act.MapFrom(src => src.Product.Name))
-                .ForMember(x => x.Product, x
-                    => x.MapFrom(p => p.Product));
+                .ForMember(dest => dest.Product, act
+                    => act.MapFrom(p => p.Product));
             // CreateMap<Project, ProjectEditViewModel>().ReverseMap();
             // CreateMap<Project, ProjectViewModel>()
             //     .ForMember(p => p.Employee, act

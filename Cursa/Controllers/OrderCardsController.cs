@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -79,12 +80,12 @@ namespace Cursa.Controllers
             {
                 Product = new BaseViewModel()
                 {
-                    Id=product.Id,
+                    Id = product.Id,
                     Name = product.Name
                 }
-                
             });
         }
+
         [HttpPost]
         public IActionResult FindCardOrdersForProduct()
         {
@@ -151,13 +152,14 @@ namespace Cursa.Controllers
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
 
             var modules = _context.ModulesTypes
-                .Select(x => new OrderCardACreateEditModuleVM() {Id = x.Id, Name = x.Name})
+                .Where(x => x.IsActiv == true)
+                .Select(x => new OrderCardCreateEditModuleVM() {Id = x.Id, Name = x.Name})
                 .ToList();
-            
+
             return View(new OrderCardCreateEditVM()
             {
                 ProductId = product.Id,
-                Modules = modules
+                ModulesVM = modules
             });
         }
 
@@ -168,8 +170,7 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             //[Bind("Name,Number,Path,ProductId,Id")]
-            [FromForm]
-            OrderCardCreateEditVM orderCardVM)
+            [FromForm] OrderCardCreateEditVM orderCardVM)
         {
             if (ModelState.IsValid)
             {
@@ -180,28 +181,57 @@ namespace Cursa.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var selectedModules = orderCardVM.Modules
-                                                                        .Where(x => x.Addresses.Any(a => a))
-                                                                        .ToList();
-
-                    foreach (var module in selectedModules)
+                    var selectedModuleTypes = orderCardVM.ModulesVM
+                        .Where(x => x.Addresses.Any(a => a))
+                        .ToList();
+                    if (selectedModuleTypes.Count == 0)
                     {
-                        var selectedPlaces = new List<int>();
-                        for (int i = 0; i < module.Addresses.Length; i++)
+                        ModelState.AddModelError(string.Empty, "Пустая конфигурация модулей!");
+                        return View(orderCardVM);
+                    }
+
+                    // var selectedPlaces = new List<int>();
+                    var selectedPlaces = new Dictionary<int, int>();
+                    foreach (var moduleType
+                        in selectedModuleTypes)
+                    {
+                        for (var i = 0; i < moduleType.Addresses.Length; i++)
                         {
-                            if (module.Addresses[i])
+                            if (moduleType.Addresses[i])
                             {
-                                selectedPlaces.Add(i);
+                                //selectedPlaces.ContainsKey(i)
+                                try
+                                {
+                                    selectedPlaces.Add(i, moduleType.Id);
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    ModelState.AddModelError(string.Empty, "Неверная конфигурация модулей!");
+                                    return View(orderCardVM);
+                                }
                             }
                         }
-                    
                     }
+
                     var cardOrder = _mapper.Map<OrderCardCreateEditVM, OrderCard>(orderCardVM);
                     try
                     {
+                        foreach (var kvp in selectedPlaces)
+                        {
+                            _context.Add(new Module()
+                            {
+                                // DestinationOrderCardId = orderCardVM.Id,
+                                // ActualOrderCardId = orderCardVM.Id,
+                                DestinationOrderCard = cardOrder,
+                                ActualOrderCard = cardOrder,
+                                ModuleTypeId = kvp.Value,
+                                Place = kvp.Key
+                            });
+                        }
+
                         _context.Add(cardOrder);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = cardOrder.ProductId});
                     }
                     catch (DbUpdateException e)
                     {
