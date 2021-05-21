@@ -208,7 +208,7 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus");
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
             return View(new SubProjectCreateEditViewModel
@@ -261,7 +261,7 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProjectDTO.StatusId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             return View(subProjectDTO);
         }
@@ -282,7 +282,7 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProject.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProject.StatusId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
             return View(subProjectDTO);
         }
@@ -336,7 +336,7 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "NameStatus", subProjectDTO.StatusId);
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProjectDTO.StatusId);
             return View(subProjectDTO);
         }
 

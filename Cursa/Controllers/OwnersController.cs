@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using AutoMapper;
+using Cursa.ViewModels.OwnerVM;
 using DataLayer;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
@@ -13,16 +17,60 @@ namespace Cursa.Controllers
     public class OwnersController : Controller
     {
         private readonly EfDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger<OwnersController> _logger;
 
-        public OwnersController(EfDbContext context)
+        public OwnersController(EfDbContext context, IMapper mapper, ILogger<OwnersController> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: Owners
-        public async Task<IActionResult> Index()
+        public IActionResult Index() => View(new OwnerDisplayViewModel());
+
+        [HttpPost]
+        public IActionResult GetOwners()
         {
-            return View(await _context.Owners.ToListAsync());
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request
+                    .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
+                var pageSize = length != null ? Convert.ToInt32(length) : 0;
+                var skip = start != null ? Convert.ToInt32(start) : 0;
+                //var id = Request.Form["productId"].FirstOrDefault();
+                //var productId = id != null ? Convert.ToInt32(id) : 0;
+
+                var projectsData = _mapper.ProjectTo<OwnerDisplayViewModel>(_context.Owners
+                    .AsNoTracking());
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
+                }
+
+                if (!string.IsNullOrEmpty(searchGlobalValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue));
+                }
+
+                var recordsTotal = projectsData.Count();
+                var data = projectsData.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new
+                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
+                return Ok(jsonData);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error search:{ExceptionMessage}", e.Message);
+                return NotFound();
+            }
         }
 
         // GET: Owners/Details/5
@@ -44,10 +92,7 @@ namespace Cursa.Controllers
         }
 
         // GET: Owners/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: Owners/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -56,12 +101,33 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Owner owner)
         {
+            //IX_Owners_Name
             if (ModelState.IsValid)
             {
-                _context.Add(owner);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (_context.Statuses.Any(x => String.Equals(x.Name, owner.Name)))
+                {
+                    ModelState.AddModelError("Name", "Уже существует");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Add(owner);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        var exception = e.InnerException;
+                        if (exception != null && exception.Message.Contains("IX_Owners_Name"))
+                        {
+                            ModelState.AddModelError("Name", "Владелец уже существует");
+                        }
+                    }
+                }
             }
+
             return View(owner);
         }
 
@@ -78,6 +144,7 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
+
             return View(owner);
         }
 
@@ -99,6 +166,7 @@ namespace Cursa.Controllers
                 {
                     _context.Update(owner);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,8 +179,16 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Owners_Name"))
+                    {
+                        ModelState.AddModelError("Name", "Владелец уже существует");
+                    }
+                }
             }
+
             return View(owner);
         }
 
@@ -143,15 +219,16 @@ namespace Cursa.Controllers
             try
             {
                 _context.Owners.Remove(owner);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception )
+            catch (DbUpdateException e)
             {
-                ViewBag.ErrorMessage = "Невозможно удалить запись!";
-                return View(owner);
+                _logger.LogInformation("{ExceptionMessage}", e.Message);
+                ModelState.AddModelError(String.Empty, "Ошибка удаления!");
             }
-            
+
+            return View(owner);
         }
 
         private bool OwnerExists(int id)

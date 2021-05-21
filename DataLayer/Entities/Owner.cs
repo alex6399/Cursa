@@ -9,8 +9,11 @@ namespace DataLayer.Entities
         public int Id { get; set; }
         [Required]
         [MaxLength(100)]
+        [Display(Name="Отдел")]
         public string Name { get; set; }
-        public virtual ICollection<Project> Projects { get; set; }
+        [Display(Name="Дата создания")]
         public DateTime CreatedDate { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+       
     }
 }

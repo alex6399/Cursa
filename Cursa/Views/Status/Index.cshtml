@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataLayer.Entities.Status>
+﻿@model Cursa.ViewModels.StatusVM.StatusDisplayViewModel
 
 @{
     ViewData["Title"] = "Статусы";
@@ -7,37 +7,51 @@
 <h4>@ViewData["Title"]</h4>
 
 <p>
-    <a asp-controller="Status" asp-action="Create"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-    </svg>Добавить</a>
+    <a asp-controller="Status" asp-action="Create">
+        @* <object fill="currentColor" type="image/svg+xml" data="/img/icons/addPlus.svg" width="16" height="16"> *@
+        @*     <img src="/img/icons/addPlus.svg" width="16" height="16" alt="image format png"/> *@
+        @* </object> *@
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+        Добавить
+    </a>
 </p>
-<table class="table">
+<table id="statusDatatable" class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StatusType)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StatusTypeName)
+        </th>
+        <th></th>
+    </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusType.StatusTypeName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+    @*     <tbody> *@
+    @* @foreach (var item in Model) { *@
+    @*         <tr> *@
+    @*             <td> *@
+    @*                 @Html.DisplayFor(modelItem => item.Name) *@
+    @*             </td> *@
+    @*             <td> *@
+    @*                 @Html.DisplayFor(modelItem => item.StatusType.StatusTypeName) *@
+    @*             </td> *@
+    @*             <td> *@
+    @*                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+    @*                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+    @*                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+    @*             </td> *@
+    @*         </tr> *@
+    @* } *@
+    @*     </tbody> *@
 </table>
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/statusDatatable.js"></script>
+}

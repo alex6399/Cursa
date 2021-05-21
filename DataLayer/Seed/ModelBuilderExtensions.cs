@@ -359,14 +359,14 @@ namespace DataLayer.Seed
                 {
                     Id=3,
                     Name = "В РАБОТЕ",
-                    StatusTypeId = 1,
+                    StatusTypeId = 2,
                     IsSystem = true
                 },
                 new Status
                 {
                     Id=4,
                     Name = "ЗАВЕРШЕН",
-                    StatusTypeId = 1,
+                    StatusTypeId = 2,
                     IsSystem = true
                 });
             

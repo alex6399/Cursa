@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
+using Cursa.ViewModels.DepartmentVM;
 using DataLayer;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +17,9 @@ namespace Cursa.Controllers
     {
         private readonly EfDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<EmployeesController> _logger;
+        private readonly ILogger<DepartmentsController> _logger;
 
-        public DepartmentsController(EfDbContext context,IMapper mapper, ILogger<EmployeesController> logger)
+        public DepartmentsController(EfDbContext context, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _context = context;
             _mapper = mapper;
@@ -25,10 +27,7 @@ namespace Cursa.Controllers
         }
 
         // GET: Departments
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Departments.ToListAsync());
-        }
+        public IActionResult Index() => View(new DepartmentDisplayViewModel());
 
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,6 +47,47 @@ namespace Cursa.Controllers
             return View(department);
         }
 
+        [HttpPost]
+        public IActionResult GetDepartments()
+        {
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request
+                    .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
+                var pageSize = length != null ? Convert.ToInt32(length) : 0;
+                var skip = start != null ? Convert.ToInt32(start) : 0;
+
+                var projectsData = _mapper.ProjectTo<DepartmentDisplayViewModel>(_context.Departments
+                    .AsNoTracking());
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
+                }
+
+                if (!string.IsNullOrEmpty(searchGlobalValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue));
+                }
+
+                var recordsTotal = projectsData.Count();
+                var data = projectsData.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new
+                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
+                return Ok(jsonData);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error search:{ExceptionMessage}", e.Message);
+                return NotFound();
+            }
+        }
+
         // GET: Departments/Create
         public IActionResult Create()
         {
@@ -59,12 +99,13 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate")] Department department)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate")]
+            Department department)
         {
             //IX_Departments_Name
             if (ModelState.IsValid)
             {
-                if (_context.Departments.Any(x => String.Equals(x.Name, department.Name, StringComparison.CurrentCultureIgnoreCase)))
+                if (_context.Departments.Any(x => String.Equals(x.Name, department.Name)))
                 {
                     ModelState.AddModelError("Name", "Отдел уже существует");
                 }
@@ -87,6 +128,7 @@ namespace Cursa.Controllers
                     }
                 }
             }
+
             return View(department);
         }
 
@@ -103,6 +145,7 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
+
             return View(department);
         }
 
@@ -111,7 +154,8 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedDate")] Department department)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedDate")]
+            Department department)
         {
             if (id != department.Id)
             {
@@ -123,7 +167,8 @@ namespace Cursa.Controllers
                 try
                 {
                     _context.Update(department);
-                    await _context.SaveChangesAsync();return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,8 +189,8 @@ namespace Cursa.Controllers
                         ModelState.AddModelError("Name", "Отдел уже существует");
                     }
                 }
-                
             }
+
             return View(department);
         }
 
@@ -173,17 +218,31 @@ namespace Cursa.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await _context.Departments.FindAsync(id);
-            _context.Departments.Remove(department);
-            try
+
+            if (department == null)
             {
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch (DbUpdateException e)
+
+            if (!department.IsSystem)
             {
-                _logger.LogInformation("{ExceptionMessage}",e.Message);
-                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный отдел имеются ссылки");
+                try
+                {
+                    _context.Departments.Remove(department);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException e)
+                {
+                    _logger.LogInformation("{ExceptionMessage}", e.Message);
+                    ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный отдел имеются ссылки");
+                }
             }
+            else
+            {
+                ModelState.AddModelError(String.Empty, "Невозможно удалить системный отдел!");
+            }
+
             return View(department);
         }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataLayer.Entities.Department>
+﻿@model Cursa.ViewModels.DepartmentVM.DepartmentDisplayViewModel
 
 @{
     ViewData["Title"] = "Отделы";
@@ -13,40 +13,47 @@
         </svg>Добавить
     </a>
 </p>
-<table class="table">
+<table id="departmentDatatable" class="table">
     <thead>
     <tr>
+         <th></th>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </th>
+        @* <th> *@
+        @*     @Html.DisplayNameFor(model => model.Description) *@
+        @* </th> *@
+        @* <th> *@
+        @*     @Html.DisplayNameFor(model => model.CreatedDate) *@
+        @* </th> *@
         <th></th>
     </tr>
     </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
+    @* <tbody> *@
+    @* @foreach (var item in Model) *@
+    @* { *@
+    @*     <tr> *@
+    @*         <td> *@
+    @*             @Html.DisplayFor(modelItem => item.Name) *@
+    @*         </td> *@
+    @*         <td> *@
+    @*             @Html.DisplayFor(modelItem => item.Description) *@
+    @*         </td> *@
+    @*         <td> *@
+    @*             @Html.DisplayFor(modelItem => item.CreatedDate) *@
+    @*         </td> *@
+    @*         <td> *@
+    @*             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+    @*             <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+    @*             <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+    @*         </td> *@
+    @*     </tr> *@
+    @* } *@
+    @* </tbody> *@
 </table>
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/departmentDatatable.js"></script>
+}

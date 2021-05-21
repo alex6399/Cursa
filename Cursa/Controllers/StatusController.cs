@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
+using Cursa.ViewModels.StatusVM;
 using DataLayer;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +29,50 @@ namespace Cursa.Controllers
         }
 
         // GET: Status
-        public async Task<IActionResult> Index()
+        public IActionResult Index() => View(new StatusDisplayViewModel());
+
+        [HttpPost]
+        public IActionResult GetStatus()
         {
-            var efDbContext = _context.Statuses.Include(s => s.StatusType);
-            return View(await efDbContext.ToListAsync());
+            try
+            {
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request
+                    .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
+                var pageSize = length != null ? Convert.ToInt32(length) : 0;
+                var skip = start != null ? Convert.ToInt32(start) : 0;
+                //var id = Request.Form["productId"].FirstOrDefault();
+                //var productId = id != null ? Convert.ToInt32(id) : 0;
+
+                var projectsData = _mapper.ProjectTo<StatusDisplayViewModel>(_context.Statuses
+                    .AsNoTracking());
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
+                }
+
+                if (!string.IsNullOrEmpty(searchGlobalValue))
+                {
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
+                                                           || m.StatusTypeName.Contains(searchGlobalValue));
+                }
+
+                var recordsTotal = projectsData.Count();
+                var data = projectsData.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new
+                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
+                return Ok(jsonData);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error search:{ExceptionMessage}", e.Message);
+                return NotFound();
+            }
         }
 
         // GET: Status/Details/5
@@ -52,6 +94,7 @@ namespace Cursa.Controllers
             return View(status);
         }
 
+
         // GET: Status/Create
         public IActionResult Create()
         {
@@ -64,13 +107,13 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameStatus,StatusTypeId")] Status status)
+        public async Task<IActionResult> Create([Bind("Id,Name,StatusTypeId")] Status status)
         {
             //IX_Statuses_Name
             if (ModelState.IsValid)
             {
                 if (_context.Statuses.Any(x =>
-                    String.Equals(x.Name, status.Name, StringComparison.CurrentCultureIgnoreCase)
+                    String.Equals(x.Name, status.Name)
                     && x.StatusTypeId == status.StatusTypeId))
                 {
                     ModelState.AddModelError("Name", "Такой статус уже существует");
@@ -124,7 +167,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameStatus,StatusTypeId")] Status status)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StatusTypeId")] Status status)
         {
             if (id != status.Id)
             {
@@ -200,17 +243,31 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var status = await _context.Statuses.FindAsync(id);
-            _context.Statuses.Remove(status);
-            try
+            var status = await _context.Statuses
+                .Include(s => s.StatusType)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (status == null)
             {
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch (DbUpdateException e)
+
+            if (!status.IsSystem)
             {
-                _logger.LogInformation("{ExceptionMessage}", e.Message);
-                ModelState.AddModelError(String.Empty, "Невозможно удалить, данный статус задействован!");
+                _context.Statuses.Remove(status);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException e)
+                {
+                    _logger.LogInformation("{ExceptionMessage}", e.Message);
+                    ModelState.AddModelError(String.Empty, "Невозможно удалить, данный статус задействован!");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(String.Empty, "Невозможно удалить системный статус!");
             }
 
             return View(status);

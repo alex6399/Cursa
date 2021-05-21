@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DataLayer.Entities.Owner>
+﻿@model Cursa.ViewModels.OwnerVM.OwnerDisplayViewModel
 
 @{
     ViewData["Title"] = "Владельцы проектов";
@@ -9,27 +9,38 @@
 <p>
     <a asp-action="Create">Создать</a>
 </p>
-<table class="table">
+<table id="ownerDatatable" class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            <!-- id field hidden  -->
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            <!-- details link field  -->
+        </th>
+    </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-            </td>
-        </tr>
-}
-    </tbody>
+@*     <tbody> *@
+@* @foreach (var item in Model) { *@
+@*         <tr> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Name) *@
+@*             </td> *@
+@*             <td> *@
+@*                 <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> | *@
+@*                 <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> | *@
+@*                 <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a> *@
+@*             </td> *@
+@*         </tr> *@
+@* } *@
+@*     </tbody> *@
 </table>
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/ownerDatatable.js"></script>
+}
