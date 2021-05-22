@@ -8,49 +8,52 @@
 <h4>
     @ViewBag.Title @ViewBag.TitleProduct
 </h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
+                <input asp-for="Number" class="form-control"/>
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="ProductId" class="form-control"/>
-            
+
             <div id="selected-caption">
-                Выбрано <span id="selected-caption-num">0</span> модулей
+                Выбрано <span id="selected-caption-num"></span> модулей
             </div>
-            
-            <table>
-                @for(int moduleIndex = 0; moduleIndex < Model.ModulesVM.Count; moduleIndex++)
+            @{
+                if (Model.ModulesVM!=null)
                 {
-                    <tr>
-                        <td>
-                            @Html.HiddenFor(x=>x.ModulesVM[moduleIndex].Id)
-                            @Html.HiddenFor(x=>x.ModulesVM[moduleIndex].Name)
-                            @Html.DisplayFor(x => x.ModulesVM[moduleIndex].Name)
-                        </td>
-                        @for (int i = 0; i < Model.ModulesVM[moduleIndex].Addresses.Length; i++)
+                    <table>
+                        @for (int moduleIndex = 0; moduleIndex < Model.ModulesVM.Count; moduleIndex++)
                         {
-                            <td>
-                                @Html.EditorFor(x => Model.ModulesVM[moduleIndex].Addresses[i], new { htmlAttributes = new { @class =  $"address-check", data_col = $"{i}" }})
-                            </td>
+                            <tr>
+                                <td>
+                                    @Html.HiddenFor(x => x.ModulesVM[moduleIndex].Id)
+                                    @Html.HiddenFor(x => x.ModulesVM[moduleIndex].Name)
+                                    @Html.DisplayFor(x => x.ModulesVM[moduleIndex].Name)
+                                </td>
+                                @for (int i = 0; i < Model.ModulesVM[moduleIndex].Addresses.Length; i++)
+                                {
+                                    <td>
+                                        @Html.EditorFor(x => Model.ModulesVM[moduleIndex].Addresses[i], new {htmlAttributes = new {@class = $"address-check", data_col = $"{i}"}})
+                                    </td>
+                                }
+                            </tr>
                         }
-                    </tr>
+                    </table>
                 }
-            </table>
-            
-            
+            }
+
             <div class="form-group">
-                <input type="submit" value="Создать" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary"/>
             </div>
         </form>
     </div>
@@ -66,13 +69,12 @@
             let colNumber = $(this).attr("data-col");
             $(`.address-check[data-col="${colNumber}"]`).prop("disabled", this.checked);
             this.disabled = false;
-            
             let checkedNumber = $('.address-check:checked').length;
-            $("#selected-caption-num").text(checkedNumber);
+                               $("#selected-caption-num").text(checkedNumber);
         });
     });
 </script>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

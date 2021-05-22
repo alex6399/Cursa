@@ -25,7 +25,7 @@ namespace Cursa.ViewModels.OrderCardVM
         public int Id { get; set; } // Id TypeModule
 
         public string Name { get; set; }
-        public bool[] Addresses { get; set; } = new bool[15];
+        public bool[] Addresses { get; set; }
         
         // [Required(ErrorMessage = "Поле обязательно для заполнения")]
         // [Display(Name = "Количество")]

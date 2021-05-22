@@ -1,14 +1,14 @@
 ﻿@model DataLayer.Entities.ModuleType
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удаление отдела";
 }
 
-<h1>Delete</h1>
+<h4>@ViewData["Title"]</h4>
 
-<h3>Are you sure you want to delete this?</h3>
+<h6 style="color:red">Подтвердите удаление</h6>
 <div>
-    <h4>ModuleType</h4>
+  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -30,11 +30,23 @@
             @Html.DisplayFor(model => model.CountChanel)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModuleSubTypes)
+            @Html.DisplayNameFor(model => model.IsActiv)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModuleSubTypes.Name)
-        </dd >
+            @Html.DisplayFor(model => model.IsActiv)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCommunicationDevice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsCommunicationDevice)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NumberConnectionPoints)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NumberConnectionPoints)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
@@ -51,7 +63,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">К списку типов модулей</a>
     </form>
 </div>

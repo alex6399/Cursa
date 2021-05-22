@@ -47,135 +47,135 @@ namespace DataLayer.Seed
             //    }
             //);
 
-            modelBuilder.Entity<ModuleSubTypes>().HasData(
-                new ModuleSubTypes
-                {
-                    Id = 1,
-                    Name = "УСО аналоговый"
-                    
-                },
-                new ModuleSubTypes
-                {
-                    Id = 2,
-                    Name = "УСО дискретный"
-                    
-                },
-                new ModuleSubTypes
-                {
-                    Id = 3,
-                    Name = "Блок системный"
-                }
-            );
+            // modelBuilder.Entity<ModuleSubTypes>().HasData(
+            //     new ModuleSubTypes
+            //     {
+            //         Id = 1,
+            //         Name = "УСО аналоговый"
+            //         
+            //     },
+            //     new ModuleSubTypes
+            //     {
+            //         Id = 2,
+            //         Name = "УСО дискретный"
+            //         
+            //     },
+            //     new ModuleSubTypes
+            //     {
+            //         Id = 3,
+            //         Name = "Блок системный"
+            //     }
+            // );
             modelBuilder.Entity<ModuleType>().HasData(
                 new ModuleType
                 {
                     Id = 1,
                     Name = "IA - 4k42 - M ",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.047",
                     CountChanel = 4,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 2,
                     Name = "IA-8k42",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.049",
                     CountChanel = 8,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 3,
                     Name = "OA - 4k42 - M",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.046",
                     CountChanel = 4,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 4,
                     Name = "ID - 8k24 - M ",
-                    ModuleSubTypesId = 2,
                     Code="ЛДАР.469219.043",
                     CountChanel = 8,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 5,
                     Name = "ID - 16k24 ",
-                    ModuleSubTypesId = 2,
                     Code="ЛДАР.469219.060",
                     CountChanel = 16,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 6,
                     Name = "OD - 5k - M ",
-                    ModuleSubTypesId = 2,
                     Code="ЛДАР.468154.050",
                     CountChanel = 5,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 7,
                     Name = "ОD - 16k24 ",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.468154.055",
                     CountChanel = 16,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 8,
                     Name = "IF - 3k ",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.468155.048",
                     CountChanel = 3,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 9,
                     Name = "USB/RS-485-4k",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.469239.104",
                     CountChanel = 0,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 10,
                     Name = "Com/RS-485",
-                    ModuleSubTypesId = 1,
                     Code="ЛДАР.469239.299",
                     CountChanel = 0,
+                    NumberConnectionPoints=0,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=true
                 },
                 new ModuleType
                 {
                     Id = 11,
                     Name = "LPBS-15-М",
-                    ModuleSubTypesId = 3,
                     Code="ЛДАР.469239.235",
                     CountChanel = 0,
+                    NumberConnectionPoints=15,
                     IsActiv=true,
-                    IsSystem = true
+                    IsCommunicationDevice=false
                 }
             );
 

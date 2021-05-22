@@ -31,12 +31,12 @@ namespace Cursa.Controllers
         }
 
         // GET: OrderCards
-        public async Task<IActionResult> Index()
-        {
-            var efDbContext = _context.OrderCards.Include(o => o.CreatedUser).Include(o => o.ModifiedUser)
-                .Include(o => o.Product);
-            return View(await efDbContext.ToListAsync());
-        }
+        // public async Task<IActionResult> Index()
+        // {
+        //     var efDbContext = _context.OrderCards.Include(o => o.CreatedUser).Include(o => o.ModifiedUser)
+        //         .Include(o => o.Product);
+        //     return View(await efDbContext.ToListAsync());
+        // }
 
         // GET: OrderCards/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -135,7 +135,7 @@ namespace Cursa.Controllers
         }
 
         // GET: OrderCards/Create
-        public IActionResult Create(int? productId)
+        public async Task<IActionResult> Create(int? productId)
         {
             if (productId == null)
             {
@@ -150,10 +150,23 @@ namespace Cursa.Controllers
 
             ViewBag.TitleProduct = "для : " + product.Name;
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+            var systemUnit =
+                await _context.ModulesTypes.FirstOrDefaultAsync(x => x.IsActiv && !x.IsCommunicationDevice);
+            if (systemUnit == null)
+            {
+                ModelState.AddModelError("", "Отсутствуют системные модули");
+                return View(new OrderCardCreateEditVM()
+                {
+                    ProductId = product.Id
+                });
+            }
+
+            int addressLength = systemUnit.NumberConnectionPoints;
 
             var modules = _context.ModulesTypes
-                .Where(x => x.IsActiv == true)
-                .Select(x => new OrderCardCreateEditModuleVM() {Id = x.Id, Name = x.Name})
+                .Where(x => x.IsActiv && x.IsCommunicationDevice)
+                .Select(x => new OrderCardCreateEditModuleVM()
+                    {Id = x.Id, Name = x.Name, Addresses = new bool[addressLength]})
                 .ToList();
 
             return View(new OrderCardCreateEditVM()
@@ -181,15 +194,15 @@ namespace Cursa.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var selectedModuleTypes = orderCardVM.ModulesVM
-                        .Where(x => x.Addresses.Any(a => a))
-                        .ToList();
-                    if (selectedModuleTypes.Count == 0)
+                    if (orderCardVM.ModulesVM == null)
                     {
                         ModelState.AddModelError(string.Empty, "Пустая конфигурация модулей!");
                         return View(orderCardVM);
                     }
 
+                    var selectedModuleTypes = orderCardVM.ModulesVM
+                        .Where(x => x.Addresses.Any(a => a))
+                        .ToList();
                     // var selectedPlaces = new List<int>();
                     var selectedPlaces = new Dictionary<int, int>();
                     foreach (var moduleType
@@ -199,12 +212,11 @@ namespace Cursa.Controllers
                         {
                             if (moduleType.Addresses[i])
                             {
-                                //selectedPlaces.ContainsKey(i)
-                                try
+                                if (!selectedPlaces.ContainsKey(i))
                                 {
                                     selectedPlaces.Add(i, moduleType.Id);
                                 }
-                                catch (ArgumentException e)
+                                else
                                 {
                                     ModelState.AddModelError(string.Empty, "Неверная конфигурация модулей!");
                                     return View(orderCardVM);
@@ -231,7 +243,8 @@ namespace Cursa.Controllers
 
                         _context.Add(cardOrder);
                         await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = cardOrder.ProductId});
+                        return RedirectToAction(nameof(GetOrderCardsForProduct),
+                            new {productId = cardOrder.ProductId});
                     }
                     catch (DbUpdateException e)
                     {
@@ -301,7 +314,7 @@ namespace Cursa.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = orderCard.ProductId});
             }
 
             ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", orderCard.CreatedUserId);
@@ -339,7 +352,7 @@ namespace Cursa.Controllers
             var orderCard = await _context.OrderCards.FindAsync(id);
             _context.OrderCards.Remove(orderCard);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = orderCard.ProductId});
         }
 
         private bool OrderCardExists(int id)

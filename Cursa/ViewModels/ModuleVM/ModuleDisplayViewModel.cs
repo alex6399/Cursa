@@ -10,19 +10,24 @@ namespace Cursa.ViewModels.ModuleVM
         public int ModuleTypeId { get; set; } // TODO посути тут еще нужно ModuleSupTypes
         [Display(Name = "Модуль")]
         public ModuleType ModuleType { get; set; }
-        [Display(Name = "Изготовлен по карте заказа")]
+        [Display(Name = "Изготовлен по К.З №")]
         public int DestinationOrderCardId { get; set; }
-        [Display(Name = "Изготовлен по карте заказа")]
-        public virtual OrderCard DestinationOrderCard { get; set; }
+        [Display(Name = "Карте заказа")]
+        public string DestinationOrderCardName { get; set; }
+        [Display(Name = "Карте номер")]
+        public string DestinationOrderCardNumber { get; set; }
+        // public virtual OrderCard DestinationOrderCard { get; set; }
         
         [Display(Name = "Серийный №")]
         public string SerialNumber { get; set; }
         [Display(Name = "№ места")]
         public int Place { get; set; }
-        [Display(Name = "Установлен по карте заказа")]
+        [Display(Name = "Установлен по по К.З №")]
         public int ActualOrderCardId { get; set; }
-        [Display(Name = "Установлен по карте заказа")]
-        public virtual OrderCard ActualOrderCard { get; set; }
+        // [Display(Name = "Установлен по карте заказа")]
+        // public virtual OrderCard ActualOrderCard { get; set; }
+        [Display(Name = "Дата заказа")]
+        public DateTime? CreatedDate { get; set; }
         [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingData { get; set; }
     }

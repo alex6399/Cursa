@@ -49,10 +49,6 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
-
-            // var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
-            //     .AsNoTracking());
-            //.Where(subProject => subProject.ProjectId == projectId));
             return View(new ProductDisplayViewModel()
             {
                 SubProject = new BaseViewModel()
@@ -62,10 +58,9 @@ namespace Cursa.Controllers
                 }
             });
         }
-        // get products for a subproject
 
         [HttpPost]
-        public IActionResult FindProductsForSubproject()
+        public IActionResult FindProductsForSubProject()
         {
             try
             {
@@ -186,12 +181,12 @@ namespace Cursa.Controllers
             {
                 if (_context.Products.Any(x => x.SerialNum == productDto.SerialNum))
                 {
-                    ModelState.AddModelError("Name", "Подпроект уже существует");
+                    ModelState.AddModelError("SerialNum", "Серийный номер уже существует");
                 }
 
                 if (_context.Products.Any(x => x.CertifiedNum == productDto.CertifiedNum))
                 {
-                    ModelState.AddModelError("Code", "Код уже используется");
+                    ModelState.AddModelError("CertifiedNum", "Код уже используется");
                 }
 
                 if (ModelState.IsValid)
@@ -200,7 +195,7 @@ namespace Cursa.Controllers
                     _context.Add(product);
                     try
                     {
-                        await _context.SaveChangesAsync(); // TODO нужна проверка на уникальность серийного номера...
+                        await _context.SaveChangesAsync();
                         return RedirectToAction("GetProductsForSubProject", new {subProjectId = product.SubProjectId});
                     }
                     catch (DbUpdateException e)

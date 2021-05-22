@@ -1,27 +1,20 @@
-﻿@model Cursa.ViewModels.ModuleTypesVM.ModuleTypesDisplayViewModel
+﻿@model Cursa.ViewModels.ProductTypesVM.ProductTypesDisplayViewModel
 
 @{
-    ViewData["Title"] = "Категории модулей";
+    ViewData["Title"] = "Тип продукта";
 }
 
 <h4>@ViewData["Title"]</h4>
 
-@{
-    if (@ViewBag.ErrorMsg!= null)
-    {
-        <h4 style="color:red">@ViewBag.ErrorMsg</h4>
-    }
-}
-
-
 <p>
-    <a asp-controller="ModuleTypes" asp-action="Create">
+    <a asp-controller="ProductTypes" asp-action="Create">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-        </svg>Добавить
+        </svg>
+        Добавить
     </a>
 </p>
-<table id="moduleTypesDatatable" class="table">
+<table id="productTypesDatatable" class="table">
     <thead>
     <tr>
         <th></th>
@@ -29,20 +22,7 @@
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Code)
-        </th>
-        
-        <th>
-            ТИП
-        </th>
-        <th>
-            Количество слотов
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CountChanel)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsActiv)
+            @Html.DisplayNameFor(model => model.ProductTypeName)
         </th>
         <th></th>
     </tr>
@@ -55,19 +35,7 @@
     @*             @Html.DisplayFor(modelItem => item.Name) *@
     @*         </td> *@
     @*         <td> *@
-    @*             @Html.DisplayFor(modelItem => item.Code) *@
-    @*         </td> *@
-    @*         <td> *@
-    @*             @Html.DisplayFor(modelItem => item.CountChanel) *@
-    @*         </td> *@
-    @*         <td> *@
-    @*             @Html.DisplayFor(modelItem => item.IsActiv) *@
-    @*         </td> *@
-    @*         <td> *@
-    @*             @Html.DisplayFor(modelItem => item.IsCommunicationDevice) *@
-    @*         </td> *@
-    @*         <td> *@
-    @*             @Html.DisplayFor(modelItem => item.NumberConnectionPoints) *@
+    @*             @Html.DisplayFor(modelItem => item.ProductSubType.Name) *@
     @*         </td> *@
     @*         <td> *@
     @*             @Html.DisplayFor(modelItem => item.Description) *@
@@ -82,12 +50,11 @@
     @*         </td> *@
     @*     </tr> *@
     @* } *@
-    @* </tbody> *@
+    </tbody>
 </table>
-
 @section Scripts
 {
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/js/moduleTypesDatatable.js"></script>
+    <script src="~/js/productTypesDatatable.js"></script>
 }

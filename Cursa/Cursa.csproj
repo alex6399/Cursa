@@ -97,6 +97,11 @@
     <_ContentIncludedByDefault Remove="Views\Modules\Details.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Modules\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Modules\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ModuleSubTypes\Create.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ModuleSubTypes\Delete.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ModuleSubTypes\Details.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ModuleSubTypes\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ModuleSubTypes\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

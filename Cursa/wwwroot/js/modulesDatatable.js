@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    let table = $('#subprojectDatatable').DataTable({
+    let table = $('#modulesDatatable').DataTable({
         initComplete: function () {
             this.api().columns().every(function () {
                 var that = this;
@@ -18,11 +18,11 @@
         "serverSide": true,
         "filter": true,
         "ajax": {
-            "url": "/SubProjects/FindSubProjects",
+            "url": "/Modules/FindModulesForCardOrder",
             "type": "POST",
             "datatype": "json",
             "data": {
-                "projectId": projectId
+                "orderId": orderId
             }
         },
         "language": {
@@ -38,46 +38,71 @@
                 "searchable": false
             },
             {
-                "targets": [8],
+                "targets": [7],
                 "orderable": false
             }
         ],
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
             {
-                "data": "name", "name": "Name", "autoWidth": true,
+                "data": "moduleType.name", "name": "ModuleType.Name", "autoWidth": true
+                // ,
+                // "render": function (data, type, row) {
+                //     if (type === "display" || type === "filter") {
+                //         return '<a href="/Products/GetProductsForSubProject?subProjectId=' +
+                //             row.id +
+                //             '" >' +
+                //             row.moduleType.name +
+                //             "</a>";
+                //     }
+                //     return data;
+                // }
+            },
+            // {"data": "destinationOrderCardNumber", "name": "DestinationOrderCardNumber", "autoWidth": true},
+            {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true,
                 "render": function (data, type, row) {
-                    if (type === "display" || type === "filter") {
-                        return '<a href="/Products/GetProductsForSubProject?subProjectId=' +
-                            row.id +
-                            '" >' +
-                            row.name +
-                            "</a>";
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return data;
+                    }
+                    return data;
+                }},
+            {
+                "data": "place", "name": "Place", "autoWidth": true
+
+            },
+            {
+                "data": "actualOrderCardId", "name": "ActualOrderCardId", "autoWidth": true
+                //,
+                // "render": function (data, type, row) {
+                //     if (type === "display") {
+                //         return moment(Date.parse(row.endDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                //     }
+                //     return data;
+                // }
+            },
+            {
+                "data": "manufacturingData", "name": "ManufacturingData", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return moment(Date.parse(row.manufacturingData)).format('DD.MM.YYYY');
                     }
                     return data;
                 }
-            },
-            {"data": "code", "name": "Code", "autoWidth": true},
-            {"data": "employee.fullName", "name": "employee.fullName", "width": "30px"},
-            {"data": "statusName", "name": "StatusName", "autoWidth": true},
-            {
-                "data": "contract", "name": "contract", "autoWidth": true
-
             },
             {
                 "data": "createdDate", "name": "CreatedDate", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display") {
-                        return moment(Date.parse(row.endDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
-                    }
-                    return data;
-                }
-            },
-            {
-                "data": "endDate", "name": "EndDate", "autoWidth": true,
-                "render": function (data, type, row) {
-                    if (type === "display") {
-                        return moment(Date.parse(row.endDate)).format('DD.MM.YYYY');
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return moment(Date.parse(row.createdDate)).format('DD.MM.YYYY');
                     }
                     return data;
                 }
@@ -90,15 +115,9 @@
                         '</svg></a>';
                 }
             }
-        ],
-        "rowCallback": function (row, data) {
-            if (data.statusName.toLowerCase() === "завершен") {
-                $(row).addClass('in_progress');
-            }
-            console.log("Строка в таблице", row, data);
-        }
+        ]
     });
-    $('#subprojectDatatable tfoot th.search').each(function () {
+    $('#modulesDatatable tfoot th.search').each(function () {
         let title = $(this).text();
         $(this).html('<input type="text" placeholder="Поиск" class="form-control form-control-sm" />');
     });

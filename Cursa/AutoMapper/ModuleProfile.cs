@@ -8,7 +8,11 @@ namespace Cursa.AutoMapper
     {
         public ModuleProfile()
         {
-            CreateMap<Module, ModuleDisplayViewModel>();
+            CreateMap<Module, ModuleDisplayViewModel>()
+                .ForMember(dest=>dest.DestinationOrderCardName,act
+                    =>act.MapFrom(src=>src.DestinationOrderCard.Name))
+                .ForMember(dest=>dest.DestinationOrderCardNumber,act
+                    =>act.MapFrom(src=>src.DestinationOrderCard.Number));
         }
     }
 }

@@ -33,7 +33,6 @@ namespace DataLayer
         public DbSet<ProductSubType> ProductSubTypes { get; set; }
         public DbSet<Module> Modules { get; set; }
         public DbSet<ModuleType> ModulesTypes { get; set; }
-        public DbSet<ModuleSubTypes> ModulesSubTypes { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Status> Statuses { get; set; }
@@ -181,6 +180,16 @@ namespace DataLayer
                 .HasOne(p => p.SubProject)
                 .WithMany(o => o.Products)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Entities.Product>()
+                .HasOne(p => p.ProductType)
+                .WithMany(o => o.Products)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Entities.ProductType>()
+                .HasOne(p => p.ProductSubType)
+                .WithMany(o => o.ProductTypes)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Entities.Owner>()
                 .HasMany(p => p.Projects)
@@ -201,6 +210,11 @@ namespace DataLayer
                 .HasMany(p => p.Employees)
                 .WithOne(o => o.Department)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Entities.Module>()
+                .HasOne(p => p.ModuleType)
+                .WithMany(o => o.Modules)
+                .OnDelete(DeleteBehavior.Restrict);
             //End: Огрничение на каскадное удаление 
 
             // Start: unique constraint
@@ -209,6 +223,9 @@ namespace DataLayer
                 .IsUnique();
             modelBuilder.Entity<Product>()
                 .HasIndex(x => x.CertifiedNum)
+                .IsUnique();
+            modelBuilder.Entity<ProductType>()
+                .HasIndex(x => x.Name)
                 .IsUnique();
 
             modelBuilder.Entity<Project>()
@@ -235,6 +252,7 @@ namespace DataLayer
             modelBuilder.Entity<Contractor>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
+            
             // End: unique constraint
 
             // Start: default created datetime 
