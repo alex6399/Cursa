@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Entities.Bases;
+using DataLayer.Entities;
 
-namespace DataLayer.Entities
+namespace Cursa.ViewModels.ModuleVM
 {
-    public class Module : BaseEntityTracking
+    public class ModuleDisplayViewModel
     {
+        public int Id { get; set; }
         public int ModuleTypeId { get; set; } // TODO посути тут еще нужно ModuleSupTypes
         [Display(Name = "Модуль")]
         public ModuleType ModuleType { get; set; }
@@ -28,9 +25,5 @@ namespace DataLayer.Entities
         public virtual OrderCard ActualOrderCard { get; set; }
         [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingData { get; set; }
-        // public virtual ICollection<OrderCardModules> OrderCardModulesCollection { get; set; }
     }
 }
-// TODO как сохранять вложенные сущности
-// добавить отдельную сущность характеристика, в которой будет ключ на Модуль,
-// но выводить в одной ViewModel
