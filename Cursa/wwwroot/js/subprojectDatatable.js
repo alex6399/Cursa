@@ -3,8 +3,11 @@
 //     });
 // });
 $(document).ready(function () {
+    // $.extend($.fn.dataTable.defaults, {
+    //     'scrollX': true
+    // });
     let table = $('#subprojectDatatable').DataTable({
-        "scrollXInner": true,
+        //"scrollXInner": true,
         initComplete: function () {
             this.api().columns().every(function () {
                 var that = this;
@@ -18,7 +21,7 @@ $(document).ready(function () {
                 });
             });
         },
-
+        "scrollX": true,
         "processing": true,
         "serverSide": true,
         "filter": true,
@@ -97,7 +100,13 @@ $(document).ready(function () {
                         '</svg></a>';
                 }
             }
-        ]
+        ],
+        "rowCallback": function (row, data) {
+            if (data.statusName.toLowerCase() === "в работе") {
+                $(row).addClass('in_progress');
+            }
+            console.log("Строка в таблице", row, data);
+        }
     });
     $('#subprojectDatatable tfoot th.search').each(function () {
         let title = $(this).text();

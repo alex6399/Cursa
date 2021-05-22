@@ -87,7 +87,22 @@
 
 <style>
     div.dataTables_wrapper {
-            width: 1300px;
-            margin: 0 auto;
+        margin: 0 auto;
+    }
+    
+    @@media (min-width: 1000px) {
+         div.dataTables_wrapper {
+            min-width: 1300px;
         }
+    }
+    
+    @@media (max-width: 1000px) {
+         div.dataTables_wrapper {
+            min-width: 900px;
+        }
+    }
+        
+    .in_progress {
+        background-color: #20ff1550;
+    }
 </style>
