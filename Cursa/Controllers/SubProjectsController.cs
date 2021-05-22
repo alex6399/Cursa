@@ -99,12 +99,11 @@ namespace Cursa.Controllers
                     .Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
                 var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
                 var searchGlobalValue = Request.Form["search[value]"].FirstOrDefault();
-                var searchNameValue = Request.Form["columns[2][search][value]"].FirstOrDefault();
-                var searchCodeValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
-                var searchEmployeeValue = Request.Form["columns[4][search][value]"].FirstOrDefault();
-                var searchStatusValue = Request.Form["columns[5][search][value]"].FirstOrDefault();
-                var searchContractValue = Request.Form["columns[6][search][value]"].FirstOrDefault();
-                var searchDescriptionValue = Request.Form["columns[7][search][value]"].FirstOrDefault();
+                var searchNameValue = Request.Form["columns[1][search][value]"].FirstOrDefault();
+                var searchCodeValue = Request.Form["columns[2][search][value]"].FirstOrDefault();
+                var searchEmployeeValue = Request.Form["columns[3][search][value]"].FirstOrDefault();
+                var searchStatusValue = Request.Form["columns[4][search][value]"].FirstOrDefault();
+                var searchContractValue = Request.Form["columns[5][search][value]"].FirstOrDefault();
                 var pageSize = length != null ? Convert.ToInt32(length) : 0;
                 var skip = start != null ? Convert.ToInt32(start) : 0;
                 var id = Request.Form["projectId"].FirstOrDefault();
@@ -125,8 +124,7 @@ namespace Cursa.Controllers
                                                            || m.Code.Contains(searchGlobalValue)
                                                            || m.Employee.FullName.Contains(searchGlobalValue)
                                                            || m.StatusName.Contains(searchGlobalValue)
-                                                           || m.Contract.Contains(searchGlobalValue)
-                                                           || m.Description.Contains(searchGlobalValue));
+                                                           || m.Contract.Contains(searchGlobalValue));
                 }
 
                 if (!string.IsNullOrEmpty(searchNameValue))
@@ -153,11 +151,7 @@ namespace Cursa.Controllers
                 {
                     projectsData = projectsData.Where(m => m.Contract.Contains(searchContractValue));
                 }
-
-                if (!string.IsNullOrEmpty(searchDescriptionValue))
-                {
-                    projectsData = projectsData.Where(m => m.Description.Contains(searchDescriptionValue));
-                }
+                
 
                 var recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
@@ -220,7 +214,7 @@ namespace Cursa.Controllers
         // POST: SubProjects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description")]
+        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,EndDate")]
             SubProjectCreateEditViewModel subProjectDTO)
         {
             if (ModelState.IsValid)
@@ -291,7 +285,7 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,CreatedDate")]
+            [Bind("Id,ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,EndDate")]
             SubProjectCreateEditViewModel subProjectDTO)
         {
             if (id != subProjectDTO.Id)

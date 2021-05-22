@@ -13,14 +13,11 @@
         </svg>Добавить
     </a>
 </p>
-<table id="subprojectDatatable" class="table" style="width:100%">
+<table id="subprojectDatatable" class="table" style="width:100%" >
     <thead>
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.SubProjectVM.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.ProjectName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.SubProjectVM.Name)
@@ -38,8 +35,12 @@
             @Html.DisplayNameFor(model => model.SubProjectVM.Contract)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Description)
+            @Html.DisplayNameFor(model => model.SubProjectVM.CreatedDate)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectVM.EndDate)
+        </th>
+
         <th>
         </th>
     </tr>
@@ -49,8 +50,6 @@
     <tr>
         <th>
         </th>
-        <th>
-        </th>
         <th class="search">
             @Html.DisplayNameFor(model => model.SubProjectVM.Name)
         </th>
@@ -66,8 +65,11 @@
         <th class="search">
             @Html.DisplayNameFor(model => model.SubProjectVM.Contract)
         </th>
-        <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.Description)
+        <th>
+
+        </th>
+        <th>
+
         </th>
         <th>
         </th>
@@ -82,27 +84,28 @@
 {
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/moment.js/moment.js"></script>
     <script src="~/js/subprojectDatatable.js"></script>
 }
 
 <style>
-    div.dataTables_wrapper {
-        margin: 0 auto;
-    }
-    
-    @@media (min-width: 1000px) {
-         div.dataTables_wrapper {
-            min-width: 1300px;
-        }
-    }
-    
-    @@media (max-width: 1000px) {
-         div.dataTables_wrapper {
-            min-width: 900px;
-        }
-    }
-        
+   div.dataTables_wrapper {
+          /* width: 1350px;*/
+           margin: 0 auto;
+       }
+       @@media (min-width: 1000px) {
+                div.dataTables_wrapper {
+                   min-width: 1300px;
+               }
+           }
+           
+           @@media (max-width: 1000px) {
+                div.dataTables_wrapper {
+                   min-width: 900px;
+               }
+           }
+        th, td { white-space: nowrap; }
     .in_progress {
-        background-color: #20ff1550;
+        background-color: #20c99750;
     }
 </style>

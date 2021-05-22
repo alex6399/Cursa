@@ -1,13 +1,5 @@
-﻿// $(document).ready(function () {
-//     $('#subprojectDatatable').dataTable({
-//     });
-// });
-$(document).ready(function () {
-    // $.extend($.fn.dataTable.defaults, {
-    //     'scrollX': true
-    // });
+﻿$(document).ready(function () {
     let table = $('#subprojectDatatable').DataTable({
-        //"scrollXInner": true,
         initComplete: function () {
             this.api().columns().every(function () {
                 var that = this;
@@ -46,15 +38,12 @@ $(document).ready(function () {
                 "searchable": false
             },
             {
-                "targets": [1,8],
+                "targets": [8],
                 "orderable": false
             }
         ],
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
-            {
-                "data": "projectName", "name": "ProjectName", "autoWidth": true
-            },
             {
                 "data": "name", "name": "Name", "autoWidth": true,
                 "render": function (data, type, row) {
@@ -69,29 +58,30 @@ $(document).ready(function () {
                 }
             },
             {"data": "code", "name": "Code", "autoWidth": true},
-            {"data": "employee.fullName", "name": "employee.fullName", "width": "250px"},
+            {"data": "employee.fullName", "name": "employee.fullName", "width": "30px"},
             {"data": "statusName", "name": "StatusName", "autoWidth": true},
             {
                 "data": "contract", "name": "contract", "autoWidth": true
-                // ,
-                // // "defaultContent":"Данные не указаны",
-                // "render": function (data, type, row) {
-                //     if (data != null) {
-                //         if (type === "display" || type === "filter") {
-                //             return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
-                //                 row.id +
-                //                 '" >' +
-                //                 row.contract.name +
-                //                 "</a>";
-                //         }
-                //         return data;
-                //     }
-                //     if (!data) {
-                //         return "Не указано";
-                //     }
-                // }
+
             },
-            {"data": "description", "name": "Description", "autoWidth": true},
+            {
+                "data": "createdDate", "name": "CreatedDate", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return moment(Date.parse(row.endDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                    }
+                    return data;
+                }
+            },
+            {
+                "data": "endDate", "name": "EndDate", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return moment(Date.parse(row.endDate)).format('DD.MM.YYYY');
+                    }
+                    return data;
+                }
+            },
             {
                 "render": function (data, type, row) {
                     return '<a href="/SubProjects/Details/' + row.id + '"  ><svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 21 21">\n' +
@@ -102,7 +92,7 @@ $(document).ready(function () {
             }
         ],
         "rowCallback": function (row, data) {
-            if (data.statusName.toLowerCase() === "в работе") {
+            if (data.statusName.toLowerCase() === "завершен") {
                 $(row).addClass('in_progress');
             }
             console.log("Строка в таблице", row, data);

@@ -28,7 +28,8 @@ namespace Cursa.ViewModels.SubProjectVM
         public int? ContractorId { get; set; }
         [Display(Name = "Примечание")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Дата сдачи")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }
