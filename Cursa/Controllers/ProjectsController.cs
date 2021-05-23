@@ -130,7 +130,8 @@ namespace Cursa.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name");
             return View(new ProjectCreateViewModel());
         }
@@ -180,7 +181,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", projectDTO.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
             return View(projectDTO);
         }
@@ -206,7 +208,8 @@ namespace Cursa.Controllers
             }
 
             var projectDTO = _mapper.Map<Project, ProjectEditViewModel>(project);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", project.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", project.OwnerId);
             return View(projectDTO);
         }
@@ -261,7 +264,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", projectDTO.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
             return View(projectDTO);
         }

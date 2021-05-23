@@ -96,7 +96,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedDate")]
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,IsResponsibleProjectsAndSubProjects,IsResponsibleDesignWork")]
             Department department)
         {
             //IX_Departments_Name
@@ -151,7 +151,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedDate")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,IsResponsibleProjectsAndSubProjects,IsResponsibleDesignWork")]
             Department department)
         {
             if (id != department.Id)
@@ -220,10 +220,7 @@ namespace Cursa.Controllers
             {
                 return NotFound();
             }
-
-            if (!department.IsSystem)
-            {
-                try
+            try
                 {
                     _context.Departments.Remove(department);
                     await _context.SaveChangesAsync();
@@ -234,11 +231,6 @@ namespace Cursa.Controllers
                     _logger.LogInformation("{ExceptionMessage}", e.Message);
                     ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный отдел имеются ссылки");
                 }
-            }
-            else
-            {
-                ModelState.AddModelError(String.Empty, "Невозможно удалить системный отдел!");
-            }
 
             return View(department);
         }

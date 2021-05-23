@@ -16,8 +16,10 @@ namespace DataLayer.Entities
         public string Description { get; set; }
         [Display(Name = "Дата создания")]
         public DateTime? CreatedDate { get; set; }
-        [Display(Name = "Системный ?")]
-        public bool IsSystem { get; set; }
+        [Display(Name = "Ответственный за проекты")]
+        public bool IsResponsibleProjectsAndSubProjects { get; set; }
+        [Display(Name = "Конструкторские работы")]
+        public bool IsResponsibleDesignWork { get; set; }
         public ICollection<Employee> Employees { get; set; }
     }
 }

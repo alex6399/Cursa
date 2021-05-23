@@ -28,13 +28,13 @@ namespace Cursa.Controllers
         }
 
         // GET: Products
-        public IActionResult Index()
-        {
-            var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
-                .AsNoTracking());
-            //.Where(subProject => subProject.ProjectId == projectId));
-            return View(projectsData);
-        }
+        // public IActionResult Index()
+        // {
+        //     var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
+        //         .AsNoTracking());
+        //     //.Where(subProject => subProject.ProjectId == projectId));
+        //     return View(projectsData);
+        // }
 
         [HttpGet]
         public IActionResult GetProductsForSubProject(int? subProjectId)
@@ -174,7 +174,7 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind(
-                "Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,ShippedDate,Id,Description")]
+                "Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,OrderDate,ShippedDate,Id,Description")]
             ProductCreateViewModel productDto)
         {
             if (ModelState.IsValid)
@@ -250,7 +250,7 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,Id,Description")]
+            [Bind("Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,OrderDate,Id,Description")]
             ProductCreateViewModel productDTO)
         {
             if (id != productDTO.Id)
@@ -265,6 +265,7 @@ namespace Cursa.Controllers
                 {
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(GetProductsForSubProject), new {subProjectId=product.SubProjectId});
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -292,7 +293,7 @@ namespace Cursa.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                
             }
 
             ViewData["ProductTypeId"] = new SelectList(_context.ProductTypes, "Id", "Name", productDTO.ProductTypeId);
@@ -332,7 +333,7 @@ namespace Cursa.Controllers
             {
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(GetProductsForSubProject), new {subProjectId=product.SubProjectId});
             }
             catch (DbUpdateException e)
             {

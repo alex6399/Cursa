@@ -25,6 +25,9 @@ namespace Cursa.ViewModels.ProductsVM
         public string Description { get; set; }
         [Display(Name = "Сформирован")]
         public bool IsFormed { get; set; } // сформирован?
+        
+        [Display(Name = "Дата Заказа")]
+        public DateTime? OrderDate { get; set; }// дата изготовления
         [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingDate { get; set; }// дата изготовления
         [Display(Name = "Дата отгрузки")]

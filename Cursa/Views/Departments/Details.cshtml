@@ -21,20 +21,16 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsSystem)
+            @Html.DisplayNameFor(model => model.IsResponsibleProjectsAndSubProjects)
         </dt>
         <dd class="col-sm-10">
-            @{
-                if (@Model.IsSystem)
-                {
-                    @Html.Raw("Системный");
-                }
-                else
-                {
-                    @Html.Raw("Пользовательский")
-                }
-            }
-
+            @Html.DisplayFor(model => model.IsResponsibleProjectsAndSubProjects)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsResponsibleDesignWork)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsResponsibleDesignWork)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDate)

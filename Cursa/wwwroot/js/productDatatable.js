@@ -44,7 +44,7 @@ $(document).ready(function () {
                 "searchable": false
             },
             {
-                "targets": [1,8],
+                "targets": [1, 8],
                 "orderable": false
             }
         ],
@@ -68,28 +68,42 @@ $(document).ready(function () {
             },
             {"data": "serialNum", "name": "SerialNum", "autoWidth": true},
             {"data": "certifiedNum", "name": "CertifiedNum", "width": "250px"},
-            {"data": "orderDate", "name": "OrderDate", "autoWidth": true},
-            // {
-            //     "data": "contract.name", "name": "contract.name", "autoWidth": true,
-            //     // "defaultContent":"Данные не указаны",
-            //     "render": function (data, type, row) {
-            //         if (data != null) {
-            //             if (type === "display" || type === "filter") {
-            //                 return '<a href="/SubProjects/GetSubProject?projectId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
-            //                     row.id +
-            //                     '" >' +
-            //                     row.contract.name +
-            //                     "</a>";
-            //             }
-            //             return data;
-            //         }
-            //         if (!data) {
-            //             return "Не указано";
-            //         }
-            //     }
-            // },
-            {"data": "manufacturingDate", "name": "ManufacturingDate", "autoWidth": true},
-            {"data": "shippedDate", "name": "ShippedDate", "autoWidth": true},
+            {
+                "data": "orderDate", "name": "OrderDate", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (data === null) {
+                        return "<span class=\"empty\">*Не указано</span>";
+                    }
+                    if (type === "display") {
+                        return moment(Date.parse(row.orderDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                    }
+                    return data;
+                }
+            },
+            {
+                "data": "manufacturingDate", "name": "ManufacturingDate", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (data === null) {
+                        return "<span class=\"empty\">*Не изготовлено</span>";
+                    }
+                    if (type === "display") {
+                        return moment(Date.parse(row.manufacturingDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                    }
+                    return data;
+                }
+            },
+            {
+                "data": "shippedDate", "name": "ShippedDate", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не отгружено</span>";
+                        }
+                        return moment(Date.parse(row.shippedDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                    }
+                    return data;
+                }
+            },
             {
                 "render": function (data, type, row) {
                     return '<a href="/Products/Details/' + row.id + '"  ><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">\n' +

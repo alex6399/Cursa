@@ -16,6 +16,16 @@
                 <input asp-for="Name" class="form-control"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsResponsibleProjectsAndSubProjects"/> @Html.DisplayNameFor(model => model.IsResponsibleProjectsAndSubProjects)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsResponsibleDesignWork"/> @Html.DisplayNameFor(model => model.IsResponsibleDesignWork)
+                </label>
+            </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <textarea asp-for="Description" class="form-control"></textarea>

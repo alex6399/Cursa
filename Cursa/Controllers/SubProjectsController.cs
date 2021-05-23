@@ -29,14 +29,14 @@ namespace Cursa.Controllers
         }
 
         // GET: SubProjects
-        public async Task<IActionResult> Index()
-        {
-            var efDbContext = _context.SubProjects.AsNoTracking()
-                .Include(s => s.Employee)
-                .Include(s => s.Project)
-                .Include(s => s.Status);
-            return View(await efDbContext.ToListAsync());
-        }
+        // public async Task<IActionResult> Index()
+        // {
+        //     var efDbContext = _context.SubProjects.AsNoTracking()
+        //         .Include(s => s.Employee)
+        //         .Include(s => s.Project)
+        //         .Include(s => s.Status);
+        //     return View(await efDbContext.ToListAsync());
+        // }
 
         [HttpGet]
         public async Task<IActionResult> GetSubProject(int? projectId)
@@ -201,8 +201,9 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+            ViewData["StatusId"] = new SelectList(_context.Statuses.Where(x=>x.StatusTypeId==1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
             return View(new SubProjectCreateEditViewModel
@@ -254,8 +255,10 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProjectDTO.StatusId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+            ViewData["StatusId"] = new SelectList(_context.Statuses
+                .Where(x=>x.StatusTypeId==1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             return View(subProjectDTO);
         }
@@ -275,8 +278,10 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProject.EmployeeId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProject.StatusId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+            ViewData["StatusId"] = new SelectList(_context.Statuses
+                .Where(x=>x.StatusTypeId==1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
             return View(subProjectDTO);
         }
@@ -328,9 +333,12 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FirstName", subProjectDTO.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+            ViewData["StatusId"] = new SelectList(_context.Statuses
+                .Where(x=>x.StatusTypeId==1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
-            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name", subProjectDTO.StatusId);
+            
             return View(subProjectDTO);
         }
 
@@ -365,7 +373,7 @@ namespace Cursa.Controllers
             {
                 _context.SubProjects.Remove(subProject);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(GetSubProject), new {projectId=subProject.ProjectId});
             }
             catch (DbUpdateException e)
             {

@@ -184,14 +184,16 @@ namespace DataLayer.Seed
                 {
                     Id = 1,
                     Name = "Конструкторский",
-                    IsSystem = true
+                    IsResponsibleDesignWork = true,
+                    IsResponsibleProjectsAndSubProjects = false
                     
                 },
                 new Department
                 {
                     Id = 2,
                     Name = "Управление",
-                    IsSystem = true
+                    IsResponsibleDesignWork = false,
+                    IsResponsibleProjectsAndSubProjects = true
                 }
             );
 
