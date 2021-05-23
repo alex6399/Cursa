@@ -172,6 +172,7 @@ namespace Cursa.Controllers
             return View(new OrderCardCreateEditVM()
             {
                 ProductId = product.Id,
+                systemUnitName = systemUnit.Name,
                 ModulesVM = modules
             });
         }
@@ -192,17 +193,16 @@ namespace Cursa.Controllers
                     ModelState.AddModelError("Number", "Такой cерийный № уже используется");
                 }
 
-                if (ModelState.IsValid)
+                if (ModelState.IsValid && orderCardVM.ModulesVM!=null)
                 {
-                    if (orderCardVM.ModulesVM == null)
+                    var selectedModuleTypes = orderCardVM.ModulesVM
+                        .Where(x => x.Addresses.Any(a => a))
+                        .ToList();
+                    if (selectedModuleTypes.Count==0)
                     {
                         ModelState.AddModelError(string.Empty, "Пустая конфигурация модулей!");
                         return View(orderCardVM);
                     }
-
-                    var selectedModuleTypes = orderCardVM.ModulesVM
-                        .Where(x => x.Addresses.Any(a => a))
-                        .ToList();
                     // var selectedPlaces = new List<int>();
                     var selectedPlaces = new Dictionary<int, int>();
                     foreach (var moduleType

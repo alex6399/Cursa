@@ -23,13 +23,17 @@
                 <input asp-for="Number" class="form-control"/>
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label class="control-label">Системный блок</label>
+                <input class="form-control" disabled value="@Model.systemUnitName">
+            </div>
             <input type="hidden" asp-for="ProductId" class="form-control"/>
 
             <div id="selected-caption">
                 Выбрано <span id="selected-caption-num"></span> модулей
             </div>
             @{
-                if (Model.ModulesVM!=null)
+                if (Model.ModulesVM != null)
                 {
                     <table>
                         @for (int moduleIndex = 0; moduleIndex < Model.ModulesVM.Count; moduleIndex++)

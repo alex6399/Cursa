@@ -14,6 +14,8 @@ namespace Cursa.ViewModels.OrderCardVM
         [Display(Name = "Номер карты заказа")]
         [MaxLength(100)]
         public string Number { get; set; }
+
+        public string systemUnitName { get; set; }
         public int ProductId { get; set; }
         
         public List<OrderCardCreateEditModuleVM> ModulesVM { get; set; }

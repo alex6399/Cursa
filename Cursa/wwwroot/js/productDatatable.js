@@ -57,7 +57,7 @@ $(document).ready(function () {
                 "data": "name", "name": "Name", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display" || type === "filter") {
-                        return '<a href="/OrderCards/GetOrderCardsForProduct?productId=' +// TODO почему-то работал и через слэш GetSubProjectById/projectId
+                        return '<a href="/OrderCards/GetOrderCardsForProduct?productId=' +
                             row.id +
                             '" >' +
                             row.name +
