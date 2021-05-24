@@ -13,7 +13,7 @@ namespace Cursa.AutoMapper
             CreateMap<OrderCard, OrderCardCreateEditVM>()
                 .ForMember(dest => dest.ModulesVM, act
                     => act.Ignore())
-                .ForMember(dest => dest.systemUnitName, act
+                .ForMember(dest => dest.systemUnit, act
                     => act.Ignore())
                 .ReverseMap();
             // CreateMap<OrderCardCreateEditVM, OrderCard>()

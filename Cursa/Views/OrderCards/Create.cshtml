@@ -25,9 +25,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Системный блок</label>
-                <input class="form-control" disabled value="@Model.systemUnitName">
+                <input class="form-control" disabled value="@Model.systemUnit.Name">
             </div>
             <input type="hidden" asp-for="ProductId" class="form-control"/>
+            <input type="hidden" asp-for="systemUnit.Id" class="form-control"/>
+            <input type="hidden" asp-for="systemUnit.Name" class="form-control"/>
 
             <div id="selected-caption">
                 Выбрано <span id="selected-caption-num"></span> модулей

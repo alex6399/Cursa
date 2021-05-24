@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Cursa.ViewModels.Base;
 
 namespace Cursa.ViewModels.OrderCardVM
 {
@@ -15,7 +16,7 @@ namespace Cursa.ViewModels.OrderCardVM
         [MaxLength(100)]
         public string Number { get; set; }
 
-        public string systemUnitName { get; set; }
+        public BaseViewModel systemUnit { get; set; }
         public int ProductId { get; set; }
         
         public List<OrderCardCreateEditModuleVM> ModulesVM { get; set; }
@@ -28,15 +29,5 @@ namespace Cursa.ViewModels.OrderCardVM
 
         public string Name { get; set; }
         public bool[] Addresses { get; set; }
-        
-        // [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        // [Display(Name = "Количество")]
-        // //[MaxLength(100)]
-        // public int Count { get; set; }
-        // [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        // [Display(Name = "Наименование")]
-        // [MaxLength(100)]
-        // public string Name { get; set; }
-        // public int ProductId { get; set; }
     }
 }

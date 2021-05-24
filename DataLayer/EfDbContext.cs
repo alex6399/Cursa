@@ -38,11 +38,63 @@ namespace DataLayer
         public DbSet<Status> Statuses { get; set; }
         public DbSet<StatusType> StatusTypes { get; set; }
         public DbSet<OrderCard> OrderCards { get; set; }
+        public DbSet<OrderCardItem> OrderCardItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
+
+            // //start many to many 
+            // modelBuilder.Entity<OrderEmployee>().HasKey(or
+            //     => new {or.EmployeeId, or.OrderCardId, or.StatusParticipationId});
+            // modelBuilder.Entity<OrderEmployee>().ToTable("OrderEmployees");
+            //
+            // modelBuilder.Entity<OrderEmployee>()
+            //     .HasOne(or => or.OrderCard)
+            //     .WithMany(ea => ea.OrderEmployees)
+            //     .HasForeignKey(or => or.OrderCardId);
+            //
+            // modelBuilder.Entity<OrderEmployee>()
+            //     .HasOne(or => or.Employee)
+            //     .WithMany(u => u.OrderEmployees)
+            //     .HasForeignKey(or => or.EmployeeId);
+            // // end
+
+            // //Start: many to many OrderCard < - > ModulesType
+            // modelBuilder.Entity<OrderCardModules>().HasKey(or
+            //     => new {or.OrderCardId, or.ModuleId});
+            // modelBuilder.Entity<OrderCardModules>().ToTable("OrderCardModules");
+            //
+            // modelBuilder.Entity<OrderCardModules>()
+            //     .HasOne(or => or.OrderCard)
+            //     .WithMany(ea => ea.OrderCardModulesCollection)
+            //     .HasForeignKey(or => or.OrderCardId);
+            //
+            // modelBuilder.Entity<OrderCardModules>()
+            //     .HasOne(or => or.Module)
+            //     .WithMany(u => u.OrderCardModulesCollection)
+            //     .HasForeignKey(or => or.ModuleId);
+            // //End: many to many OrderCard < - > ModulesType
+
+            // //Start: many to many OrderCardTemplate < - > ModulesType
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>().HasKey(or
+            //     => new {or.OrderCardTemplateId, or.ModuleTypeId});
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>().ToTable("OrderCardTemplateModules");
+            //
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>()
+            //     .HasOne(or => or.OrderCardsTemplate)
+            //     .WithMany(ea => ea.OrderCardTemplateModulesCollection)
+            //     .HasForeignKey(or => or.OrderCardTemplateId);
+            //
+            // modelBuilder.Entity<OrderCardTemplateModuleTypes>()
+            //     .HasOne(or => or.ModulesType)
+            //     .WithMany(u => u.OrderCardTemplateModulesCollection)
+            //     .HasForeignKey(or => or.ModuleTypeId);
+            // //End: many to many OrderCardTemplate < - > ModulesType
+
+            modelBuilder.Entity<OrderCardItem>().HasKey(keys =>
+                new {keys.OrderCardId, keys.ModuleTypeId});
 
             //Start: Configure One-to-Many Module -> OrderCard 
             modelBuilder.Entity<Module>()
@@ -132,12 +184,12 @@ namespace DataLayer
                 .HasOne(p => p.SubProject)
                 .WithMany(o => o.Products)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<Entities.Product>()
                 .HasOne(p => p.ProductType)
                 .WithMany(o => o.Products)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<Entities.ProductType>()
                 .HasOne(p => p.ProductSubType)
                 .WithMany(o => o.ProductTypes)
@@ -162,7 +214,7 @@ namespace DataLayer
                 .HasMany(p => p.Employees)
                 .WithOne(o => o.Department)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<Entities.Module>()
                 .HasOne(p => p.ModuleType)
                 .WithMany(o => o.Modules)
@@ -204,7 +256,7 @@ namespace DataLayer
             modelBuilder.Entity<Contractor>()
                 .HasIndex(x => x.Name)
                 .IsUnique();
-            
+
             // End: unique constraint
 
             // Start: default created datetime 

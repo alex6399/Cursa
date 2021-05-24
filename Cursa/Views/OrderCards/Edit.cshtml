@@ -1,4 +1,4 @@
-﻿@model DataLayer.Entities.OrderCard
+﻿@model Cursa.ViewModels.OrderCardVM.OrderCardCreateEditVM
 
 @{
     ViewData["Title"] = "Редактирование записи карты заказа";
@@ -25,33 +25,59 @@
             @*     <input asp-for="Path" class="form-control" /> *@
             @*     <span asp-validation-for="Path" class="text-danger"></span> *@
             @* </div> *@
-            <input type="hidden" asp-for="ProductId"/>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control"/>
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control"/>
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedDate" class="control-label"></label>
-                <input asp-for="ModifiedDate" class="form-control"/>
-                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedUserId" class="control-label"></label>
-                <select asp-for="CreatedUserId" class="form-control" asp-items="ViewBag.CreatedUserId"></select>
-                <span asp-validation-for="CreatedUserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedUserId" class="control-label"></label>
-                <select asp-for="ModifiedUserId" class="form-control" asp-items="ViewBag.ModifiedUserId"></select>
-                <span asp-validation-for="ModifiedUserId" class="text-danger"></span>
-            </div>
+            @* <input type="hidden" asp-for="ProductId"/> *@
+            @* <div class="form-group"> *@
+            @*     <label asp-for="EndDate" class="control-label"></label> *@
+            @*     <input asp-for="EndDate" class="form-control"/> *@
+            @*     <span asp-validation-for="EndDate" class="text-danger"></span> *@
+            @* </div> *@
+            @* <div class="form-group"> *@
+            @*     <label asp-for="CreatedDate" class="control-label"></label> *@
+            @*     <input asp-for="CreatedDate" class="form-control"/> *@
+            @*     <span asp-validation-for="CreatedDate" class="text-danger"></span> *@
+            @* </div> *@
+            @* <div class="form-group"> *@
+            @*     <label asp-for="ModifiedDate" class="control-label"></label> *@
+            @*     <input asp-for="ModifiedDate" class="form-control"/> *@
+            @*     <span asp-validation-for="ModifiedDate" class="text-danger"></span> *@
+            @* </div> *@
+            @* <div class="form-group"> *@
+            @*     <label asp-for="CreatedUserId" class="control-label"></label> *@
+            @*     <select asp-for="CreatedUserId" class="form-control" asp-items="ViewBag.CreatedUserId"></select> *@
+            @*     <span asp-validation-for="CreatedUserId" class="text-danger"></span> *@
+            @* </div> *@
+            @* <div class="form-group"> *@
+            @*     <label asp-for="ModifiedUserId" class="control-label"></label> *@
+            @*     <select asp-for="ModifiedUserId" class="form-control" asp-items="ViewBag.ModifiedUserId"></select> *@
+            @*     <span asp-validation-for="ModifiedUserId" class="text-danger"></span> *@
+            @* </div> *@
             <input type="hidden" asp-for="Id"/>
+            <div id="selected-caption">
+                            Выбрано <span id="selected-caption-num"></span> модулей
+                        </div>
+                        @{
+                            if (Model.ModulesVM != null)
+                            {
+                                <table>
+                                    @for (int moduleIndex = 0; moduleIndex < Model.ModulesVM.Count; moduleIndex++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.HiddenFor(x => x.ModulesVM[moduleIndex].Id)
+                                                @Html.HiddenFor(x => x.ModulesVM[moduleIndex].Name)
+                                                @Html.DisplayFor(x => x.ModulesVM[moduleIndex].Name)
+                                            </td>
+                                            @for (int i = 0; i < Model.ModulesVM[moduleIndex].Addresses.Length; i++)
+                                            {
+                                                <td>
+                                                    @Html.EditorFor(x => Model.ModulesVM[moduleIndex].Addresses[i], new {htmlAttributes = new {@class = $"address-check", data_col = $"{i}"}})
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                        }
             <div class="form-group">
                 <input type="submit" value="Сохранить" class="btn btn-primary"/>
             </div>
@@ -62,6 +88,18 @@
 <div>
     <a asp-action="GetOrderCardsForProduct" asp-route-productId="@Model.ProductId">К списку карт заказов</a>
 </div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        $(".address-check").change(function() {
+            let colNumber = $(this).attr("data-col");
+            $(`.address-check[data-col="${colNumber}"]`).prop("disabled", this.checked);
+            this.disabled = false;
+            let checkedNumber = $('.address-check:checked').length;
+                               $("#selected-caption-num").text(checkedNumber);
+        });
+    });
+</script>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

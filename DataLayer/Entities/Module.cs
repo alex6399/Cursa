@@ -31,6 +31,3 @@ namespace DataLayer.Entities
         // public virtual ICollection<OrderCardModules> OrderCardModulesCollection { get; set; }
     }
 }
-// TODO как сохранять вложенные сущности
-// добавить отдельную сущность характеристика, в которой будет ключ на Модуль,
-// но выводить в одной ViewModel
