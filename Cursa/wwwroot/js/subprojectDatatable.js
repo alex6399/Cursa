@@ -67,8 +67,12 @@
             {
                 "data": "createdDate", "name": "CreatedDate", "autoWidth": true,
                 "render": function (data, type, row) {
+                    
                     if (type === "display") {
-                        return moment(Date.parse(row.endDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                        if (data === null) {
+                        return "<span class=\"empty\">*Не указано</span>";
+                    }
+                        return moment(Date.parse(row.createdDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
                     }
                     return data;
                 }
@@ -77,6 +81,9 @@
                 "data": "endDate", "name": "EndDate", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
                         return moment(Date.parse(row.endDate)).format('DD.MM.YYYY');
                     }
                     return data;

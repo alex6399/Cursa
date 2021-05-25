@@ -179,12 +179,14 @@ namespace Cursa.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Products.Any(x => x.SerialNum == productDto.SerialNum))
+                if (_context.Products.Any(x => x.SerialNum == productDto.SerialNum
+                                               &&x.SerialNum!=null))
                 {
                     ModelState.AddModelError("SerialNum", "Серийный номер уже существует");
                 }
 
-                if (_context.Products.Any(x => x.CertifiedNum == productDto.CertifiedNum))
+                if (_context.Products.Any(x => x.CertifiedNum == productDto.CertifiedNum
+                                               &&x.CertifiedNum!=null))
                 {
                     ModelState.AddModelError("CertifiedNum", "Код уже используется");
                 }

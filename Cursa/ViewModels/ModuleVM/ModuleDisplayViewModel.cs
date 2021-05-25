@@ -22,7 +22,7 @@ namespace Cursa.ViewModels.ModuleVM
         public string SerialNumber { get; set; }
         [Display(Name = "№ места")]
         public int Place { get; set; }
-        [Display(Name = "Установлен по по К.З №")]
+        [Display(Name = "Установлен по К.З №")]
         public int ActualOrderCardId { get; set; }
         // [Display(Name = "Установлен по карте заказа")]
         // public virtual OrderCard ActualOrderCard { get; set; }

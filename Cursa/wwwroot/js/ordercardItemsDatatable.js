@@ -17,6 +17,7 @@ $(document).ready(function () {
         //         });
         //     });
         // },
+        "pageLength": 15,
         "searching": false,
         "processing": true,
         "serverSide": true,
@@ -38,7 +39,7 @@ $(document).ready(function () {
         },
         "columnDefs": [
             {
-                "targets": [0,1],
+                "targets": [0, 1],
                 "orderable": false
             }
         ],
@@ -47,8 +48,10 @@ $(document).ready(function () {
             {
                 "data": "addresses", "name": "Addresses", "autoWidth": true,
                 "render": function (data, type, row) {
-                        if (data.length===0&&type === "display") {
-                            return "<span class=\"empty\">LPBS</span>";
+                    if (row.addresses.length === 1
+                        && row.addresses[0] === 0
+                        && type === "display") {
+                        return "<span class=\"empty\">LPBS</span>";
                     }
                     return data;
                 }

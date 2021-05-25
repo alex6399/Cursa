@@ -152,41 +152,18 @@ namespace Cursa.Controllers
                 var id = Request.Form["OrderCardId"].FirstOrDefault();
                 var orderCardId = id != null ? Convert.ToInt32(id) : 0;
 
-                var projectsData = _context.OrderCardItems
+                var projectsData = _context.Modules
                     .AsNoTracking()
-                    .Include(x=>x.ModuleType)
-                    .Where(x => x.OrderCardId == orderCardId)
-                    .Select(x=>new
+                    .Include(x => x.ModuleType)
+                    .Where(x => x.DestinationOrderCardId == orderCardId)
+                    .ToList()
+                    .GroupBy(x => x.ModuleType.Name)
+                    .Select(x => new OrderCardSummaryModule
                     {
-                        ModuleTypeName=x.ModuleType.Name,
-                        Addresses=x.Addresses
+                        ModuleTypeName = x.Key,
+                        Addresses = x.Select(m => m.Place)
                     });
-                    // .Include(x => x.OrderCardItems)
-                    // .ThenInclude(x => x.ModuleType)
-                    // .Where(x => x.Id == orderCardId)
-                    // .Select(o=>new
-                    // {
-                    //     Modules=o.OrderCardItems.Select(items=>new
-                    //     {
-                    //         moduleTypeName=items.ModuleType.Name,
-                    //         moduleAddresses=items.Addresses
-                    //     })
-                    // });
-
-                // _mapper.ProjectTo<OrderCardDisplayViewModel>(_context.OrderCards
-                // .AsNoTracking()
-                // .Where(p => p.ProductId == productId));
-
-                // if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                // {
-                //     projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
-                // }
-                //
-                // if (!string.IsNullOrEmpty(searchGlobalValue))
-                // {
-                //     projectsData = projectsData.Where(m => m.OrderCardItems. .Name.Contains(searchGlobalValue));
-                // }
-
+                
                 var recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new
@@ -240,7 +217,7 @@ namespace Cursa.Controllers
                 ProductId = product.Id,
                 systemUnit = new BaseViewModel()
                 {
-                    Id =systemUnit.Id,
+                    Id = systemUnit.Id,
                     Name = systemUnit.Name
                 },
                 ModulesVM = modules
@@ -251,10 +228,8 @@ namespace Cursa.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            //[Bind("Name,Number,Path,ProductId,Id")]
-            [FromForm] OrderCardCreateEditVM orderCardVM)
+        [ValidateAntiForgeryToken] //[Bind("Name,Number,Path,ProductId,Id")]
+        public async Task<IActionResult> Create([FromForm] OrderCardCreateEditVM orderCardVM)
         {
             if (ModelState.IsValid)
             {
@@ -263,7 +238,9 @@ namespace Cursa.Controllers
                     ModelState.AddModelError("Number", "Такой cерийный № уже используется");
                 }
 
-                if (ModelState.IsValid && orderCardVM.ModulesVM != null)
+                if (ModelState.IsValid 
+                    && orderCardVM.ModulesVM != null
+                    &&  orderCardVM.systemUnit != null)
                 {
                     var selectedModuleTypes = orderCardVM.ModulesVM
                         .Where(x => x.Addresses.Any(a => a))
@@ -273,13 +250,11 @@ namespace Cursa.Controllers
                         ModelState.AddModelError(string.Empty, "Пустая конфигурация модулей!");
                         return View(orderCardVM);
                     }
-
-                    // var selectedPlaces = new List<int>();
+                    
                     var selectedPlaces = new Dictionary<int, int>();
-                    foreach (var moduleType
-                        in selectedModuleTypes)
+                    foreach (var moduleType in selectedModuleTypes)
                     {
-                        for (int place=1, i = 0; i < moduleType.Addresses.Length; i++,place++)
+                        for (int place = 1, i = 0; i < moduleType.Addresses.Length; i++, place++)
                         {
                             if (moduleType.Addresses[i])
                             {
@@ -296,54 +271,29 @@ namespace Cursa.Controllers
                         }
                     }
 
-                    var reverseSelectedPlaces = new Dictionary<int, List<int>>();
-                    foreach (var kvp in selectedPlaces)
-                    {
-                        if (!reverseSelectedPlaces.ContainsKey(kvp.Value))
-                        {
-                            reverseSelectedPlaces.Add(kvp.Value, new List<int>() {kvp.Key});
-                        }
-                        else
-                        {
-                            reverseSelectedPlaces[kvp.Value].Add(kvp.Key);
-                        }
-                    }
-
                     var cardOrder = _mapper.Map<OrderCardCreateEditVM, OrderCard>(orderCardVM);
                     cardOrder.AddressesModule = selectedPlaces;
                     try
                     {
-                        foreach (var kvp in reverseSelectedPlaces)
+                        foreach (var kvp in selectedPlaces)
                         {
-                            _context.Add(new OrderCardItem()
+                            _context.Add(new Module()
                             {
-                                // // DestinationOrderCardId = orderCardVM.Id,
-                                // // ActualOrderCardId = orderCardVM.Id,
-                                // DestinationOrderCard = cardOrder,
-                                OrderCard = cardOrder,
-                                ModuleTypeId = kvp.Key,
-                                Addresses = reverseSelectedPlaces[kvp.Key]
+                                DestinationOrderCard = cardOrder,
+                                ActualOrderCard = cardOrder,
+                                ModuleTypeId = kvp.Value,
+                                Place = kvp.Key
                             });
-                            // _context.Add(new Module()
-                            // {
-                            //     // DestinationOrderCardId = orderCardVM.Id,
-                            //     // ActualOrderCardId = orderCardVM.Id,
-                            //     DestinationOrderCard = cardOrder,
-                            //     ActualOrderCard = cardOrder,
-                            //     ModuleTypeId = kvp.Value,
-                            //     Place = kvp.Key
-                            // });
                         }
-
-
-                        if (orderCardVM.systemUnit != null)
-                            _context.Add(new OrderCardItem()
+                        _context.Add(new Module()
                             {
-                                OrderCard = cardOrder,
+                                DestinationOrderCard = cardOrder,
+                                ActualOrderCard = cardOrder,
                                 ModuleTypeId = orderCardVM.systemUnit.Id,
-                                Addresses = new List<int>()
+                                Place = -1
                             });
-                        // _context.Add(cardOrder);
+
+                        _context.Add(cardOrder);
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(GetOrderCardsForProduct),
                             new {productId = cardOrder.ProductId});
@@ -377,10 +327,52 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
+            var systemUnit =
+                await _context.Modules
+                    .Include(x => x.ModuleType)
+                    .FirstOrDefaultAsync(x => x.DestinationOrderCardId == id && !x.ModuleType.IsCommunicationDevice);
+            int addressLength = systemUnit.ModuleType.NumberConnectionPoints;
+            
+            var modules = _context.Modules
+                .Include(x => x.ModuleType)
+                .AsNoTracking()
+                .Where(x => x.DestinationOrderCardId == id && x.ModuleType.IsCommunicationDevice)
+                .ToList();
+            
+            var cardModules = modules.GroupBy(x => x.ModuleType.Id)
+                .Select(x => new OrderCardCreateEditModuleVM
+                {
+                    Id = x.Key,
+                    Name = x.First().ModuleType.Name,
+                    Addresses = SetAddress(x.Select(m =>--m.Place), addressLength)
+                })
+                .ToList();
+
             // ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", orderCard.CreatedUserId);
             // ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id", orderCard.ModifiedUserId);
             // ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderCard.ProductId);
-            return View(new OrderCardCreateEditVM());
+            return View(new OrderCardCreateEditVM()
+            {
+                ProductId = orderCard.ProductId,
+                Name = orderCard.Name,
+                Number = orderCard.Number,
+                systemUnit = new BaseViewModel()
+                {
+                    Id = systemUnit.Id,
+                    Name = systemUnit.ModuleType.Name
+                },
+                ModulesVM = cardModules
+            });
+        }
+
+        private static bool[] SetAddress(IEnumerable<int> places, int addressLength)
+        {
+            var addresses = new bool[addressLength];
+            foreach (var place in places)
+            {
+                addresses[place] = true;
+            }
+            return addresses;
         }
 
         // POST: OrderCards/Edit/5
@@ -389,24 +381,70 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Name,Number,Path,ProductId,EndDate,CreatedDate,ModifiedDate,CreatedUserId,ModifiedUserId,Id")]
-            OrderCardCreateEditVM orderCard)
+            //[Bind("Name,Number,Path,ProductId,EndDate,CreatedDate,ModifiedDate,CreatedUserId,ModifiedUserId,Id")]
+            OrderCardCreateEditVM orderCardVM)
         {
-            if (id != orderCard.Id)
+            if (id != orderCardVM.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && orderCardVM.ModulesVM != null)
             {
+                var selectedModuleTypes = orderCardVM.ModulesVM
+                    .Where(x => x.Addresses.Any(a => a))
+                    .ToList();
+                
+                /// + добавить не выбранные модули
+                if (selectedModuleTypes.Count == 0)
+                {
+                    ModelState.AddModelError(string.Empty, "Пустая конфигурация модулей!");
+                    return View(orderCardVM);
+                }
+                
+                var selectedPlaces = new Dictionary<int, int>();
+                foreach (var moduleType in selectedModuleTypes)
+                {
+                    for (int place = 1, i = 0; i < moduleType.Addresses.Length; i++, place++)
+                    {
+                        if (moduleType.Addresses[i])
+                        {
+                            if (!selectedPlaces.ContainsKey(place))
+                            {
+                                selectedPlaces.Add(place, moduleType.Id);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError(string.Empty, "Неверная конфигурация модулей!");
+                                return View(orderCardVM);
+                            }
+                        }
+                    }
+                }
+
+                var cardOrder = _mapper.Map<OrderCardCreateEditVM, OrderCard>(orderCardVM);
+
+                var modulesUpdate = new List<Module>();
+                foreach (var kvp in selectedPlaces)
+                {
+                    modulesUpdate.Add(new Module()
+                    {
+                        // тут нужно еще как-то id получить модуля из БД
+                        DestinationOrderCard = cardOrder,
+                        ActualOrderCard = cardOrder,
+                        ModuleTypeId = kvp.Value,
+                        Place = kvp.Key
+                    });
+                }
+                //cardOrder.Modules.Add();
                 try
                 {
-                    _context.Update(orderCard);
+                    _context.Update(orderCardVM);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderCardExists(orderCard.Id))
+                    if (!OrderCardExists(orderCardVM.Id))
                     {
                         return NotFound();
                     }
@@ -416,12 +454,13 @@ namespace Cursa.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = orderCard.ProductId});
+                return RedirectToAction(nameof(GetOrderCardsForProduct), new {productId = orderCardVM.ProductId});
             }
+
             // ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id", orderCard.CreatedUserId);
             // ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id", orderCard.ModifiedUserId);
             // ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderCard.ProductId);
-            return View(orderCard);
+            return View(orderCardVM);
         }
 
         // GET: OrderCards/Delete/5

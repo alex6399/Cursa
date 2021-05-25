@@ -32,6 +32,7 @@ namespace Cursa.AutoMapper
             //         => act.MapFrom(m => m.Owner.Name))
             //     ;
             CreateMap<OrderCard, BaseViewModel>();
+            CreateMap<OrderCard, OrderCardBaseViewModel>().ReverseMap();
         }
     }
 }

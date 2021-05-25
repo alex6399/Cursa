@@ -5,6 +5,7 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cursa.ViewModels.ModuleVM;
+using Cursa.ViewModels.OrderCardVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -166,13 +167,50 @@ namespace Cursa.Controllers
         }
 
         // GET: Modules/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int cardOrderId)
         {
+            var cardOrder = await _context.OrderCards.FirstOrDefaultAsync(x => x.Id == cardOrderId);
+            if (cardOrder == null)
+            {
+                return NotFound();
+            }
+
+            var addressesModules = cardOrder.AddressesModule;
+            var modules = _context.OrderCardItems
+                .Where(x => x.OrderCardId == cardOrderId)
+                .Include(x => x.ModuleType)
+                .Select(x => new ModuleCreateEditViewModel()
+                {
+                    ModuleTypeId = x.ModuleTypeId,
+                    ModuleTypeName = x.ModuleType.Name,
+                    ActualOrderCard = new OrderCardBaseViewModel()
+                    {
+                        Id = x.OrderCardId,
+                        Name = x.OrderCard.Name,
+                        Number = x.OrderCard.Number
+                    }
+                });
+            foreach (var moduleCreateEditViewModel in modules)
+            {
+                moduleCreateEditViewModel.Place = 
+                    addressesModules[moduleCreateEditViewModel.ModuleTypeId];
+            }
+            // var modules = new List<ModuleCreateEditViewModel>();
+            // var addressesModules = cardOrder.AddressesModule;
+            // foreach (var kvp in addressesModules)
+            // {
+            //     modules.Add(new ModuleCreateEditViewModel()
+            //     {
+            //         ModuleTypeId = kvp.Value,
+            //         Place = kvp.Key
+            //     });
+            // }
+
             ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
-            ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
-            ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code");
+            // ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id");
+            // ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
