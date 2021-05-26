@@ -1,7 +1,7 @@
-﻿@model Cursa.ViewModels.SubProjectVM.SubProjectComplexDisplayViewModel
+﻿@model Cursa.ViewModels.ModuleRegisterVM.ModuleRegisterViewModel
 
 @{
-    ViewData["Title"] = "Реестр проектов";
+    ViewData["Title"] = "Реестр модулей";
 }
 
 <h4>@ViewData["Title"]</h4>
@@ -13,38 +13,35 @@
 @*         </svg>Добавить *@
 @*     </a> *@
 @* </p> *@
-<table id="registerProjectDatatable" class="hover compact order-column" style="width:100%">
+<table id="moduleRegisterDatatable" class="hover row-border compact order-column" style="width:100%">
     <thead>
     <tr>
+        <th></th>
         <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Id)
+            @Html.DisplayNameFor(model => model.ModuleTypeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SerialNumber)
         </th>
 
         <th>
-            Владелец
+            @Html.DisplayNameFor(model => model.DestOrderCardNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectName)
+            @Html.DisplayNameFor(model => model.ActualOrderCardNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </th> <th>
+            @Html.DisplayNameFor(model => model.ProductNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SubProjectName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ManufacturingData)
         </th>
 
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Code)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Employee.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.StatusName)
-        </th>
-        <th>
-            Контрагент
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SubProjectVM.Contract)
-        </th>
         @* <th> *@
         @*     @Html.DisplayNameFor(model => model.SubProjectVM.CreatedDate) *@
         @* </th> *@
@@ -69,36 +66,27 @@
             <!--ProjectName -->
         </th>
         <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.Name)
+
         </th>
         <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.Code)
+
         </th>
         <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.Employee.FullName)
+
         </th>
         <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.StatusName)
+
+        </th><th class="search">
+
         </th>
         <th class="search">
-             Контрагент
+
         </th>
-        <th class="search">
-            @Html.DisplayNameFor(model => model.SubProjectVM.Contract)
-        </th>
-        @* <th> *@
-        @* *@
-        @* </th> *@
-        @* <th> *@
-        @* *@
-        @* </th> *@
-        @* <th> *@
-        @* </th> *@
     </tr>
     </tfoot>
 </table>
 <script>
-        let projectId=@Model.ProjectId;
+       
 </script>
 
 @section Scripts
@@ -106,7 +94,7 @@
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/moment.js/moment.js"></script>
-    <script src="~/js/registerProjectDatatable.js"></script>
+    <script src="~/js/moduleRegisterDatatable.js"></script>
 }
 
 <style>

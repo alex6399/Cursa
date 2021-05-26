@@ -34,5 +34,7 @@ namespace DataLayer.Entities
         [Display(Name = "Описание")]
         [MaxLength(300)]
         public string Description { get; set; }
+
+        public ICollection<OrderCard> OrderCards { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Cursa.ViewModels.ModuleVM
         [Display(Name = "№ места")]
         public int Place { get; set; }
         [Display(Name = "Установлен по К.З №")]
-        public int ActualOrderCardId { get; set; }
+        public int? ActualOrderCardId { get; set; }
         // [Display(Name = "Установлен по карте заказа")]
         // public virtual OrderCard ActualOrderCard { get; set; }
         [Display(Name = "Дата заказа")]

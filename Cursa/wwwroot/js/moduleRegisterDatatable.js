@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    let table = $('#registerProjectDatatable').DataTable({
+    let table = $('#moduleRegisterDatatable').DataTable({
         initComplete: function () {
             this.api().columns().every(function () {
                 var that = this;
@@ -19,12 +19,12 @@
         "serverSide": true,
         "filter": true,
         "ajax": {
-            "url": "/ProjectRegister/FindProjectRegister",
+            "url": "/ModuleRegister/FindModuleRegister",
             "type": "POST",
             "datatype": "json"
         },
         "language": {
-            "url": '../language/Russian.json'
+            "url": '/language/Russian.json'
         },
         "search": {
             "caseInsensitive": false
@@ -43,26 +43,28 @@
         ],
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
-            {"data": "owner", "name": "Owner", "autoWidth": true},
-            {"data": "projectName", "name": "ProjectName", "autoWidth": true},
+            {"data": "moduleTypeName", "name": "moduleTypeName", "autoWidth": true},
+            {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true},
             {
-                "data": "name", "name": "Name", "autoWidth": true,
+                "data": "destOrderCardNumber", "name": "destOrderCardNumber", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display" || type === "filter") {
                         return '<a href="/Products/GetProductsForSubProject?subProjectId=' +
                             row.id +
                             '" >' +
-                            row.name +
+                            row.destOrderCardNumber +
                             "</a>";
                     }
                     return data;
                 }
             },
-            {"data": "code", "name": "Code", "autoWidth": true},
-            {"data": "employee.fullName", "name": "employee.fullName", "width": "30px"},
-            {"data": "statusName", "name": "StatusName", "autoWidth": true},
-            {"data": "contractor", "name": "Contractor", "autoWidth": true},
-            {"data": "contract", "name": "Contract", "autoWidth": true},
+            {"data": "actualOrderCardNumber", "name": "actualOrderCardNumber", "autoWidth": true},
+            {"data": "productName", "name": "productName", "width": "30px"},
+            {"data": "productNumber", "name": "productNumber", "width": "30px"},
+            {"data": "subProjectName", "name": "subProjectName", "autoWidth": true},
+            {"data": "manufacturingData", "name": "manufacturingData", "autoWidth": true}
+            // {"data": "contractor", "name": "Contractor", "autoWidth": true},
+            // {"data": "contract", "name": "Contract", "autoWidth": true},
             // ,
             // {
             //     "render": function (data, type, row) {
@@ -72,15 +74,16 @@
             //             '</svg></a>';
             //     }
             // }
-        ],
-        "rowCallback": function (row, data) {
-            if (data.statusName.toLowerCase() === "завершен") {
-                $(row).addClass('in_progress');
-            }
-            // console.log("Строка в таблице", row, data);
-        }
+        ]
+        //,
+        // "rowCallback": function (row, data) {
+        //     if (data.statusName.toLowerCase() === "завершен") {
+        //         $(row).addClass('in_progress');
+        //     }
+        //     // console.log("Строка в таблице", row, data);
+        // }
     });
-    $('#registerProjectDatatable tfoot th.search').each(function () {
+    $('#moduleRegisterDatatable tfoot th.search').each(function () {
         let title = $(this).text();
         $(this).html('<input type="text" placeholder="Поиск" class="form-control form-control-sm" />');
     });
