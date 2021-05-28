@@ -17,8 +17,8 @@ namespace DataLayer.Entities
         public ProductSubType ProductSubType { get; set; }
         [Display(Name = "Описание")]
         public string Description { get; set; }
-        [Display(Name = "Дата создания")]
-        public DateTime? CreatedDate { get; set; }
+        // [Display(Name = "Дата создания")]
+        // public DateTime? CreatedDate { get; set; }
         public ICollection<Product> Products { get; set; }
     }
 }

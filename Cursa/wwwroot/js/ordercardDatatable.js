@@ -44,7 +44,7 @@ $(document).ready(function () {
             }
             ,
             {
-                "targets": [4],
+                "targets": [5],
                 "orderable": false
             }
         ],
@@ -68,6 +68,9 @@ $(document).ready(function () {
             },
             {
                 "data": "number", "name": "Number", "autoWidth": true
+            },
+            {
+                "data": "employeeName", "name": "EmployeeName", "autoWidth": true
             },
             {
                 "render": function (data, type, row) {

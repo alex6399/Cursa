@@ -55,6 +55,11 @@
                 <label class="control-label">Системный блок</label>
                 <input class="form-control" disabled value="@Model.systemUnit.Name">
             </div>
+            <div class="form-group">
+                <label asp-for="EmployeeId" class="control-label"></label>
+                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"></select>
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
             <input type="hidden" asp-for="Id"/>
             <input type="hidden" asp-for="ProductId" class="form-control"/>
             <input type="hidden" asp-for="systemUnit.Id" class="form-control"/>

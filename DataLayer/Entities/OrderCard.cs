@@ -23,11 +23,17 @@ namespace DataLayer.Entities
         [Display(Name = "Продукт")] public int ProductId { get; set; }
         [Display(Name = "Продукт")] public Product Product { get; set; }
 
-        [Display(Name = "Дата завершения")] public DateTime? EndDate { get; set; }
+        // [Display(Name = "Дата завершения")] public DateTime? EndDate { get; set; }
+
+        [Display(Name = "Ответственный сотрудник")]
+        public int EmployeeId { get; set; }
+
+        [Display(Name = "Ответственный")] 
+        public virtual Employee Employee { get; set; }
 
         // Start : Json поппытка
-        [Column(TypeName = "jsonb")]
-        public Dictionary<int, int> AddressesModule { get; set; }
+        [Column(TypeName = "jsonb")] 
+        public List<int> UnSelectedModuleTypes { get; set; }
         // End : Json поппытка
 
         public virtual ICollection<Module> Modules { get; set; }

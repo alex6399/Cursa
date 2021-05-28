@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cursa.ViewModels.SubProjectVM
 {
@@ -13,10 +14,17 @@ namespace Cursa.ViewModels.SubProjectVM
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
         [Display(Name = "Наименование подпроекта")]
+        [Remote("IsNameSubProjectExist","SubProjects",
+            ErrorMessage = "Подпроект уже существует",
+            AdditionalFields = "Id")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
         [Display(Name = "Код")]
+        [RegularExpression(@"((^[0-9]+)|(^П-[0-9]+))((\.)*[0-9])*",ErrorMessage = "Неверный формат")]
+        [Remote("IsCodeSubProjectExist","SubProjects",
+            ErrorMessage = "Подпроект уже существует",
+            AdditionalFields = "Id")]
         public string Code { get; set; }
         [Display(Name = "Ответственный сотрудник")]
         public int EmployeeId { get; set; }

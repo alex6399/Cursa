@@ -260,13 +260,13 @@ namespace DataLayer
             // End: unique constraint
 
             // Start: default created datetime 
-            modelBuilder.Entity<Status>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<StatusType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Owner>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<Contractor>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<ProductType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
-            modelBuilder.Entity<ModuleType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Status>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            //modelBuilder.Entity<Department>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<StatusType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Owner>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            // modelBuilder.Entity<Contractor>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            //modelBuilder.Entity<ProductType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
+            //modelBuilder.Entity<ModuleType>().Property(p => p.CreatedDate).HasDefaultValueSql("NOW()");
             // End: default created datetime 
         }
 
@@ -305,6 +305,8 @@ namespace DataLayer
                             baseEntityTracking.CreatedUserId = userId;
                             break;
                         case EntityState.Modified:
+                            Entry(baseEntityTracking).Property(x => x.CreatedDate).IsModified = false;
+                            Entry(baseEntityTracking).Property(x => x.CreatedUserId).IsModified = false;
                             baseEntityTracking.ModifiedDate = DateTime.UtcNow;
                             baseEntityTracking.ModifiedUserId = userId;
                             break;

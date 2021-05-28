@@ -6,7 +6,9 @@ namespace Cursa.Validation.Project
     {
         public ProjectValidator()
         {
-            RuleFor(p => p.Code).NotEmpty();
+            RuleFor(p => p.Code)
+                .Matches("^[0-9]+")
+                .WithMessage("Неверный формат");
 
         }
     }

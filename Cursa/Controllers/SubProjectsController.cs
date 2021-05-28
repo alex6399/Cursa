@@ -28,16 +28,6 @@ namespace Cursa.Controllers
             _logger = logger;
         }
 
-        // GET: SubProjects
-        // public async Task<IActionResult> Index()
-        // {
-        //     var efDbContext = _context.SubProjects.AsNoTracking()
-        //         .Include(s => s.Employee)
-        //         .Include(s => s.Project)
-        //         .Include(s => s.Status);
-        //     return View(await efDbContext.ToListAsync());
-        // }
-
         [HttpGet]
         public async Task<IActionResult> GetSubProject(int? projectId)
         {
@@ -48,7 +38,7 @@ namespace Cursa.Controllers
 
             var result =
                 await _context.Projects.FirstOrDefaultAsync(p =>
-                    p.Id == projectId); // TODO нужна ли эта проверка вообще
+                    p.Id == projectId);
             if (result == null)
             {
                 return NotFound();
@@ -60,32 +50,6 @@ namespace Cursa.Controllers
                 ProjectName = result.Name
             });
         }
-
-        // public async Task<IActionResult> GetSubProjectById(int? projectId) // TODO нужно переделать под Datatable
-        // {
-        //     if (projectId == null)
-        //     {
-        //         _logger.LogInformation("Страница не найдена");
-        //         return NotFound();
-        //     }
-        //
-        //     var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
-        //     if (project == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     var efDbContext = _context.SubProjects
-        //         .Include(s => s.Employee)
-        //         .Include(s => s.Project)
-        //         .Include(s => s.Status)
-        //         .Where(sp => sp.ProjectId == projectId);
-        //     ViewData["ProjectId"] = project.Id; // TODO какие-то приколы с Nullable (int?) 
-        //     // без проверки на null возвращается всегда null
-        //     ViewData["ProjectName"] = project.Name;
-        //     return View(await efDbContext.ToListAsync());
-        // }
-
 
         [HttpPost]
         public IActionResult FindSubProjects()
@@ -151,7 +115,7 @@ namespace Cursa.Controllers
                 {
                     projectsData = projectsData.Where(m => m.Contract.Contains(searchContractValue));
                 }
-                
+
 
                 var recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
@@ -178,6 +142,8 @@ namespace Cursa.Controllers
                 .Include(s => s.Employee)
                 .Include(s => s.Project)
                 .Include(s => s.Status)
+                .Include(p => p.ModifiedUser)
+                .Include(p => p.CreatedUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (subProject == null)
             {
@@ -202,8 +168,8 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses.Where(x=>x.StatusTypeId==1), "Id", "Name");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+            ViewData["StatusId"] = new SelectList(_context.Statuses.Where(x => x.StatusTypeId == 1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
             return View(new SubProjectCreateEditViewModel
@@ -215,50 +181,38 @@ namespace Cursa.Controllers
         // POST: SubProjects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,EndDate")]
+        public async Task<IActionResult> Create(
+            [Bind("ProjectId,Name,Code,EmployeeId,StatusId,Contract,ContractorId,Description,EndDate")]
             SubProjectCreateEditViewModel subProjectDTO)
         {
             if (ModelState.IsValid)
             {
-                if (_context.SubProjects.Any(x => x.Name == subProjectDTO.Name))
+                var subProject = _mapper.Map<SubProjectCreateEditViewModel, SubProject>(subProjectDTO);
+                _context.Add(subProject);
+                try
                 {
-                    ModelState.AddModelError("Name", "Подпроект уже существует");
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(GetSubProject), new {projectId = subProjectDTO.ProjectId});
                 }
-
-                if (_context.SubProjects.Any(x => x.Code == subProjectDTO.Code))
+                catch (DbUpdateException e)
                 {
-                    ModelState.AddModelError("Code", "Код уже используется");
-                }
-
-                if (ModelState.IsValid)
-                {
-                    var subProject = _mapper.Map<SubProjectCreateEditViewModel, SubProject>(subProjectDTO);
-                    _context.Add(subProject);
-                    try
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_SubProjects_Name"))
                     {
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(GetSubProject), new {projectId = subProjectDTO.ProjectId});
+                        ModelState.AddModelError("Name", "Подпроект уже существует");
                     }
-                    catch (DbUpdateException e)
-                    {
-                        var exception = e.InnerException;
-                        if (exception != null && exception.Message.Contains("IX_SubProjects_Name"))
-                        {
-                            ModelState.AddModelError("Name", "Подпроект уже существует");
-                        }
 
-                        if (exception != null && exception.Message.Contains("IX_SubProjects_Code"))
-                        {
-                            ModelState.AddModelError("Code", "Такой код уже используется");
-                        }
+                    if (exception != null && exception.Message.Contains("IX_SubProjects_Code"))
+                    {
+                        ModelState.AddModelError("Code", "Такой код уже используется");
                     }
                 }
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x=>x.StatusTypeId==1), "Id", "Name");
+                .Where(x => x.StatusTypeId == 1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             return View(subProjectDTO);
         }
@@ -279,9 +233,9 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x=>x.StatusTypeId==1), "Id", "Name");
+                .Where(x => x.StatusTypeId == 1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
             return View(subProjectDTO);
         }
@@ -334,11 +288,11 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x=>x.StatusTypeId==1), "Id", "Name");
+                .Where(x => x.StatusTypeId == 1), "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
-            
+
             return View(subProjectDTO);
         }
 
@@ -373,7 +327,7 @@ namespace Cursa.Controllers
             {
                 _context.SubProjects.Remove(subProject);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(GetSubProject), new {projectId=subProject.ProjectId});
+                return RedirectToAction(nameof(GetSubProject), new {projectId = subProject.ProjectId});
             }
             catch (DbUpdateException e)
             {
@@ -387,6 +341,54 @@ namespace Cursa.Controllers
         private bool SubProjectExists(int id)
         {
             return _context.SubProjects.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public JsonResult IsCodeSubProjectExist(string Code, int? Id)
+        {
+            if (Id == null)
+            {
+                return Json(!_context.SubProjects.Any(x => x.Code == Code));
+            }
+            else
+            {
+                return Json(!_context.SubProjects.Any(x => x.Code == Code
+                                                           && x.Id != Id));
+            }
+        }
+
+        [HttpGet]
+        public JsonResult IsNameSubProjectExist(string Name, int? Id)
+        {
+            if (Id == null)
+            {
+                return Json(!_context.SubProjects.Any(x => x.Name == Name));
+            }
+            else
+            {
+                return Json(!_context.SubProjects.Any(x => x.Name == Name
+                                                           && x.Id != Id));
+            }
+        }
+        
+        public IActionResult GetSubProjects( int projectId)
+        {
+            var countries = _context.SubProjects.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where (x=>x.ProjectId==projectId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name+"("+x.Code+")"
+                    }).ToList();
+            var projectStartEmpty = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выбирете подпроект"
+            };
+            countries.Insert(0, projectStartEmpty);
+            return Json(new SelectList(countries, "Value", "Text"));
         }
     }
 }

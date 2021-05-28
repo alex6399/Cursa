@@ -18,5 +18,8 @@ namespace Cursa.ViewModels.OrderCardVM
         public BaseViewModel Product { get; set; }
         [Display(Name = "Продукция")]
         public string ProductName { get; set; }
+        [Display(Name = "Ответственный")]
+
+        public string EmployeeName { get; set; }
     }
 }

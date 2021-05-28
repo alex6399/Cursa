@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -118,6 +119,8 @@ namespace Cursa.Controllers
             var project = await _context.Projects
                 .Include(p => p.Employee)
                 .Include(p => p.Owner)
+                .Include(p=>p.ModifiedUser)
+                .Include(p=>p.CreatedUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
@@ -146,18 +149,18 @@ namespace Cursa.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Projects.Any(x => x.Code == projectDTO.Code))
-                {
-                    ModelState.AddModelError("Code", "Код уже используется");
-                }
-
-                if (_context.Projects.Any(x => x.Name == projectDTO.Name))
-                {
-                    ModelState.AddModelError("Name", "Проект уже существует");
-                }
-
-                if (ModelState.IsValid)
-                {
+                // if (_context.Projects.Any(x => x.Code == projectDTO.Code))
+                // {
+                //     ModelState.AddModelError("Code", "Код уже используется");
+                // }
+                //
+                // if (_context.Projects.Any(x => x.Name == projectDTO.Name))
+                // {
+                //     ModelState.AddModelError("Name", "Проект уже существует");
+                // }
+                //
+                // if (ModelState.IsValid)
+                // {
                     var project = _mapper.Map<ProjectCreateViewModel, Project>(projectDTO);
                     _context.Add(project);
                     try
@@ -178,7 +181,7 @@ namespace Cursa.Controllers
                             ModelState.AddModelError("Code", "Такой код уже используется");
                         }
                     }
-                }
+                //}
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
@@ -187,11 +190,7 @@ namespace Cursa.Controllers
             return View(projectDTO);
         }
 
-        [HttpGet]
-        public JsonResult IsCodeProjectExist(string code)
-        {
-            return Json(!_context.Projects.Any(x => x.Code == code));
-        }
+        
 
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -255,8 +254,6 @@ namespace Cursa.Controllers
                     {
                         ModelState.AddModelError("Name", "Проект уже существует");
                     }
-
-                    // TODO причем это не выполнится за 1 операцию с предыдущим if
                     if (exception != null && exception.Message.Contains("IX_Projects_Code"))
                     {
                         ModelState.AddModelError("Code", "Такой код уже используется");
@@ -313,6 +310,53 @@ namespace Cursa.Controllers
         private bool ProjectExists(int id)
         {
             return _context.Projects.Any(e => e.Id == id);
+        }
+        
+        [HttpGet]
+        public JsonResult IsCodeProjectExist(string Code, int? Id)
+        {
+            if (Id==null)
+            {
+                return Json(!_context.Projects.Any(x => x.Code == Code));
+            }
+            else
+            {
+                return Json(!_context.Projects.Any(x => x.Code == Code
+                                                        && x.Id!=Id));
+            }
+        }
+
+        [HttpGet]
+        public JsonResult IsNameProjectExist(string Name,int? Id)
+        {
+            if (Id == null)
+            {
+                return Json(!_context.Projects.Any(x => x.Name == Name));
+            }
+            else
+            {
+                return Json(!_context.Projects.Any(x => x.Name == Name
+                                                        && x.Id!=Id));
+            }
+        }
+        
+        public IActionResult GetProjects()
+        {
+            var projects = _context.Projects.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name+"("+x.Code+")"
+                    }).ToList();
+            var projectStartEmpty = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выбирете проект"
+            };
+            projects.Insert(0, projectStartEmpty);
+            return Json(new SelectList(projects, "Value", "Text"));
         }
     }
 }

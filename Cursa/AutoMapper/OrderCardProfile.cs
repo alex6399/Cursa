@@ -20,6 +20,8 @@ namespace Cursa.AutoMapper
             //     .ForMember(dest=>dest.Modules)
 
             CreateMap<OrderCard, OrderCardDisplayViewModel>()
+                .ForMember(dest => dest.EmployeeName,
+                    act => act.MapFrom(m => m.Employee.FirstName + " " + m.Employee.MiddleName + " " + m.Employee.LastName))
                 .ForMember(dest => dest.ProductName,
                     act => act.MapFrom(src => src.Product.Name))
                 .ForMember(dest => dest.Product, act

@@ -28,17 +28,17 @@ namespace Cursa.Controllers
             _logger = logger;
         }
 
-        // GET: Modules
-        public async Task<IActionResult> Index()
-        {
-            var efDbContext = _context.Modules
-                .Include(x => x.ActualOrderCard)
-                // .Include(x => x.CreatedUser)
-                // // .Include(x => x.ModifiedUser)
-                .Include(x => x.DestinationOrderCard)
-                .Include(x => x.ModuleType);
-            return View(await efDbContext.ToListAsync());
-        }
+        // // GET: Modules
+        // public async Task<IActionResult> Index()
+        // {
+        //     var efDbContext = _context.Modules
+        //         .Include(x => x.ActualOrderCard)
+        //         // .Include(x => x.CreatedUser)
+        //         // // .Include(x => x.ModifiedUser)
+        //         .Include(x => x.DestinationOrderCard)
+        //         .Include(x => x.ModuleType);
+        //     return View(await efDbContext.ToListAsync());
+        // }
 
         [HttpGet]
         public async Task<IActionResult> GetModulesForCardOrder(int cardOrderId)
@@ -153,8 +153,9 @@ namespace Cursa.Controllers
 
             var @module = await _context.Modules
                 .Include(x => x.ActualOrderCard)
-                // .Include(x => x.CreatedUser)  
-                // .Include(x => x.ModifiedUser)
+                .Include(p => p.ModifiedUser)
+                .Include(p => p.CreatedUser)
+                .Include(p => p.Employee)
                 .Include(x => x.DestinationOrderCard)
                 .Include(x => x.ModuleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -166,77 +167,79 @@ namespace Cursa.Controllers
             return View(@module);
         }
 
-        // GET: Modules/Create
-        public async Task<IActionResult> Create(int cardOrderId)
-        {
-            var cardOrder = await _context.OrderCards.FirstOrDefaultAsync(x => x.Id == cardOrderId);
-            if (cardOrder == null)
-            {
-                return NotFound();
-            }
-
-            var addressesModules = cardOrder.AddressesModule;
-            var modules = _context.OrderCardItems
-                .Where(x => x.OrderCardId == cardOrderId)
-                .Include(x => x.ModuleType)
-                .Select(x => new ModuleCreateEditViewModel()
-                {
-                    ModuleTypeId = x.ModuleTypeId,
-                    ModuleTypeName = x.ModuleType.Name,
-                    ActualOrderCard = new OrderCardBaseViewModel()
-                    {
-                        Id = x.OrderCardId,
-                        Name = x.OrderCard.Name,
-                        Number = x.OrderCard.Number
-                    }
-                });
-            foreach (var moduleCreateEditViewModel in modules)
-            {
-                moduleCreateEditViewModel.Place = 
-                    addressesModules[moduleCreateEditViewModel.ModuleTypeId];
-            }
-            // var modules = new List<ModuleCreateEditViewModel>();
-            // var addressesModules = cardOrder.AddressesModule;
-            // foreach (var kvp in addressesModules)
-            // {
-            //     modules.Add(new ModuleCreateEditViewModel()
-            //     {
-            //         ModuleTypeId = kvp.Value,
-            //         Place = kvp.Key
-            //     });
-            // }
-
-            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
-            ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
-            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code");
-            // ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id");
-            // ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
-        }
-
-        // POST: Modules/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind(
-                "ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,IsInstalled,ActualOrderCardId,ManufacturingData,Id")]
-            Module module)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(module);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
-            ViewData["DestinationOrderCardId"] =
-                new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
-            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
-            return View(module);
-        }
+        // // GET: Modules/Create
+        // public async Task<IActionResult> Create(int cardOrderId)
+        // {
+        //     var cardOrder = await _context.OrderCards.FirstOrDefaultAsync(x => x.Id == cardOrderId);
+        //     if (cardOrder == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     var addressesModules = cardOrder.AddressesModule;
+        //     var modules = _context.OrderCardItems
+        //         .Where(x => x.OrderCardId == cardOrderId)
+        //         .Include(x => x.ModuleType)
+        //         .Select(x => new ModuleCreateEditViewModel()
+        //         {
+        //             ModuleTypeId = x.ModuleTypeId,
+        //             ModuleTypeName = x.ModuleType.Name,
+        //             ActualOrderCard = new OrderCardBaseViewModel()
+        //             {
+        //                 Id = x.OrderCardId,
+        //                 Name = x.OrderCard.Name,
+        //                 Number = x.OrderCard.Number
+        //             }
+        //         });
+        //     foreach (var moduleCreateEditViewModel in modules)
+        //     {
+        //         moduleCreateEditViewModel.Place = 
+        //             addressesModules[moduleCreateEditViewModel.ModuleTypeId];
+        //     }
+        //     // var modules = new List<ModuleCreateEditViewModel>();
+        //     // var addressesModules = cardOrder.AddressesModule;
+        //     // foreach (var kvp in addressesModules)
+        //     // {
+        //     //     modules.Add(new ModuleCreateEditViewModel()
+        //     //     {
+        //     //         ModuleTypeId = kvp.Value,
+        //     //         Place = kvp.Key
+        //     //     });
+        //     // }
+        //     ViewData["EmployeeId"] = new SelectList(_context.Employees
+        //         .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
+        //     ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
+        //     ViewData["DestinationOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name");
+        //     ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code");
+        //     // ViewData["CreatedUserId"] = new SelectList(_context.Users, "Id", "Id");
+        //     // ViewData["ModifiedUserId"] = new SelectList(_context.Users, "Id", "Id");
+        //     return View();
+        // }
+        //
+        // // POST: Modules/Create
+        // // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Create(
+        //     [Bind(
+        //         "ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,IsInstalled,ActualOrderCardId,ManufacturingData,Id,EmployeeId")]
+        //     Module module)
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         _context.Add(module);
+        //         await _context.SaveChangesAsync();
+        //         return RedirectToAction(nameof(GetModulesForCardOrder), new {cardOrderId=module.DestinationOrderCardId});
+        //     }
+        //     ViewData["EmployeeId"] = new SelectList(_context.Employees
+        //         .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
+        //     ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
+        //     ViewData["DestinationOrderCardId"] =
+        //         new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
+        //     ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
+        //     return View(module);
+        // }
 
         // GET: Modules/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -246,17 +249,39 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            var module = await _context.Modules.FindAsync(id);
+            var module = await _context.Modules
+                .Include(x=>x.ModuleType)
+                .Include(x=>x.DestinationOrderCard)
+                .FirstOrDefaultAsync(x=>x.Id==id);
+
             if (module == null)
             {
                 return NotFound();
             }
-
+            var projects = _context.Projects.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name+"("+x.Code+")"
+                    }).ToList();
+            var projectStartEmpty = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выбирете проект"
+            };
+            projects.Insert(0, projectStartEmpty);
+           
+            ViewData["ProjectId"]=new SelectList(projects, "Value", "Text"); 
+            var moduleVm = _mapper.Map<Module, ModuleCreateEditViewModel>(module);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
             ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
             ViewData["DestinationOrderCardId"] =
                 new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
             ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
-            return View(module);
+            return View(moduleVm);
         }
 
         // POST: Modules/Edit/5
@@ -266,16 +291,18 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
             [Bind(
-                "ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,IsInstalled,ActualOrderCardId,ManufacturingData,Id")]
-            Module module)
+                "ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,FirmwareVersion,EmployeeId,ActualOrderCardId,ManufacturingData,Id")]
+            ModuleCreateEditViewModel moduleVm)
         {
-            if (id != module.Id)
+            if (id != moduleVm.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var module = _mapper.Map<ModuleCreateEditViewModel, Module>(moduleVm);
+
                 try
                 {
                     _context.Update(module);
@@ -293,14 +320,18 @@ namespace Cursa.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(GetModulesForCardOrder),
+                    new {cardOrderId = moduleVm.DestinationOrderCardId});
             }
 
-            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees
+                .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
+            ViewData["ActualOrderCardId"] =
+                new SelectList(_context.OrderCards, "Id", "Name", moduleVm.ActualOrderCardId);
             ViewData["DestinationOrderCardId"] =
-                new SelectList(_context.OrderCards, "Id", "Name", @module.DestinationOrderCardId);
-            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
-            return View(module);
+                new SelectList(_context.OrderCards, "Id", "Name", moduleVm.DestinationOrderCardId);
+            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", moduleVm.ModuleTypeId);
+            return View(moduleVm);
         }
 
         // GET: Modules/Delete/5
@@ -315,6 +346,8 @@ namespace Cursa.Controllers
                 .Include(x => x.ActualOrderCard)
                 .Include(x => x.DestinationOrderCard)
                 .Include(x => x.ModuleType)
+                .Include(x => x.CreatedUser)
+                .Include(x => x.ModifiedUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (module == null)
             {
@@ -332,7 +365,7 @@ namespace Cursa.Controllers
             var @module = await _context.Modules.FindAsync(id);
             _context.Modules.Remove(@module);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(GetModulesForCardOrder), new {cardOrderId = module.DestinationOrderCardId});
         }
 
         private bool ModuleExists(int id)

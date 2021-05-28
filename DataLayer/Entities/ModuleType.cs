@@ -34,7 +34,7 @@ namespace DataLayer.Entities
         [MaxLength(160, ErrorMessage = "Максимальное количество 160 символов")]
         [Display(Name = "Примечание")]
         public string Description { get; set; }
-        [Display(Name = "Дата создания")] public DateTime? CreatedDate { get; set; }
+        // [Display(Name = "Дата создания")] public DateTime? CreatedDate { get; set; }
         public virtual ICollection<Module> Modules{ get; set; }
     }
 }

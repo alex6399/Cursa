@@ -14,8 +14,8 @@ namespace DataLayer.Entities
         [Display(Name = "Примечание")]
 
         public string Description { get; set; }
-        [Display(Name = "Дата создания")]
-        public DateTime? CreatedDate { get; set; }
+        // [Display(Name = "Дата создания")]
+        // public DateTime? CreatedDate { get; set; }
         [Display(Name = "Ответственный за проекты")]
         public bool IsResponsibleProjectsAndSubProjects { get; set; }
         [Display(Name = "Конструкторские работы")]

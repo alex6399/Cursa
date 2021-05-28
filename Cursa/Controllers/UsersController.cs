@@ -25,7 +25,8 @@ namespace Cursa.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(EfDbContext context, IMapper mapper, UserManager<User> userManager,SignInManager<User> signInManager,
+        public UsersController(EfDbContext context, IMapper mapper, UserManager<User> userManager,
+            SignInManager<User> signInManager,
             ILogger<UsersController> logger)
         {
             _context = context;
@@ -89,7 +90,12 @@ namespace Cursa.Controllers
                 recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new
-                    {draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data};
+                {
+                    draw = draw,
+                    recordsFiltered = recordsTotal,
+                    recordsTotal = recordsTotal,
+                    data = data
+                };
                 return Ok(jsonData);
             }
             catch (Exception)
@@ -245,9 +251,11 @@ namespace Cursa.Controllers
                 catch (DbUpdateException e)
                 {
                     _logger.LogInformation("{ExceptionMessage}", e.Message);
-                    ModelState.AddModelError(String.Empty, "Невозможно удалить, на данного пользователя имеются ссылки");
+                    ModelState.AddModelError(String.Empty,
+                        "Невозможно удалить, на данного пользователя имеются ссылки");
                 }
             }
+
             return View(user);
         }
 
@@ -331,7 +339,7 @@ namespace Cursa.Controllers
                     var resultAuth = await _signInManager.PasswordSignInAsync(
                         userName: user.Email, model.OldPassword,
                         false,
-                        lockoutOnFailure:true);
+                        lockoutOnFailure: true);
                     if (resultAuth.Succeeded)
                     {
                         await _signInManager.SignOutAsync();
@@ -361,6 +369,7 @@ namespace Cursa.Controllers
                     {
                         ModelState.AddModelError("OldPassword", "Неверный пароль!");
                     }
+
                     if (resultAuth.IsLockedOut)
                     {
                         ModelState.AddModelError(string.Empty, "Твой аккаунт заблокирован на 10 минут");

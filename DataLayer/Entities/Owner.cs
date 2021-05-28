@@ -11,8 +11,8 @@ namespace DataLayer.Entities
         [MaxLength(100)]
         [Display(Name="Отдел")]
         public string Name { get; set; }
-        [Display(Name="Дата создания")]
-        public DateTime? CreatedDate { get; set; }
+        // [Display(Name="Дата создания")]
+        // public DateTime? CreatedDate { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
        
     }

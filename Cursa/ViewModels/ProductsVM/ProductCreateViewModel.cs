@@ -2,15 +2,24 @@
 using System.ComponentModel.DataAnnotations;
 using Cursa.ViewModels.Base;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Cursa.ViewModels.ProductsVM
 {
     public class ProductCreateViewModel:BaseViewModel
     {
-        [Display(Name = "Серийный номер")]
+        [Display(Name = "Серийный №")]
+        [RegularExpression(@"^[0-9]+$",ErrorMessage = "Неверный формат")]
+        [Remote("IsSerialNumProductExist","Products",
+            ErrorMessage = "Серийный номер уже существует",
+            AdditionalFields = "Id")]
         public string SerialNum { get; set; }
-        [Display(Name = "Зав. номер")]
+        [Display(Name = "Зав. №")]
+        [RegularExpression(@"^[0-9]+$",ErrorMessage = "Неверный формат")]
+        [Remote("IsCertifiedNumProductExist","Products",
+            ErrorMessage = "Серийный номер уже существует",
+            AdditionalFields = "Id")]
         public string CertifiedNum { get; set; }
         [Display(Name = "Тип")]
         public int ProductTypeId { get; set; }

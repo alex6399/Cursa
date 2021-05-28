@@ -46,10 +46,20 @@ namespace Cursa
                     options.Lockout.MaxFailedAccessAttempts = 5;
                 })
                 .AddEntityFrameworkStores<EfDbContext>();
-            services.Configure<CookieAuthenticationOptions>(opt =>
+            services.ConfigureApplicationCookie(options =>
             {
-                opt.LoginPath = new PathString("/Login/Login");
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Login/Login";
+                // options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                // options.SlidingExpiration = true;
             });
+            // services.Configure<CookieAuthenticationOptions>(opt =>
+            // {
+            //     opt.LoginPath = new PathString("/Login/Login");
+            // });
             services.AddAutoMapper(typeof(Startup));
             
             services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -95,7 +105,7 @@ namespace Cursa
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Login}/{id?}");
-                // endpoints.MapRazorPages();
+                 endpoints.MapRazorPages();
             });
         }
     }

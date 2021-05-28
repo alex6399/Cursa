@@ -6,63 +6,57 @@
 
 <h1>Create</h1>
 
-<h4>Module</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ModuleTypeId" class="control-label"></label>
-                <select asp-for="ModuleTypeId" class ="form-control" asp-items="ViewBag.ModuleTypeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DestinationOrderCardId" class="control-label"></label>
-                <select asp-for="DestinationOrderCardId" class ="form-control" asp-items="ViewBag.DestinationOrderCardId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SerialNumber" class="control-label"></label>
-                <input asp-for="SerialNumber" class="form-control" />
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Place" class="control-label"></label>
-                <input asp-for="Place" class="form-control" />
-                <span asp-validation-for="Place" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActualOrderCardId" class="control-label"></label>
-                <select asp-for="ActualOrderCardId" class ="form-control" asp-items="ViewBag.ActualOrderCardId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ManufacturingData" class="control-label"></label>
-                <input asp-for="ManufacturingData" class="form-control" />
-                <span asp-validation-for="ManufacturingData" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedDate" class="control-label"></label>
-                <input asp-for="ModifiedDate" class="form-control" />
-                <span asp-validation-for="ModifiedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedUserId" class="control-label"></label>
-                <select asp-for="CreatedUserId" class ="form-control" asp-items="ViewBag.CreatedUserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedUserId" class="control-label"></label>
-                <select asp-for="ModifiedUserId" class ="form-control" asp-items="ViewBag.ModifiedUserId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+@* <h4>Module</h4> *@
+@* <hr /> *@
+@* <div class="row"> *@
+@*     <div class="col-md-4"> *@
+@*         <form asp-action="Create"> *@
+@*             <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="ModuleTypeId" class="control-label"></label> *@
+@*                 <select asp-for="ModuleTypeId" class ="form-control" asp-items="ViewBag.ModuleTypeId"></select> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="DestinationOrderCardId" class="control-label"></label> *@
+@*                 <select asp-for="DestinationOrderCardId" class ="form-control" asp-items="ViewBag.DestinationOrderCardId"></select> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="SerialNumber" class="control-label"></label> *@
+@*                 <input asp-for="SerialNumber" class="form-control" /> *@
+@*                 <span asp-validation-for="SerialNumber" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Place" class="control-label"></label> *@
+@*                 <input asp-for="Place" class="form-control" /> *@
+@*                 <span asp-validation-for="Place" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="ActualOrderCardId" class="control-label"></label> *@
+@*                 <select asp-for="ActualOrderCardId" class ="form-control" asp-items="ViewBag.ActualOrderCardId"></select> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="ManufacturingData" class="control-label"></label> *@
+@*                 <input asp-for="ManufacturingData" class="form-control" /> *@
+@*                 <span asp-validation-for="ManufacturingData" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                             <label asp-for="FirmwareVersion" class="control-label"></label> *@
+@*                             <input asp-for="FirmwareVersion" class="form-control" /> *@
+@*                             <span asp-validation-for="FirmwareVersion" class="text-danger"></span></div> *@
+@*            <div class="form-group"> *@
+@*                            <label asp-for="EmployeeId" class="control-label"></label> *@
+@*                            <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"></select> *@
+@*                        </div> *@
+@*             <div class="form-group"> *@
+@*                 <input type="submit" value="Create" class="btn btn-primary" /> *@
+@*             </div> *@
+@*         </form> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* <div> *@
+@*     <a asp-action="GetModulesForCardOrder" asp-route-cardOrderId="@Model.DestinationOrderCardId">Назад</a> *@
+@* </div> *@
+@* @section Scripts { *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* } *@

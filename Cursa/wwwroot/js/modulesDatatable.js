@@ -38,7 +38,7 @@
                 "searchable": false
             },
             {
-                "targets": [7],
+                "targets": [6],
                 "orderable": false
             }
         ],
@@ -46,19 +46,7 @@
             {"data": "id", "name": "Id", "autoWidth": true},
             {
                 "data": "moduleType.name", "name": "ModuleType.Name", "autoWidth": true
-                // ,
-                // "render": function (data, type, row) {
-                //     if (type === "display" || type === "filter") {
-                //         return '<a href="/Products/GetProductsForSubProject?subProjectId=' +
-                //             row.id +
-                //             '" >' +
-                //             row.moduleType.name +
-                //             "</a>";
-                //     }
-                //     return data;
-                // }
             },
-            // {"data": "destinationOrderCardNumber", "name": "DestinationOrderCardNumber", "autoWidth": true},
             {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (type === "display") {
@@ -74,14 +62,14 @@
 
             },
             {
-                "data": "actualOrderCardId", "name": "ActualOrderCardId", "autoWidth": true
-                //,
-                // "render": function (data, type, row) {
-                //     if (type === "display") {
-                //         return moment(Date.parse(row.endDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
-                //     }
-                //     return data;
-                // }
+                "data": "destinationOrderCardNumber", "name": "destinationOrderCardNumber", "autoWidth": true
+                ,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return "f";
+                    }
+                    return data;
+                }
             },
             {
                 "data": "manufacturingData", "name": "ManufacturingData", "autoWidth": true,
@@ -91,18 +79,6 @@
                             return "<span class=\"empty\">*Не указано</span>";
                         }
                         return moment(Date.parse(row.manufacturingData)).format('DD.MM.YYYY');
-                    }
-                    return data;
-                }
-            },
-            {
-                "data": "createdDate", "name": "CreatedDate", "autoWidth": true,
-                "render": function (data, type, row) {
-                    if (type === "display") {
-                        if (data === null) {
-                            return "<span class=\"empty\">*Не указано</span>";
-                        }
-                        return moment(Date.parse(row.createdDate)).format('DD.MM.YYYY');
                     }
                     return data;
                 }

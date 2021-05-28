@@ -27,15 +27,6 @@ namespace Cursa.Controllers
             _logger = logger;
         }
 
-        // GET: Products
-        // public IActionResult Index()
-        // {
-        //     var projectsData = _mapper.ProjectTo<ProductDisplayViewModel>(_context.Products
-        //         .AsNoTracking());
-        //     //.Where(subProject => subProject.ProjectId == projectId));
-        //     return View(projectsData);
-        // }
-
         [HttpGet]
         public IActionResult GetProductsForSubProject(int? subProjectId)
         {
@@ -207,8 +198,6 @@ namespace Cursa.Controllers
                         {
                             ModelState.AddModelError("SerialNum", "Такой номер уже используется");
                         }
-
-                        // TODO причем это не выполнится за 1 операцию с предыдущим if
                         if (exception != null && exception.Message.Contains("IX_Products_CertifiedNum"))
                         {
                             ModelState.AddModelError("CertifiedNum", "Такой номер уже используется");
@@ -349,6 +338,54 @@ namespace Cursa.Controllers
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
+        }
+        
+        [HttpGet]
+        public JsonResult IsSerialNumProductExist(string serialNum, int? Id)
+        {
+            if (Id==null)
+            {
+                return Json(!_context.Products.Any(x => x.SerialNum == serialNum));
+            }
+            else
+            {
+                return Json(!_context.Products.Any(x => x.SerialNum == serialNum
+                                                        && x.Id!=Id));
+            }
+        }
+
+        [HttpGet]
+        public JsonResult IsCertifiedNumProductExist(string certifiedNum,int? Id)
+        {
+            if (Id == null)
+            {
+                return Json(!_context.Products.Any(x => x.CertifiedNum == certifiedNum));
+            }
+            else
+            {
+                return Json(!_context.Products.Any(x => x.CertifiedNum == certifiedNum
+                                                        && x.Id!=Id));
+            }
+        }
+        public IActionResult GetProducts( int subProjectId)
+        {
+            var countries = _context.Products.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where (x=>x.SubProjectId==subProjectId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name+(x.SerialNum ?? "")+"( от "+x.CreatedDate+ ")"
+                        //Text = x.Name+(x.SerialNum!=null?x.SerialNum:"")+"( от "+x.CreatedDate+ ")"
+                    }).ToList();
+            var projectStartEmpty = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выбирете продукт"
+            };
+            countries.Insert(0, projectStartEmpty);
+            return Json(new SelectList(countries, "Value", "Text"));
         }
     }
 }

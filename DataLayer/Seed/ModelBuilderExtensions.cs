@@ -220,9 +220,9 @@ namespace DataLayer.Seed
                 new Employee
                 {
                     Id = 3,
-                    FirstName = "Олег",
-                    MiddleName = "Сергеевич",
-                    LastName = "Хватов",
+                    FirstName = "Татьяна",
+                    MiddleName = "Викторовна",
+                    LastName = "Свистунова",
                     Phone = "+79193955666",
                     DepartmentId = 2
                 }

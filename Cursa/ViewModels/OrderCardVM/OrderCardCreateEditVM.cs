@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Cursa.ViewModels.Base;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cursa.ViewModels.OrderCardVM
 {
@@ -14,10 +15,16 @@ namespace Cursa.ViewModels.OrderCardVM
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Номер карты заказа")]
         [MaxLength(100)]
+        [RegularExpression(@"^[0-9]+(([0-9]*$)|(-у$))",ErrorMessage = "Неверный формат")]
+        [Remote("IsNumberOrderCardExist","OrderCards",
+            ErrorMessage = "Номер уже существует",
+            AdditionalFields = "Id")]
         public string Number { get; set; }
 
         public BaseViewModel systemUnit { get; set; }
         public int ProductId { get; set; }
+        [Display(Name = "Ответственный сотрудник")]
+        public int EmployeeId { get; set; }
         
         public List<OrderCardCreateEditModuleVM> ModulesVM { get; set; }
     }
