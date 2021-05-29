@@ -12,7 +12,11 @@ namespace Cursa.AutoMapper
                 .ForMember(dest=>dest.DestinationOrderCardName,act
                     =>act.MapFrom(src=>src.DestinationOrderCard.Name))
                 .ForMember(dest=>dest.DestinationOrderCardNumber,act
-                    =>act.MapFrom(src=>src.DestinationOrderCard.Number));
+                    =>act.MapFrom(src=>src.DestinationOrderCard.Number))
+                .ForMember(dest=>dest.ActualOrderCardName,act
+                    =>act.MapFrom(src=>src.ActualOrderCard.Name))
+                .ForMember(dest=>dest.ActualOrderCardNumber,act
+                    =>act.MapFrom(src=>src.ActualOrderCard.Number));
 
 
             CreateMap<Module, ModuleCreateEditViewModel>()

@@ -27,7 +27,7 @@ namespace Cursa.ViewModels.AccountVM
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Пароль")]
-        [StringLength(100, ErrorMessage = "Поле {0} должно иметь минимум {2} и максимум {1} символов.", MinimumLength = 8)]
+        [StringLength(27, ErrorMessage = "Поле {0} должно иметь минимум {2} и максимум {1} символов.", MinimumLength = 8)]
         public string Password { get; set; }
     }
 }

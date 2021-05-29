@@ -34,6 +34,13 @@ namespace Cursa.ViewModels.ModuleVM
         public int? ActualOrderCardId { get; set; }
         [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingData { get; set; }
+
+
+
+        public int ProjectId { get; set; }
+        public int SubProjectId { get; set; }
+        public int ProductId { get; set; }
+        //public int ActualOrderCardId { get; set; }
     }
     
 }

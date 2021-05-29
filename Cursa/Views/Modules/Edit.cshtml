@@ -24,22 +24,45 @@
                 <input asp-for="SerialNumber" class="form-control"/>
                 <span asp-validation-for="SerialNumber" class="text-danger"></span>
             </div>
-            
+            <!--  Start: Project -->
             <div class="form-group">
-                <label class="control-label"></label>
+                <label class="control-label">Проект</label>
                 <select id="ProjectId" name="ProjectId" class="form-control" asp-items="ViewBag.ProjectId" onchange="onProjectValueChanged();"></select>
             </div>
+            <!-- End: Project -->
 
+            <!-- Start: SubProject -->
             <div class="form-group">
-                <label class="control-label"></label>
+                <label class="control-label">Подпроект</label>
                 <select id="SubProjectId" name="SubProjectId" class="form-control" asp-items="ViewBag.SubProjectId"></select>
             </div>
+            <!--  End: SubProject -->
 
+            <!-- Start: Product -->
             <div class="form-group">
-                <label asp-for="ActualOrderCardId" class="control-label"></label>
-                <select asp-for="ActualOrderCardId" class="form-control" asp-items="ViewBag.ActualOrderCardId"></select>
-                <span asp-validation-for="ActualOrderCardId" class="text-danger"></span>
+                <label class="control-label">Продукция</label>
+                <select id="ProductId" name="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
             </div>
+            <!--  End: Product -->
+
+            <!-- Start: CardOrder -->
+            <div class="form-group">
+                <label class="control-label">К.З</label>
+                <select id="CardOrderId" name="CardOrderId" class="form-control" asp-items="ViewBag.CardOrderId"></select>
+            </div>
+            <!-- End:  CardOrder -->
+            
+            <!-- Start: Module -->
+            <div class="form-group">
+                <label class="control-label">Место</label>
+                <select id="ModuleId" name="ModuleId" class="form-control" asp-items="ViewBag.ModuleId"></select>
+            </div>
+            <!-- End:  Module -->
+            @* <div class="form-group"> *@
+            @*     <label asp-for="ActualOrderCardId" class="control-label"></label> *@
+            @*     <select asp-for="ActualOrderCardId" class="form-control" asp-items="ViewBag.ActualOrderCardId"></select> *@
+            @*     <span asp-validation-for="ActualOrderCardId" class="text-danger"></span> *@
+            @* </div> *@
             <div class="form-group">
                 <label asp-for="ManufacturingData" class="control-label"></label>
                 <input asp-for="ManufacturingData" class="form-control"/>

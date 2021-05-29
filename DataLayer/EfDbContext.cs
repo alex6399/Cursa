@@ -275,7 +275,6 @@ namespace DataLayer
             AddTrackingAndTimeInfo();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
-
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -305,8 +304,10 @@ namespace DataLayer
                             baseEntityTracking.CreatedUserId = userId;
                             break;
                         case EntityState.Modified:
-                            Entry(baseEntityTracking).Property(x => x.CreatedDate).IsModified = false;
-                            Entry(baseEntityTracking).Property(x => x.CreatedUserId).IsModified = false;
+                            Entry(baseEntityTracking).Property(x => x.CreatedDate)
+                                .IsModified = false;
+                            Entry(baseEntityTracking).Property(x => x.CreatedUserId)
+                                .IsModified = false;
                             baseEntityTracking.ModifiedDate = DateTime.UtcNow;
                             baseEntityTracking.ModifiedUserId = userId;
                             break;

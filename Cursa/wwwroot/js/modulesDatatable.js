@@ -58,15 +58,21 @@
                     return data;
                 }},
             {
-                "data": "place", "name": "Place", "autoWidth": true
+                "data": "place", "name": "Place", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (row.place === -1 && type === "display") {
+                        return "<span class=\"lpbs\">LPBS</span>";
+                    }
+                    return data;
+                }
 
             },
             {
-                "data": "destinationOrderCardNumber", "name": "destinationOrderCardNumber", "autoWidth": true
+                "data": "actualOrderCardNumber", "name": "ActualOrderCardNumber", "autoWidth": true
                 ,
                 "render": function (data, type, row) {
                     if (type === "display") {
-                        return "f";
+                        return row.actualOrderCardNumber+" ("+row.actualOrderCardName+")";
                     }
                     return data;
                 }

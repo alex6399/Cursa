@@ -12,7 +12,7 @@ namespace Cursa.ViewModels.ProjectVM
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [MaxLength(100, ErrorMessage = "Максимальная длина")]
         [Display(Name = "Наименование проекта")]
-        
+        [RemoteAttribute("IsNameProjectExist","Projects",ErrorMessage = "Проект уже существует")]
         public string Name { get; set; }
         [Display(Name = "Владелец")]
         public int? OwnerId { get; set; }

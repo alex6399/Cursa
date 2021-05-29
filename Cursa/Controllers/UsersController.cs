@@ -362,7 +362,7 @@ namespace Cursa.Controllers
                         }
                         else
                         {
-                            ModelState.AddModelError("OldPassword", "Неверный пароль!");
+                            ModelState.AddModelError("OldPassword", "Неверный пароль");
                         }
                     }
                     else

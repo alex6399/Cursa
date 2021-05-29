@@ -9,7 +9,7 @@
         <a asp-controller="HomeAdmin" asp-action="Index">Администрирование</a>
     </p>
     
-    @if(roles.Contains("Сотрудник")){
+    @if(roles.Contains("Администратор")){
         <p>
             <a asp-controller="ProjectRegister" asp-action="GetProjectRegister">[ Реестр Проектов ]</a>
         </p>
