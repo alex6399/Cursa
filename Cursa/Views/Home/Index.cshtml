@@ -1,21 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Домашняя";
+    IList<string> roles = ViewData["Roles"] as IList<string>;
 }
 
 <div class="text-left">
-
-    @*<p>
-        <a asp-controller="OrderCards" asp-action="Index">Карта Заказа</a>
-    </p>*@
+    
     <p>
-        <a asp-controller="HomeAdmin" asp-action="Index">Админка</a>
+        <a asp-controller="HomeAdmin" asp-action="Index">Администрирование</a>
     </p>
-    <p>
-        <a asp-controller="ProjectRegister" asp-action="GetProjectRegister">[ Реестр Проектов ]</a>
-    </p>
-    <p>
-            <a asp-controller="ModuleRegister" asp-action="GetModuleRegister">[ Реестр Модулей ]</a>
+    
+    @if(roles.Contains("Сотрудник")){
+        <p>
+            <a asp-controller="ProjectRegister" asp-action="GetProjectRegister">[ Реестр Проектов ]</a>
         </p>
+    }
+    
+    <p>
+        <a asp-controller="ModuleRegister" asp-action="GetModuleRegister">[ Реестр Модулей ]</a>
+    </p>
     <p>
         <a asp-controller="Projects" asp-action="Index">Проекты</a>
     </p>
@@ -28,7 +30,6 @@
     <p>
         <a asp-controller="ModuleTypes" asp-action="Index">МодулиТип</a>
     </p>
-
     <p>
         <a asp-controller="Contractors" asp-action="Index">Контрагенты</a>
     </p>

@@ -49,7 +49,7 @@ $(document).ready(function () {
                 "data": "addresses", "name": "Addresses", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (row.addresses.length === 1
-                        && row.addresses[0] === 0
+                        && row.addresses[0] === -1
                         && type === "display") {
                         return "<span class=\"empty\">LPBS</span>";
                     }

@@ -370,7 +370,7 @@ namespace Cursa.Controllers
                                                            && x.Id != Id));
             }
         }
-        
+ 
         public IActionResult GetSubProjects( int projectId)
         {
             var countries = _context.SubProjects.AsNoTracking()

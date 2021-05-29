@@ -372,5 +372,26 @@ namespace Cursa.Controllers
         {
             return _context.Modules.Any(e => e.Id == id);
         }
+        
+        public IActionResult GetModules(int destinationOrderCardId)
+        {
+            var modules = _context.Modules.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where(x => x.DestinationOrderCardId == destinationOrderCardId&&x.ActualOrderCardId==null)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.ModuleType.Name + "("+x.Place + ")"
+                        //Text = x.Name+(x.SerialNum!=null?x.SerialNum:"")+"( от "+x.CreatedDate+ ")"
+                    }).ToList();
+            var modulesStartEmpty = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выберите карту заказа"
+            };
+            modules.Insert(0, modulesStartEmpty);
+            return Json(new SelectList(modules, "Value", "Text"));
+        }
     }
 }

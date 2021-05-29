@@ -43,9 +43,9 @@
             }
         ],
         "columns": [
-            {"data": "id", "name": "Id", "autoWidth": true},
+            {"data": "id", "name": "Id", "autoWidth": true}, // 1
             {
-                "data": "moduleType.name", "name": "ModuleType.Name", "autoWidth": true
+                "data": "moduleType.name", "name": "ModuleType.Name", "autoWidth": true // 2
             },
             {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true,
                 "render": function (data, type, row) {
