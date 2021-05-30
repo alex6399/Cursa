@@ -44,9 +44,9 @@
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
             {"data": "moduleTypeName", "name": "moduleTypeName", "autoWidth": true},
-            {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true},
+            {"data": "serialNumber", "name": "SerialNumber", "width": "30px"},
             {
-                "data": "destOrderCardNumber", "name": "destOrderCardNumber", "autoWidth": true,
+                "data": "destOrderCardNumber", "name": "destOrderCardNumber", "width": "30px",
                 "render": function (data, type, row) {
                     if (type === "display" || type === "filter") {
                         return '<a href="/Products/GetProductsForSubProject?subProjectId=' +
@@ -58,11 +58,20 @@
                     return data;
                 }
             },
-            {"data": "actualOrderCardNumber", "name": "actualOrderCardNumber", "autoWidth": true},
+            {"data": "actualOrderCardNumber", "name": "actualOrderCardNumber", "width": "40px"},
             {"data": "productName", "name": "productName", "width": "30px"},
             {"data": "productNumber", "name": "productNumber", "width": "30px"},
             {"data": "subProjectName", "name": "subProjectName", "autoWidth": true},
-            {"data": "manufacturingData", "name": "manufacturingData", "autoWidth": true}
+            {"data": "manufacturingData", "name": "manufacturingData", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return moment(Date.parse(row.manufacturingData)).format('DD.MM.YYYY');
+                    }
+                    return data;
+                }}
             // {"data": "contractor", "name": "Contractor", "autoWidth": true},
             // {"data": "contract", "name": "Contract", "autoWidth": true},
             // ,

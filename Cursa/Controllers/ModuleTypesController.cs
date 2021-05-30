@@ -112,6 +112,19 @@ namespace Cursa.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (moduleType.IsActiv && !moduleType.IsCommunicationDevice)
+                {
+                    var result = _context.ModulesTypes.Any(x => x.IsActiv && !x.IsCommunicationDevice);
+                    if (result)
+                    {
+                        ModelState.AddModelError(string.Empty, "Уже существует действующий модуль LPBS");
+                        return View(moduleType);
+                    }
+                }
+                if (moduleType.IsCommunicationDevice)
+                {
+                    moduleType.NumberConnectionPoints = 0;
+                }
                 _context.Add(moduleType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -154,8 +167,24 @@ namespace Cursa.Controllers
 
             if (ModelState.IsValid)
             {
+                if (moduleType.IsActiv && !moduleType.IsCommunicationDevice)
+                {
+                    var result = _context.ModulesTypes.Any(x => x.IsActiv 
+                                                                && !x.IsCommunicationDevice
+                                                                && x.Id!=moduleType.Id);
+                    if (result)
+                    {
+                        ModelState.AddModelError(string.Empty, "Уже существует действующий модуль LPBS");
+                        return View(moduleType);
+                    }
+                }
                 try
                 {
+                    if (moduleType.IsCommunicationDevice)
+                    {
+                        moduleType.NumberConnectionPoints = 0;
+                    }
+
                     _context.Update(moduleType);
                     await _context.SaveChangesAsync();
                 }

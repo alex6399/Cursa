@@ -128,10 +128,10 @@ namespace Cursa.Controllers
                     await _userManager.AddToRolesAsync(user, new[] {"Менеджер"});
                     return RedirectToAction("Index");
                 }
-
+                ModelState.AddModelError(string.Empty, "Ошибка создания пользователя");
                 foreach (var error in resultCreateNewUser.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    _logger.LogError("Error create user: {ExceptionMessage} ", error.Description);
                 }
             }
 

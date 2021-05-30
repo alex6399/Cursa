@@ -22,4 +22,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.5.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Entities\ModuleCharacteristic.cs" />
+    <Compile Remove="Entities\ModulesLocationsHistory.cs" />
+  </ItemGroup>
+
 </Project>

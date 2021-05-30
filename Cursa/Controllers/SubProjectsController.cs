@@ -73,15 +73,14 @@ namespace Cursa.Controllers
                 var id = Request.Form["projectId"].FirstOrDefault();
                 int projectId = id != null ? Convert.ToInt32(id) : 0;
 
-                var projectsData = _mapper.ProjectTo<SubProjectsDisplayViewModel>(_context.SubProjects
+                var projectsData = _mapper.ProjectTo<SubProjectsDisplayViewModel>(
+                    _context.SubProjects
                     .AsNoTracking()
                     .Where(subProject => subProject.ProjectId == projectId));
-
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
                 }
-
                 if (!string.IsNullOrEmpty(searchGlobalValue))
                 {
                     projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
@@ -90,33 +89,26 @@ namespace Cursa.Controllers
                                                            || m.StatusName.Contains(searchGlobalValue)
                                                            || m.Contract.Contains(searchGlobalValue));
                 }
-
                 if (!string.IsNullOrEmpty(searchNameValue))
                 {
                     projectsData = projectsData.Where(m => m.Name.Contains(searchNameValue));
                 }
-
                 if (!string.IsNullOrEmpty(searchCodeValue))
                 {
                     projectsData = projectsData.Where(m => m.Code.Contains(searchCodeValue));
                 }
-
                 if (!string.IsNullOrEmpty(searchEmployeeValue))
                 {
                     projectsData = projectsData.Where(m => m.Employee.FullName.Contains(searchEmployeeValue));
                 }
-
                 if (!string.IsNullOrEmpty(searchStatusValue))
                 {
                     projectsData = projectsData.Where(m => m.StatusName.Contains(searchStatusValue));
                 }
-
                 if (!string.IsNullOrEmpty(searchContractValue))
                 {
                     projectsData = projectsData.Where(m => m.Contract.Contains(searchContractValue));
                 }
-
-
                 var recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new

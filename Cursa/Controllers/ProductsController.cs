@@ -165,7 +165,7 @@ namespace Cursa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [Bind(
-                "Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,OrderDate,ShippedDate,Id,Description")]
+                "Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,ShippedDate,OrderDate,ShippedDate,Id,Description")]
             ProductCreateViewModel productDto)
         {
             if (ModelState.IsValid)
@@ -241,7 +241,7 @@ namespace Cursa.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,OrderDate,Id,Description")]
+            [Bind("Name,SerialNum,CertifiedNum,ProductTypeId,SubProjectId,IsFormed,ManufacturingDate,ShippedDate,OrderDate,Id,Description")]
             ProductCreateViewModel productDTO)
         {
             if (id != productDTO.Id)

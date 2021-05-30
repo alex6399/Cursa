@@ -3,7 +3,6 @@
         initComplete: function () {
             this.api().columns().every(function () {
                 var that = this;
-
                 $('input', this.footer()).on('keyup change clear', function () {
                     if (that.search() !== this.value) {
                         that
@@ -27,9 +26,6 @@
         },
         "language": {
             "url": '../language/Russian.json'
-        },
-        "search": {
-            "caseInsensitive": false
         },
         "columnDefs": [
             {
@@ -60,10 +56,7 @@
             {"data": "code", "name": "Code", "autoWidth": true},
             {"data": "employee.fullName", "name": "employee.fullName", "width": "30px"},
             {"data": "statusName", "name": "StatusName", "autoWidth": true},
-            {
-                "data": "contract", "name": "contract", "autoWidth": true
-
-            },
+            {"data": "contract", "name": "contract", "autoWidth": true},
             {
                 "data": "createdDate", "name": "CreatedDate", "autoWidth": true,
                 "render": function (data, type, row) {
@@ -72,7 +65,7 @@
                         if (data === null) {
                         return "<span class=\"empty\">*Не указано</span>";
                     }
-                        return moment(Date.parse(row.createdDate)).format('DD.MM.YYYY'); //DD.MM.YYYY HH:mm
+                        return moment(Date.parse(row.createdDate)).format('DD.MM.YYYY');
                     }
                     return data;
                 }

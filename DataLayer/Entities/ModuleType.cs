@@ -29,6 +29,7 @@ namespace DataLayer.Entities
         [Display(Name = "УСО")] public bool IsCommunicationDevice { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Колличество подключаемых УСО")]
+        [Range(0,25,ErrorMessage = "Количество модулей должно находится в диапазоне [0;25]")]
         public int NumberConnectionPoints { get; set; }
         // [Display(Name = "Системный ?")] public bool IsSystem { get; set; }
         [MaxLength(160, ErrorMessage = "Максимальное количество 160 символов")]

@@ -14,7 +14,7 @@
             });
         },
         "pageLength": 25,
-        "scrollX": true,
+        // "scrollX": true,
         "processing": true,
         "serverSide": true,
         "filter": true,

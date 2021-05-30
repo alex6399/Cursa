@@ -27,7 +27,7 @@
             }
         },
         "language": {
-            "url": '../language/Russian.json'
+            "url": '/language/Russian.json'
         },
         "search": {
             "caseInsensitive": false

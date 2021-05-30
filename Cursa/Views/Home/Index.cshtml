@@ -4,42 +4,44 @@
 }
 
 <div class="text-left">
-    
-    <p>
-        <a asp-controller="HomeAdmin" asp-action="Index">Администрирование</a>
-    </p>
-    
-    @if(roles.Contains("Администратор")){
+    @if (User.IsInRole("Администратор"))
+    {
         <p>
-            <a asp-controller="ProjectRegister" asp-action="GetProjectRegister">[ Реестр Проектов ]</a>
+            <a asp-controller="Users" asp-action="Index">Пользователи</a>
         </p>
     }
-    
-    <p>
-        <a asp-controller="ModuleRegister" asp-action="GetModuleRegister">[ Реестр Модулей ]</a>
-    </p>
-    <p>
-        <a asp-controller="Projects" asp-action="Index">Проекты</a>
-    </p>
-    <p>
-        <a asp-controller="Employees" asp-action="Index">Сотрудники</a>
-    </p>
-    <p>
-        <a asp-controller="ProductTypes" asp-action="Index">Продукция Тип</a>
-    </p>
-    <p>
-        <a asp-controller="ModuleTypes" asp-action="Index">МодулиТип</a>
-    </p>
-    <p>
-        <a asp-controller="Contractors" asp-action="Index">Контрагенты</a>
-    </p>
-    <p>
-        <a asp-controller="Owners" asp-action="Index">Владельцы</a>
-    </p>
-    <p>
-        <a asp-controller="Status" asp-action="Index">Статусы</a>
-    </p>
-    <p>
-        <a asp-controller="Departments" asp-action="Index">Отделы</a>
-    </p>
+
+    @if (User.IsInRole("Менеджер"))
+    {
+        <p>
+            <a asp-controller="Projects" asp-action="Index">Проекты</a>
+        </p>
+        <p>
+            <a asp-controller="ProjectRegister" asp-action="GetProjectRegister">Реестр Проектов</a>
+        </p>
+        <p>
+            <a asp-controller="ModuleRegister" asp-action="GetModuleRegister">Реестр Модулей</a>
+        </p>
+        <p>
+            <a asp-controller="Employees" asp-action="Index">Сотрудники</a>
+        </p>
+        <p>
+            <a asp-controller="Departments" asp-action="Index">Отделы</a>
+        </p>
+        <p>
+            <a asp-controller="Status" asp-action="Index">Статусы [справочник] </a>
+        </p>
+        <p>
+            <a asp-controller="Contractors" asp-action="Index">Контрагенты [справочник]</a>
+        </p>
+        <p>
+            <a asp-controller="Owners" asp-action="Index">Владельцы [справочник]</a>
+        </p>
+        <p>
+            <a asp-controller="ProductTypes" asp-action="Index">Продукция [справочник]</a>
+        </p>
+        <p>
+            <a asp-controller="ModuleTypes" asp-action="Index">Модули [справочник]</a>
+        </p>
+    }
 </div>

@@ -29,7 +29,6 @@ namespace Cursa.Controllers
             _logger = logger;
         }
 
-        // GET: Projects
         public IActionResult Index() => View(new ProjectViewModel());
 
         [HttpPost]
@@ -108,7 +107,6 @@ namespace Cursa.Controllers
             }
         }
 
-        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -119,8 +117,8 @@ namespace Cursa.Controllers
             var project = await _context.Projects
                 .Include(p => p.Employee)
                 .Include(p => p.Owner)
-                .Include(p=>p.ModifiedUser)
-                .Include(p=>p.CreatedUser)
+                .Include(p => p.ModifiedUser)
+                .Include(p => p.CreatedUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
@@ -134,63 +132,49 @@ namespace Cursa.Controllers
         public IActionResult Create()
         {
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name");
             return View(new ProjectCreateViewModel());
         }
 
-        // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,OwnerId,Code,EmployeeId,Description")]
-            ProjectCreateViewModel projectDTO)
+            ProjectCreateViewModel projectVM)
         {
             if (ModelState.IsValid)
             {
-                // if (_context.Projects.Any(x => x.Code == projectDTO.Code))
-                // {
-                //     ModelState.AddModelError("Code", "Код уже используется");
-                // }
-                //
-                // if (_context.Projects.Any(x => x.Name == projectDTO.Name))
-                // {
-                //     ModelState.AddModelError("Name", "Проект уже существует");
-                // }
-                //
-                // if (ModelState.IsValid)
-                // {
-                    var project = _mapper.Map<ProjectCreateViewModel, Project>(projectDTO);
-                    _context.Add(project);
-                    try
+                var project = _mapper.Map<ProjectCreateViewModel, Project>(projectVM);
+                _context.Add(project);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Projects_Name"))
                     {
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        ModelState.AddModelError("Name", "Проект уже существует");
                     }
-                    catch (DbUpdateException e)
-                    {
-                        var exception = e.InnerException;
-                        if (exception != null && exception.Message.Contains("IX_Projects_Name"))
-                        {
-                            ModelState.AddModelError("Name", "Проект уже существует");
-                        }
 
-                        if (exception != null && exception.Message.Contains("IX_Projects_Code"))
-                        {
-                            ModelState.AddModelError("Code", "Такой код уже используется");
-                        }
+                    if (exception != null && exception.Message.Contains("IX_Projects_Code"))
+                    {
+                        ModelState.AddModelError("Code", "Такой код уже используется");
                     }
-                //}
+                }
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
-            return View(projectDTO);
+                    .Where(x => x.Department.IsResponsibleProjectsAndSubProjects),
+                "Id", "GetFullName");
+            ViewData["OwnerId"] = new SelectList(_context.Owners,
+                "Id", "Name",
+                projectVM.OwnerId);
+            return View(projectVM);
         }
 
-        
 
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -208,14 +192,11 @@ namespace Cursa.Controllers
 
             var projectDTO = _mapper.Map<Project, ProjectEditViewModel>(project);
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", project.OwnerId);
             return View(projectDTO);
         }
 
-        // POST: Projects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
@@ -254,6 +235,7 @@ namespace Cursa.Controllers
                     {
                         ModelState.AddModelError("Name", "Проект уже существует");
                     }
+
                     if (exception != null && exception.Message.Contains("IX_Projects_Code"))
                     {
                         ModelState.AddModelError("Code", "Такой код уже используется");
@@ -262,7 +244,7 @@ namespace Cursa.Controllers
             }
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
-                .Where(x=>x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
+                .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
             ViewData["OwnerId"] = new SelectList(_context.Owners, "Id", "Name", projectDTO.OwnerId);
             return View(projectDTO);
         }
@@ -301,9 +283,10 @@ namespace Cursa.Controllers
             }
             catch (DbUpdateException e)
             {
-                _logger.LogInformation("{ExceptionMessage}",e.Message);
-                ModelState.AddModelError(String.Empty, "Невозможно удалить, на данный проект имеются ссылки");
+                _logger.LogInformation("{ExceptionMessage}", e.Message);
+                ModelState.AddModelError(String.Empty, "Невозможно удалить, данный проект задействован");
             }
+
             return View(project);
         }
 
@@ -311,23 +294,22 @@ namespace Cursa.Controllers
         {
             return _context.Projects.Any(e => e.Id == id);
         }
-        
+
         [HttpGet]
         public JsonResult IsCodeProjectExist(string Code, int? Id)
         {
-            if (Id==null)
+            if (Id == null)
             {
                 return Json(!_context.Projects.Any(x => x.Code == Code));
             }
             else
             {
-                return Json(!_context.Projects.Any(x => x.Code == Code
-                                                        && x.Id!=Id));
+                return Json(!_context.Projects.Any(x => x.Code == Code && x.Id != Id));
             }
         }
 
         [HttpGet]
-        public JsonResult IsNameProjectExist(string Name,int? Id)
+        public JsonResult IsNameProjectExist(string Name, int? Id)
         {
             if (Id == null)
             {
@@ -335,11 +317,10 @@ namespace Cursa.Controllers
             }
             else
             {
-                return Json(!_context.Projects.Any(x => x.Name == Name
-                                                        && x.Id!=Id));
+                return Json(!_context.Projects.Any(x => x.Name == Name && x.Id != Id));
             }
         }
-        
+
         public IActionResult GetProjects()
         {
             var projects = _context.Projects.AsNoTracking()
@@ -348,12 +329,12 @@ namespace Cursa.Controllers
                     new SelectListItem
                     {
                         Value = x.Id.ToString(),
-                        Text = x.Name+"("+x.Code+")"
+                        Text = x.Name + "(" + x.Code + ")"
                     }).ToList();
             var projectStartEmpty = new SelectListItem()
             {
                 Value = null,
-                Text = "Выбирете проект"
+                Text = "Выберите проект"
             };
             projects.Insert(0, projectStartEmpty);
             return Json(new SelectList(projects, "Value", "Text"));

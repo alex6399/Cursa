@@ -31,6 +31,10 @@ namespace Cursa.Validation.Employee
                 .WithMessage(errorMessageNotNull)
                 .MaximumLength(50).WithMessage(errorMessageMaxLength);
             RuleFor(x => x.Phone)
+                .NotNull()
+                .WithMessage(errorMessageNotNull)
+                .NotEmpty()
+                .WithMessage(errorMessageNotNull)
                 .Matches("^((\\+7|7|8)+([0-9]){10})$")
                 .WithMessage("Неверный формат");
         }
