@@ -11,7 +11,7 @@ namespace DataLayer.Entities
         [MaxLength(40, ErrorMessage = "Максимальное количество символов 40")]
         [Display(Name = "Наименование")]
         public string Name { get; set; }
-        [MaxLength(256, ErrorMessage = "Максимальное количество символов 256")]
+        [MaxLength(160, ErrorMessage = "Максимальное количество символов 160")]
         [Display(Name = "Примечание")]
         public string Description { get; set; }
         // [Display(Name = "Дата создания")]

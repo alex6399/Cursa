@@ -30,15 +30,14 @@ namespace DataLayer
         public DbSet<Contractor> Contractors { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
-        public DbSet<ProductSubType> ProductSubTypes { get; set; }
+        // public DbSet<ProductSubType> ProductSubTypes { get; set; }
         public DbSet<Module> Modules { get; set; }
         public DbSet<ModuleType> ModulesTypes { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Status> Statuses { get; set; }
-        public DbSet<StatusType> StatusTypes { get; set; }
         public DbSet<OrderCard> OrderCards { get; set; }
-        public DbSet<OrderCardItem> OrderCardItems { get; set; }
+        //public DbSet<OrderCardItem> OrderCardItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -93,8 +92,8 @@ namespace DataLayer
             //     .HasForeignKey(or => or.ModuleTypeId);
             // //End: many to many OrderCardTemplate < - > ModulesType
 
-            modelBuilder.Entity<OrderCardItem>().HasKey(keys =>
-                new {keys.OrderCardId, keys.ModuleTypeId});
+            //modelBuilder.Entity<OrderCardItem>().HasKey(keys =>
+            //    new {keys.OrderCardId, keys.ModuleTypeId});
 
             //Start: Configure One-to-Many Module -> OrderCard 
             modelBuilder.Entity<Module>()
@@ -190,10 +189,10 @@ namespace DataLayer
                 .WithMany(o => o.Products)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Entities.ProductType>()
-                .HasOne(p => p.ProductSubType)
-                .WithMany(o => o.ProductTypes)
-                .OnDelete(DeleteBehavior.Restrict);
+            // modelBuilder.Entity<Entities.ProductType>()
+            //     .HasOne(p => p.ProductSubType)
+            //     .WithMany(o => o.ProductTypes)
+            //     .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Entities.Owner>()
                 .HasMany(p => p.Projects)
@@ -204,12 +203,7 @@ namespace DataLayer
                 .HasMany(p => p.SubProjects)
                 .WithOne(o => o.Status)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Entities.StatusType>()
-                .HasMany(p => p.Statuses)
-                .WithOne(o => o.StatusType)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            
             modelBuilder.Entity<Entities.Department>()
                 .HasMany(p => p.Employees)
                 .WithOne(o => o.Department)

@@ -8,9 +8,9 @@ namespace Cursa.AutoMapper
     {
         public ProductTypesProfile()
         {
-            CreateMap<ProductType, ProductTypesDisplayViewModel>()
-                .ForMember(dest => dest.ProductTypeName, act =>
-                    act.MapFrom(src => src.ProductSubType.Name));
+            CreateMap<ProductType, ProductTypesDisplayViewModel>();
+            // .ForMember(dest => dest.ProductTypeName, act =>
+            //     act.MapFrom(src => src.ProductSubType.Name));
         }
     }
 }

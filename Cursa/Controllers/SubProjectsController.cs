@@ -161,7 +161,7 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses.Where(x => x.StatusTypeId == 1), "Id", "Name");
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             ViewBag.TitleProject = "для проекта: " + project.Name;
             return View(new SubProjectCreateEditViewModel
@@ -203,8 +203,7 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x => x.StatusTypeId == 1), "Id", "Name");
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name");
             return View(subProjectDTO);
         }
@@ -226,8 +225,7 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x => x.StatusTypeId == 1), "Id", "Name");
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProject.ContractorId);
             return View(subProjectDTO);
         }
@@ -281,8 +279,7 @@ namespace Cursa.Controllers
 
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleProjectsAndSubProjects), "Id", "GetFullName");
-            ViewData["StatusId"] = new SelectList(_context.Statuses
-                .Where(x => x.StatusTypeId == 1), "Id", "Name");
+            ViewData["StatusId"] = new SelectList(_context.Statuses, "Id", "Name");
             ViewData["ContractorId"] = new SelectList(_context.Contractors, "Id", "Name", subProjectDTO.ContractorId);
 
             return View(subProjectDTO);

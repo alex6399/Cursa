@@ -28,6 +28,7 @@ namespace DataLayer.Entities
         [Display(Name = "Ответственный")]
         public virtual Employee Employee { get; set; }
         [Display(Name = "Примечание")]
+        [MaxLength(160, ErrorMessage = "Максимальное количество символов 160")]
         public string Description { get; set; }
         public virtual ICollection<SubProject> SubProjects { get; set; }
     }

@@ -24,7 +24,7 @@
             }
             ,
             {
-                "targets": [3],
+                "targets": [2],
                 "orderable": false
             }
         ],
@@ -34,9 +34,9 @@
                 "data": "name", "name": "Name", "autoWidth": true
             },
 
-            {
-                "data": "productTypeName", "name": "productTypeName", "autoWidth": true
-            },
+            // {
+            //     "data": "productTypeName", "name": "productTypeName", "autoWidth": true
+            // },
             {
                 "render": function (data, type, row) {
                     return '<a href="/ProductTypes/Details/' + row.id + '"  ><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">\n' +

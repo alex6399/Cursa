@@ -8,9 +8,9 @@ namespace Cursa.AutoMapper
     {
         public StatusProfile()
         {
-            CreateMap<Status, StatusDisplayViewModel>()
-                .ForMember(dest=>dest.StatusTypeName,act=>
-                    act.MapFrom(src=>src.StatusType.StatusTypeName));
+            CreateMap<Status, StatusDisplayViewModel>();
+            // .ForMember(dest=>dest.StatusTypeName,act=>
+            //     act.MapFrom(src=>src.StatusType.StatusTypeName));
         }
     }
 }

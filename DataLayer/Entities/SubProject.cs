@@ -33,6 +33,7 @@ namespace DataLayer.Entities
         public int? ContractorId { get; set; }
         public virtual Contractor Contractor { get; set; }
         [Display(Name = "Примечание")]
+        [MaxLength(160, ErrorMessage = "Максимальное количество символов 160")]
         public string Description { get; set; }
         [Display(Name = "Дата сдачи")]
         public DateTime? EndDate { get; set; }

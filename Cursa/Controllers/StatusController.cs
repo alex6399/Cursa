@@ -58,8 +58,7 @@ namespace Cursa.Controllers
 
                 if (!string.IsNullOrEmpty(searchGlobalValue))
                 {
-                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
-                                                           || m.StatusTypeName.Contains(searchGlobalValue));
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue));
                 }
 
                 var recordsTotal = projectsData.Count();
@@ -84,7 +83,7 @@ namespace Cursa.Controllers
             }
 
             var status = await _context.Statuses
-                .Include(s => s.StatusType)
+                // .Include(s => s.StatusType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {
@@ -98,7 +97,7 @@ namespace Cursa.Controllers
         // GET: Status/Create
         public IActionResult Create()
         {
-            ViewData["StatusTypeId"] = new SelectList(_context.StatusTypes, "Id", "StatusTypeName");
+            // ViewData["StatusTypeId"] = new SelectList(_context.StatusTypes, "Id", "StatusTypeName");
             return View();
         }
 
@@ -107,14 +106,13 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,StatusTypeId")] Status status)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Status status)
         {
             //IX_Statuses_Name
             if (ModelState.IsValid)
             {
                 if (_context.Statuses.Any(x =>
-                    String.Equals(x.Name, status.Name)
-                    && x.StatusTypeId == status.StatusTypeId))
+                    String.Equals(x.Name, status.Name)))
                 {
                     ModelState.AddModelError("Name", "Такой статус уже существует");
                 }
@@ -138,8 +136,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["StatusTypeId"] =
-                new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
+            // ViewData["StatusTypeId"] =
+            //     new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
             return View(status);
         }
 
@@ -157,8 +155,8 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            ViewData["StatusTypeId"] =
-                new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
+            // ViewData["StatusTypeId"] =
+            //     new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
             return View(status);
         }
 
@@ -167,7 +165,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StatusTypeId")] Status status)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Status status)
         {
             if (id != status.Id)
             {
@@ -178,7 +176,6 @@ namespace Cursa.Controllers
             {
                 if (_context.Statuses.Any(x =>
                     String.Equals(x.Name, status.Name)
-                    && x.StatusTypeId == status.StatusTypeId
                     && x.Id != status.Id))
                 {
                     ModelState.AddModelError("Name", "Такой статус уже существует");
@@ -214,8 +211,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["StatusTypeId"] =
-                new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
+            // ViewData["StatusTypeId"] =
+            //     new SelectList(_context.StatusTypes, "Id", "StatusTypeName", status.StatusTypeId);
             return View(status);
         }
 
@@ -228,7 +225,7 @@ namespace Cursa.Controllers
             }
 
             var status = await _context.Statuses
-                .Include(s => s.StatusType)
+                // .Include(s => s.StatusType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {
@@ -244,7 +241,7 @@ namespace Cursa.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var status = await _context.Statuses
-                .Include(s => s.StatusType)
+                // .Include(s => s.StatusType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (status == null)
             {

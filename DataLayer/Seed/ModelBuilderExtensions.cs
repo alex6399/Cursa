@@ -278,97 +278,78 @@ namespace DataLayer.Seed
                     Name = "ООО \"Лидер\""
                 });
             
-            modelBuilder.Entity<ProductSubType>().HasData(
-                new ProductSubType
-                {
-                    Id = 1,
-                    Name = "АСУ"
-                },
-                new ProductSubType
-                {
-                    Id = 2,
-                    Name = "САУ"
-                },
-                new ProductSubType
-                {
-                    Id = 3,
-                    Name = "Система пожарной автоматики"
-                },
-                new ProductSubType
-                {
-                    Id = 4,
-                    Name = "Система учета энергоресурсов"
-                },
-                new ProductSubType
-                {
-                    Id = 5,
-                    Name = "Системы локальной автоматики"
-                },
-                new ProductSubType
-                {
-                    Id = 6,
-                    Name = "Телемеханика"
-                });
+            // modelBuilder.Entity<ProductSubType>().HasData(
+            //     new ProductSubType
+            //     {
+            //         Id = 1,
+            //         Name = "АСУ"
+            //     },
+            //     new ProductSubType
+            //     {
+            //         Id = 2,
+            //         Name = "САУ"
+            //     },
+            //     new ProductSubType
+            //     {
+            //         Id = 3,
+            //         Name = "Система пожарной автоматики"
+            //     },
+            //     new ProductSubType
+            //     {
+            //         Id = 4,
+            //         Name = "Система учета энергоресурсов"
+            //     },
+            //     new ProductSubType
+            //     {
+            //         Id = 5,
+            //         Name = "Системы локальной автоматики"
+            //     },
+            //     new ProductSubType
+            //     {
+            //         Id = 6,
+            //         Name = "Телемеханика"
+            //     });
 
             modelBuilder.Entity<ProductType>().HasData(
                 new ProductType
                 {
                     Id = 1,
-                    Name = "УСО РУ",
-                    ProductSubTypeId = 1
+                    Name = "УСО РУ"
                 },
                 new ProductType
                 {
                     Id = 2,
-                    Name = "САУ К",
-                    ProductSubTypeId = 1
+                    Name = "САУ К"
                 },
                 new ProductType
                 {
                     Id = 3,
-                    Name = "САУ В",
-                    ProductSubTypeId = 1
+                    Name = "САУ В"
                 });
             
-            modelBuilder.Entity<StatusType>().HasData(
-                new StatusType
-                {
-                    Id = 1,
-                    StatusTypeName = "ПРОЕКТЫ"
-                },
-                new StatusType
-                {
-                    Id = 2,
-                    StatusTypeName = "ЗАКАЗ"
-                });
+            // modelBuilder.Entity<StatusType>().HasData(
+            //     new StatusType
+            //     {
+            //         Id = 1,
+            //         StatusTypeName = "ПРОЕКТЫ"
+            //     },
+            //     new StatusType
+            //     {
+            //         Id = 2,
+            //         StatusTypeName = "ЗАКАЗ"
+            //     });
 
             modelBuilder.Entity<Status>().HasData(
                 new Status
                 {
                     Id=1,
                     Name = "В РАБОТЕ",
-                    StatusTypeId = 1,
                     IsSystem = true
                 },
                 new Status
                 {
                     Id=2,
                     Name = "ЗАВЕРШЕН",
-                    StatusTypeId = 1,
-                    IsSystem = true
-                },
-                new Status
-                {
-                    Id=3,
-                    Name = "В РАБОТЕ",
-                    StatusTypeId = 2,
-                    IsSystem = true
-                },
-                new Status
-                {
-                    Id=4,
-                    Name = "ЗАВЕРШЕН",
-                    StatusTypeId = 2,
                     IsSystem = true
                 });
             

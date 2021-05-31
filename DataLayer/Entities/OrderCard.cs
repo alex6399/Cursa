@@ -19,7 +19,7 @@ namespace DataLayer.Entities
         [MaxLength(100)]
         public string Number { get; set; }
 
-        [Display(Name = "Прикрепить")] public string Path { get; set; } // нужен ли он сейчас
+        //[Display(Name = "Прикрепить")] public string Path { get; set; } // нужен ли он сейчас
         [Display(Name = "Продукт")] public int ProductId { get; set; }
         [Display(Name = "Продукт")] public Product Product { get; set; }
 
@@ -37,6 +37,6 @@ namespace DataLayer.Entities
         // End : Json поппытка
 
         public virtual ICollection<Module> Modules { get; set; }
-        public virtual ICollection<OrderCardItem> OrderCardItems { get; set; }
+        //public virtual ICollection<OrderCardItem> OrderCardItems { get; set; }
     }
 }

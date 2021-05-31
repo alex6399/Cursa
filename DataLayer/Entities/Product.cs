@@ -32,7 +32,7 @@ namespace DataLayer.Entities
         [Display(Name = "Дата отгрузки")]
         public DateTime? ShippedDate { get; set; }// дата отгрузки
         [Display(Name = "Описание")]
-        [MaxLength(300)]
+        [MaxLength(160,ErrorMessage = "Допустимо не более 160 символов")]
         public string Description { get; set; }
 
         public ICollection<OrderCard> OrderCards { get; set; }

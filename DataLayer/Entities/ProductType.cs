@@ -11,11 +11,12 @@ namespace DataLayer.Entities
         [Display(Name = "Наименование")]
         [MaxLength(40)]
         public string Name { get; set; }
-        [Display(Name = "Тип")]
-        public int ProductSubTypeId { get; set; }
-        [Display(Name = "Тип")]
-        public ProductSubType ProductSubType { get; set; }
+        // [Display(Name = "Тип")]
+        // public int ProductSubTypeId { get; set; }
+        // [Display(Name = "Тип")]
+        // public ProductSubType ProductSubType { get; set; }
         [Display(Name = "Описание")]
+        [MaxLength(160, ErrorMessage = "Максимальное количество символов 160")]
         public string Description { get; set; }
         // [Display(Name = "Дата создания")]
         // public DateTime? CreatedDate { get; set; }

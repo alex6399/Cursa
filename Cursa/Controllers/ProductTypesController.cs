@@ -57,8 +57,7 @@ namespace Cursa.Controllers
 
                 if (!string.IsNullOrEmpty(searchGlobalValue))
                 {
-                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
-                                                           || m.ProductTypeName.Contains(searchGlobalValue));
+                    projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue));
                 }
 
                 var recordsTotal = projectsData.Count();
@@ -83,7 +82,7 @@ namespace Cursa.Controllers
             }
 
             var productType = await _context.ProductTypes
-                .Include(p => p.ProductSubType)
+                // .Include(p => p.ProductSubType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (productType == null)
             {
@@ -96,7 +95,7 @@ namespace Cursa.Controllers
         // GET: ProductTypes/Create
         public IActionResult Create()
         {
-            ViewData["ProductSubTypeId"] = new SelectList(_context.ProductSubTypes, "Id", "Name");
+            // ViewData["ProductSubTypeId"] = new SelectList(_context.ProductSubTypes, "Id", "Name");
             return View();
         }
 
@@ -105,7 +104,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,ProductSubTypeId,Description,Id")]
+        public async Task<IActionResult> Create([Bind("Name,Description,Id")]
             ProductType productType)
         {
             if (ModelState.IsValid)
@@ -136,8 +135,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["ProductSubTypeId"] =
-                new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
+            // ViewData["ProductSubTypeId"] =
+            //     new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
             return View(productType);
         }
 
@@ -155,8 +154,8 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            ViewData["ProductSubTypeId"] =
-                new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
+            // ViewData["ProductSubTypeId"] =
+            //     new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
             return View(productType);
         }
 
@@ -165,7 +164,7 @@ namespace Cursa.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,ProductSubTypeId,Description,Id")]
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Description,Id")]
             ProductType productType)
         {
             if (id != productType.Id)
@@ -211,8 +210,8 @@ namespace Cursa.Controllers
                 }
             }
 
-            ViewData["ProductSubTypeId"] =
-                new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
+            // ViewData["ProductSubTypeId"] =
+            //     new SelectList(_context.ProductSubTypes, "Id", "Name", productType.ProductSubTypeId);
             return View(productType);
         }
 
@@ -225,7 +224,7 @@ namespace Cursa.Controllers
             }
 
             var productType = await _context.ProductTypes
-                .Include(p => p.ProductSubType)
+                // .Include(p => p.ProductSubType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (productType == null)
             {
