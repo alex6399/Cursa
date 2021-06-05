@@ -29,13 +29,16 @@ namespace DataLayer
         public DbSet<SubProject> SubProjects { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
         public DbSet<Product> Products { get; set; }
+
         public DbSet<ProductType> ProductTypes { get; set; }
+
         // public DbSet<ProductSubType> ProductSubTypes { get; set; }
         public DbSet<Module> Modules { get; set; }
         public DbSet<ModuleType> ModulesTypes { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Status> Statuses { get; set; }
+
         public DbSet<OrderCard> OrderCards { get; set; }
         //public DbSet<OrderCardItem> OrderCardItems { get; set; }
 
@@ -100,10 +103,10 @@ namespace DataLayer
                 .HasOne<OrderCard>(p => p.DestinationOrderCard)
                 .WithMany(u => u.Modules)
                 .HasForeignKey(p => p.DestinationOrderCardId);
-            // modelBuilder.Entity<Module>()
-            //     .HasOne<OrderCard>(p => p.ActualOrderCard)
-            //     .WithMany(u => u.Modules)
-            //     .HasForeignKey(p => p.ActualOrderCardId);
+            modelBuilder.Entity<Module>()
+                .HasOne<OrderCard>(p => p.ActualOrderCard)
+                .WithMany(u => u.ActualModules)
+                .HasForeignKey(p => p.ActualOrderCardId);
             // //End: Configure One-to-Many Module -> OrderCard
 
             //Start: Configure One-to-Many User -> Project 
@@ -203,7 +206,7 @@ namespace DataLayer
                 .HasMany(p => p.SubProjects)
                 .WithOne(o => o.Status)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             modelBuilder.Entity<Entities.Department>()
                 .HasMany(p => p.Employees)
                 .WithOne(o => o.Department)
@@ -213,6 +216,11 @@ namespace DataLayer
                 .HasOne(p => p.ModuleType)
                 .WithMany(o => o.Modules)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.Module>()
+                .HasOne(p => p.ActualOrderCard)
+                .WithMany(o => o.ActualModules)
+                .OnDelete(DeleteBehavior.Cascade);
             //End: Огрничение на каскадное удаление 
 
             // Start: unique constraint
@@ -240,6 +248,9 @@ namespace DataLayer
                 .IsUnique();
             modelBuilder.Entity<OrderCard>()
                 .HasIndex(x => x.Number)
+                .IsUnique();
+            modelBuilder.Entity<Module>()
+                .HasIndex(x => x.SerialNumber)
                 .IsUnique();
             modelBuilder.Entity<Department>()
                 .HasIndex(x => x.Name)
@@ -269,6 +280,7 @@ namespace DataLayer
             AddTrackingAndTimeInfo();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = default(CancellationToken))
         {

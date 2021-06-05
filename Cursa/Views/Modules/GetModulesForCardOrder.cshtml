@@ -24,10 +24,10 @@
             @Html.DisplayNameFor(model => model.SerialNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Place)
+            @Html.DisplayNameFor(model => model.DestinationPlace)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DestinationOrderCardId)
+            @Html.DisplayNameFor(model => model.ActualOrderCardId)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ManufacturingData)
@@ -36,6 +36,10 @@
     </tr>
     </thead>
 </table>
+
+<div>
+    <a asp-controller="OrderCards" asp-action="GetOrderCardsForProduct" asp-route-productId="@Model.ProductId">Назад</a>
+</div>
 @section Scripts
 {
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Менеджер")]
     public class ProjectsController : Controller
     {
         private readonly EfDbContext _context;
@@ -320,8 +320,8 @@ namespace Cursa.Controllers
                 return Json(!_context.Projects.Any(x => x.Name == Name && x.Id != Id));
             }
         }
-
-        public IActionResult GetProjects()
+        [HttpGet]
+        public SelectList GetProjects(int? selectedValue=null)
         {
             var projects = _context.Projects.AsNoTracking()
                 .OrderBy(n => n.CreatedDate)
@@ -331,13 +331,18 @@ namespace Cursa.Controllers
                         Value = x.Id.ToString(),
                         Text = x.Name + "(" + x.Code + ")"
                     }).ToList();
-            var projectStartEmpty = new SelectListItem()
+            var projectEmptyItem = new SelectListItem()
             {
                 Value = null,
                 Text = "Выберите проект"
             };
-            projects.Insert(0, projectStartEmpty);
-            return Json(new SelectList(projects, "Value", "Text"));
+            projects.Insert(0, projectEmptyItem);
+            if (selectedValue != null && projects.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(projects, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(projects, "Value", "Text");
         }
     }
 }

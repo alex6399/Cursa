@@ -9,7 +9,7 @@ namespace Cursa.ViewModels.ProjectVM
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100, ErrorMessage = "Максимальная длина")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Наименование проекта")]
         [RemoteAttribute("IsNameProjectExist","Projects",
             ErrorMessage = "Проект уже существует")]
@@ -17,7 +17,7 @@ namespace Cursa.ViewModels.ProjectVM
         [Display(Name = "Владелец")]
         public int? OwnerId { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [RegularExpression(@"^[0-9]+",ErrorMessage = "Неверный формат")]
         [Display(Name = "Код")]
         [RemoteAttribute("IsCodeProjectExist","Projects",

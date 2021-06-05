@@ -1,0 +1,10 @@
+﻿@model Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal.AccessDeniedModel
+@{
+    ViewData["Title"] = "Нет доступа";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">Вы не авторизированы на выполнение данной операции</p>
+    <a asp-controller="Home" asp-action="Index">Домашняя</a>
+</header>

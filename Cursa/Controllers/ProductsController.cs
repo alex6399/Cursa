@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataLayer;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class ProductsController : Controller
     {
         private readonly EfDbContext _context;
@@ -276,8 +278,6 @@ namespace Cursa.Controllers
                     {
                         ModelState.AddModelError("SerialNum", "Такой номер уже используется");
                     }
-
-                    // TODO причем это не выполнится за 1 операцию с предыдущим if
                     if (exception != null && exception.Message.Contains("IX_Products_CertifiedNum"))
                     {
                         ModelState.AddModelError("CertifiedNum", "Такой номер уже используется");
@@ -367,6 +367,7 @@ namespace Cursa.Controllers
                                                         && x.Id!=Id));
             }
         }
+        [HttpGet]
         public IActionResult GetProducts( int subProjectId)
         {
             var countries = _context.Products.AsNoTracking()
@@ -376,7 +377,7 @@ namespace Cursa.Controllers
                     new SelectListItem
                     {
                         Value = x.Id.ToString(),
-                        Text = x.Name+(x.SerialNum ?? "")+"( от "+x.CreatedDate+ ")"
+                        Text = x.Name+(x.SerialNum ?? "")+"( от "+x.CreatedDate.Value.ToShortDateString()+ ")"
                         //Text = x.Name+(x.SerialNum!=null?x.SerialNum:"")+"( от "+x.CreatedDate+ ")"
                     }).ToList();
             var projectStartEmpty = new SelectListItem()

@@ -9,12 +9,12 @@ namespace Cursa.ViewModels.OrderCardVM
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Наименование")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Номер карты заказа")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Number { get; set; }
 
         public int ProductId { get; set; }

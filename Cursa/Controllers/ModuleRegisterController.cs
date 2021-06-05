@@ -4,12 +4,14 @@ using System.Linq.Dynamic.Core;
 using AutoMapper;
 using Cursa.ViewModels.ModuleRegisterVM;
 using DataLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class ModuleRegisterController : Controller
     {
         private readonly EfDbContext _context;
@@ -96,7 +98,7 @@ namespace Cursa.Controllers
 
                 if (!string.IsNullOrEmpty(searchNumberActValue))
                 {
-                    projectsData = projectsData.Where(m => m.DestOrderCardNumber.Contains(searchNumberActValue));
+                    projectsData = projectsData.Where(m => m.ActualOrderCardNumber.Contains(searchNumberActValue));
                 }
 
                 if (!string.IsNullOrEmpty(searchProductNumberValue))

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Cursa.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Администратор,Менеджер")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

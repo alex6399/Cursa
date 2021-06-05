@@ -10,10 +10,13 @@ namespace DataLayer.Entities
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Наименование")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Name { get; set; }
         [Display(Name = "Серийный номер")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string SerialNum { get; set; }
         [Display(Name = "Зав. номер")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string CertifiedNum { get; set; }
         [Display(Name = "Тип")]
         public int ProductTypeId { get; set; }

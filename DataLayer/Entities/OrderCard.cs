@@ -11,12 +11,12 @@ namespace DataLayer.Entities
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Наименование")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Номер карты заказа")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Number { get; set; }
 
         //[Display(Name = "Прикрепить")] public string Path { get; set; } // нужен ли он сейчас
@@ -37,6 +37,7 @@ namespace DataLayer.Entities
         // End : Json поппытка
 
         public virtual ICollection<Module> Modules { get; set; }
+        public virtual ICollection<Module> ActualModules { get; set; }
         //public virtual ICollection<OrderCardItem> OrderCardItems { get; set; }
     }
 }

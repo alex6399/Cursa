@@ -37,7 +37,7 @@ namespace Cursa
             services.AddIdentity<User, IdentityRole<int>>(options =>
                 {
                     options.Password.RequiredLength = 8;
-                     options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireLowercase = true;
                     options.Password.RequireUppercase = true;
                     options.Password.RequireDigit = true;
@@ -52,16 +52,12 @@ namespace Cursa
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/Login/Login";
-                // options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.LoginPath = new PathString("/Login/Login");
+                options.AccessDeniedPath = new PathString("/Admin/AccessDenied");
                 // options.SlidingExpiration = true;
             });
-            // services.Configure<CookieAuthenticationOptions>(opt =>
-            // {
-            //     opt.LoginPath = new PathString("/Login/Login");
-            // });
             services.AddAutoMapper(typeof(Startup));
-            
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc()
                 .AddFluentValidation(options =>
@@ -99,13 +95,13 @@ namespace Cursa
             app.UseAuthentication();
             IdentityDataInitializer.SeedData(userManager, roleManager);
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Login}/{id?}");
-                 endpoints.MapRazorPages();
+                endpoints.MapRazorPages();
             });
         }
     }

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Менеджер")]
     public class SubProjectsController : Controller
     {
         private readonly EfDbContext _context;
@@ -75,12 +75,13 @@ namespace Cursa.Controllers
 
                 var projectsData = _mapper.ProjectTo<SubProjectsDisplayViewModel>(
                     _context.SubProjects
-                    .AsNoTracking()
-                    .Where(subProject => subProject.ProjectId == projectId));
+                        .AsNoTracking()
+                        .Where(subProject => subProject.ProjectId == projectId));
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     projectsData = projectsData.OrderBy(sortColumn + " " + sortColumnDirection);
                 }
+
                 if (!string.IsNullOrEmpty(searchGlobalValue))
                 {
                     projectsData = projectsData.Where(m => m.Name.Contains(searchGlobalValue)
@@ -89,26 +90,32 @@ namespace Cursa.Controllers
                                                            || m.StatusName.Contains(searchGlobalValue)
                                                            || m.Contract.Contains(searchGlobalValue));
                 }
+
                 if (!string.IsNullOrEmpty(searchNameValue))
                 {
                     projectsData = projectsData.Where(m => m.Name.Contains(searchNameValue));
                 }
+
                 if (!string.IsNullOrEmpty(searchCodeValue))
                 {
                     projectsData = projectsData.Where(m => m.Code.Contains(searchCodeValue));
                 }
+
                 if (!string.IsNullOrEmpty(searchEmployeeValue))
                 {
                     projectsData = projectsData.Where(m => m.Employee.FullName.Contains(searchEmployeeValue));
                 }
+
                 if (!string.IsNullOrEmpty(searchStatusValue))
                 {
                     projectsData = projectsData.Where(m => m.StatusName.Contains(searchStatusValue));
                 }
+
                 if (!string.IsNullOrEmpty(searchContractValue))
                 {
                     projectsData = projectsData.Where(m => m.Contract.Contains(searchContractValue));
                 }
+
                 var recordsTotal = projectsData.Count();
                 var data = projectsData.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new
@@ -359,17 +366,18 @@ namespace Cursa.Controllers
                                                            && x.Id != Id));
             }
         }
- 
-        public IActionResult GetSubProjects( int projectId)
+
+        [HttpGet]
+        public IActionResult GetSubProjects(int projectId)
         {
             var countries = _context.SubProjects.AsNoTracking()
                 .OrderBy(n => n.CreatedDate)
-                .Where (x=>x.ProjectId==projectId)
+                .Where(x => x.ProjectId == projectId)
                 .Select(x =>
                     new SelectListItem
                     {
                         Value = x.Id.ToString(),
-                        Text = x.Name+"("+x.Code+")"
+                        Text = x.Name + "(" + x.Code + ")"
                     }).ToList();
             var projectStartEmpty = new SelectListItem()
             {

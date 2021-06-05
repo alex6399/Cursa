@@ -6,12 +6,14 @@ using AutoMapper;
 using Cursa.ViewModels.ProjectRegisterVM;
 using Cursa.ViewModels.SubProjectVM;
 using DataLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class ProjectRegisterController : Controller
     {
         private readonly EfDbContext _context;

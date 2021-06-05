@@ -10,11 +10,11 @@ namespace Cursa.ViewModels.OrderCardVM
         public int Id { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Наименование")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Номер карты заказа")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [RegularExpression(@"^[0-9]+(([0-9]*$)|(-у$))",ErrorMessage = "Неверный формат")]
         [Remote("IsNumberOrderCardExist","OrderCards",
             ErrorMessage = "Номер уже существует",

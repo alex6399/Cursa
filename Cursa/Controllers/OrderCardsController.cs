@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -15,9 +16,11 @@ using DataLayer;
 using DataLayer.Entities;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class OrderCardsController : Controller
     {
         private readonly EfDbContext _context;
@@ -160,7 +163,7 @@ namespace Cursa.Controllers
                     .Select(x => new OrderCardSummaryModule
                     {
                         ModuleTypeName = x.Key,
-                        Addresses = x.Select(m => m.Place)
+                        Addresses = x.Select(m => m.DestinationPlace)
                     });
 
                 var recordsTotal = projectsData.Count();
@@ -292,7 +295,7 @@ namespace Cursa.Controllers
                                 DestinationOrderCard = cardOrder,
                                 // ActualOrderCard = cardOrder,
                                 ModuleTypeId = kvp.Value,
-                                Place = kvp.Key
+                                DestinationPlace = kvp.Key
                             });
                         }
 
@@ -301,7 +304,7 @@ namespace Cursa.Controllers
                             DestinationOrderCard = cardOrder,
                             ActualOrderCard = cardOrder,
                             ModuleTypeId = orderCardVM.systemUnit.Id,
-                            Place = -1
+                            DestinationPlace = -1
                         });
 
                         _context.Add(cardOrder);
@@ -364,7 +367,7 @@ namespace Cursa.Controllers
                     {
                         Id = x.Key,
                         Name = x.First().ModuleType.Name,
-                        Addresses = SetAddress(x.Select(m => --m.Place), addressLength)
+                        Addresses = SetAddress(x.Select(m => --m.DestinationPlace), addressLength)
                     })
                     .ToList();
                 var unSelectMod = _context.ModulesTypes.Where(x => orderCard.UnSelectedModuleTypes.Contains(x.Id))
@@ -480,7 +483,7 @@ namespace Cursa.Controllers
                  */
 
                 var existingModules = currentModules.Where(x =>
-                    selectedPlaces.ContainsKey(x.Place) && selectedPlaces[x.Place] == x.ModuleTypeId);
+                    selectedPlaces.ContainsKey(x.DestinationPlace) && selectedPlaces[x.DestinationPlace] == x.ModuleTypeId);
                     // || !selectedPlaces.ContainsKey(x.Place));
                 /* var currentSelectedPlaces=new Dictionary<int, int>();
                 foreach (var module in currentModules)
@@ -500,7 +503,7 @@ namespace Cursa.Controllers
                 var modulesUpdate = new List<Module>();
                 foreach (var kvp in selectedPlaces)
                 {
-                    var existingModule = existingModules.FirstOrDefault(x => x.Place == kvp.Key && x.ModuleTypeId == kvp.Value);
+                    var existingModule = existingModules.FirstOrDefault(x => x.DestinationPlace == kvp.Key && x.ModuleTypeId == kvp.Value);
                     var module = new Module()
                     {
                         // тут нужно еще как-то id получить модуля из БД
@@ -509,7 +512,7 @@ namespace Cursa.Controllers
                         //ActualOrderCard = cardOrder,
                         ActualOrderCardId = cardOrder.Id,
                         ModuleTypeId = kvp.Value,
-                        Place = kvp.Key
+                        DestinationPlace = kvp.Key
                     };
                     if (existingModule != null)
                     {
@@ -557,6 +560,14 @@ namespace Cursa.Controllers
                     else
                     {
                         throw;
+                    }
+                }
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_OrderCards_Number"))
+                    {
+                        ModelState.AddModelError("Number", "Такой cерийный № уже используется");
                     }
                 }
 
@@ -619,7 +630,7 @@ namespace Cursa.Controllers
                                                           && x.Id != Id));
             }
         }
-
+        [HttpGet]
         public IActionResult GetCardOrders(int productId)
         {
             var cardOrders = _context.OrderCards.AsNoTracking()
@@ -629,7 +640,7 @@ namespace Cursa.Controllers
                     new SelectListItem
                     {
                         Value = x.Id.ToString(),
-                        Text = x.Name + (x.Number ?? "") + "( от " + x.CreatedDate + ")"
+                        Text = x.Name + (x.Number ?? "") + "( от " + x.CreatedDate.Value.ToShortDateString() + ")"
                         //Text = x.Name+(x.SerialNum!=null?x.SerialNum:"")+"( от "+x.CreatedDate+ ")"
                     }).ToList();
             var cardOrderStartEmpty = new SelectListItem()

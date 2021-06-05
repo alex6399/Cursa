@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Менеджер")]
     public class OwnersController : Controller
     {
         private readonly EfDbContext _context;

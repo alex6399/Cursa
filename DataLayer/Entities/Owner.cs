@@ -8,7 +8,7 @@ namespace DataLayer.Entities
     {
         public int Id { get; set; }
         [Required]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name="Отдел")]
         public string Name { get; set; }
         // [Display(Name="Дата создания")]

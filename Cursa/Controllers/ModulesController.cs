@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataLayer;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class ModulesController : Controller
     {
         private readonly EfDbContext _context;
@@ -52,6 +54,7 @@ namespace Cursa.Controllers
 
             return View(new ModuleDisplayViewModel()
             {
+                ProductId = cardOrder.ProductId,
                 DestinationOrderCardId = cardOrderId,
                 DestinationOrderCardName = cardOrder?.Name,
                 DestinationOrderCardNumber = cardOrder?.Number
@@ -263,108 +266,61 @@ namespace Cursa.Controllers
                 return NotFound();
             }
 
-            var projectId = module.ActualOrderCard.Product.SubProject.ProjectId;
-            // Start: project
-            var projects = _context.Projects.AsNoTracking()
-                .OrderBy(n => n.CreatedDate)
-                .Select(x =>
-                    new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Name + "(№ " + x.Code + ")"
-                    }).ToList();
-            var projectStartEmpty = new SelectListItem()
+            if (module.ActualOrderCard != null)
             {
-                Value = null,
-                Text = "Выбирете проект"
-            };
-            projects.Insert(0, projectStartEmpty);
+                var projectId = module.ActualOrderCard.Product.SubProject.ProjectId;
+                // Start: project
+                ViewData["ProjectId"] = GetProject(projectId);
+                // End: project
 
-            ViewData["ProjectId"] = new SelectList(projects, "Value", "Text", projectId);
-            // End: project
+                // Start: subProject
+                var subProjectId = module.ActualOrderCard.Product.SubProjectId;
+                ViewData["SubProjectId"] = GetSubProject(projectId);
+                // End: SubProject
 
-            // Start: subProject
-            var subProjectId = module.ActualOrderCard.Product.SubProjectId;
-            var subProjects = _context.SubProjects.AsNoTracking()
-                .OrderBy(n => n.CreatedDate)
-                .Where(x => x.ProjectId == projectId)
-                .Select(x =>
-                    new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Name + "(№ " + x.Code + ")"
-                    }).ToList();
-            ViewData["SubProjectId"] = new SelectList(subProjects, "Value", "Text", subProjectId);
-            // End: SubProject
+                // Start: Product
+                var productId = module.ActualOrderCard.ProductId;
+                ViewData["ProductId"] = GetProducts(subProjectId);
+                // End: Product
 
-            // Start: Product
-            var productId = module.ActualOrderCard.ProductId;
-            var products = _context.Products.AsNoTracking()
-                .OrderBy(n => n.CreatedDate)
-                .Where(x => x.SubProjectId == subProjectId)
-                .Select(x =>
-                    new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Name + "(№ " + (x.SerialNum ?? " ") + ")"
-                    }).ToList();
-            ViewData["ProductId"] = new SelectList(products, "Value", "Text", productId);
-            // End: Product
+                // Start: CardOrder
+                var cardOrderId = module.ActualOrderCardId.Value;
+                ViewData["CardOrderId"] = GetOrderCards(productId);
+                // End: CardOrder
 
-            // Start: CardOrder
-            var cardOrderId = module.ActualOrderCardId;
-            var cardOrders = _context.OrderCards.AsNoTracking()
-                .OrderBy(n => n.CreatedDate)
-                .Where(x => x.ProductId == productId)
-                .Select(x =>
-                    new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Name + "(№ " + (x.Number ?? " ") + ")"
-                    }).ToList();
-            ViewData["CardOrderId"] = new SelectList(cardOrders, "Value", "Text", cardOrderId);
-            // End: CardOrder
+                // Start: Module
+                ViewData["ModuleId"] = GetModules(cardOrderId,module.ModuleTypeId,module.ActualPlace );
+            }else{ ViewData["ProjectId"] = GetProject();}
 
-            // Start: Module
-            
-            var modules = _context.Modules.AsNoTracking()
-                .OrderBy(n => n.CreatedDate)
-                .Where(x =>x.DestinationOrderCardId==cardOrderId && (x.ActualOrderCardId==null||x.ActualOrderCardId==x.DestinationOrderCardId) && x.ModuleTypeId == module.ModuleTypeId)
-                .Select(x =>
-                    new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Place.ToString()
-                    }).ToList();
-            ViewData["ModuleId"] = new SelectList(modules, "Value", "Text", module.Id);
-            // End: Module
-
-
+           
             var moduleVm = _mapper.Map<Module, ModuleCreateEditViewModel>(module);
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
-            ViewData["ActualOrderCardId"] = new SelectList(_context.OrderCards, "Id", "Name", module.ActualOrderCardId);
-            ViewData["DestinationOrderCardId"] =
-                new SelectList(_context.OrderCards, "Id", "Name", module.DestinationOrderCardId);
-            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", module.ModuleTypeId);
-            return View(moduleVm);
+           return View(moduleVm);
         }
 
         // POST: Modules/Edit/5
+
         // To protect from overposting attacks, enable the specific properties you want to bind to.
+
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,
-            [Bind(
-                "ModuleTypeId,DestinationOrderCardId,SerialNumber,Place,FirmwareVersion,EmployeeId,ActualOrderCardId,ManufacturingData,Id")]
-            ModuleCreateEditViewModel moduleVm)
+        public async Task<IActionResult> Edit(int id, ModuleCreateEditViewModel moduleVm)
         {
             if (id != moduleVm.Id)
             {
                 return NotFound();
             }
-
+            var moduleDb = await _context.Modules
+                .AsNoTracking()
+                .Include(x => x.ModuleType)
+                .Include(x => x.DestinationOrderCard)
+                .Include(x => x.ActualOrderCard)
+                .ThenInclude(x => x.Product)
+                .ThenInclude(x => x.SubProject)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (ModelState.IsValid)
             {
                 var module = _mapper.Map<ModuleCreateEditViewModel, Module>(moduleVm);
@@ -385,22 +341,56 @@ namespace Cursa.Controllers
                         throw;
                     }
                 }
+                catch (DbUpdateException e)
+                {
+                    var exception = e.InnerException;
+                    if (exception != null && exception.Message.Contains("IX_Modules_SerialNumber"))
+                    {
+                        ModelState.AddModelError("SerialNumber", "Такой номер уже используется");
+                    }
+                }
 
                 return RedirectToAction(nameof(GetModulesForCardOrder),
                     new {cardOrderId = moduleVm.DestinationOrderCardId});
             }
 
+            moduleVm.ModuleTypeName = moduleDb.ModuleType.Name;
+            moduleVm.DestinationOrderCardName = moduleDb.DestinationOrderCard.Name;
+            moduleVm.DestinationOrderCardNumber = moduleDb.DestinationOrderCard.Number;
+            if (moduleDb.ActualOrderCard != null)
+            {
+                var projectId = moduleDb.ActualOrderCard.Product.SubProject.ProjectId;
+                // Start: project
+                ViewData["ProjectId"] = GetProject(projectId);
+                // End: project
+
+                // Start: subProject
+                var subProjectId = moduleDb.ActualOrderCard.Product.SubProjectId;
+                ViewData["SubProjectId"] = GetSubProject(projectId);
+                // End: SubProject
+
+                // Start: Product
+                var productId = moduleDb.ActualOrderCard.ProductId;
+                ViewData["ProductId"] = GetProducts(subProjectId);
+                // End: Product
+
+                // Start: CardOrder
+                var cardOrderId = moduleDb.ActualOrderCardId.Value;
+                ViewData["CardOrderId"] = GetOrderCards(productId);
+                // End: CardOrder
+
+                // Start: Module
+                ViewData["ModuleId"] = GetModules(cardOrderId,moduleDb.ModuleTypeId,moduleDb.ActualPlace );
+            }else{ ViewData["ProjectId"] = GetProject();}
+
             ViewData["EmployeeId"] = new SelectList(_context.Employees
                 .Where(x => x.Department.IsResponsibleDesignWork), "Id", "GetFullName");
-            ViewData["ActualOrderCardId"] =
-                new SelectList(_context.OrderCards, "Id", "Name", moduleVm.ActualOrderCardId);
-            ViewData["DestinationOrderCardId"] =
-                new SelectList(_context.OrderCards, "Id", "Name", moduleVm.DestinationOrderCardId);
-            ViewData["ModuleTypeId"] = new SelectList(_context.ModulesTypes, "Id", "Code", moduleVm.ModuleTypeId);
+            
             return View(moduleVm);
         }
 
         // GET: Modules/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -424,6 +414,7 @@ namespace Cursa.Controllers
         }
 
         // POST: Modules/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -438,6 +429,20 @@ namespace Cursa.Controllers
         {
             return _context.Modules.Any(e => e.Id == id);
         }
+        
+        [HttpGet]
+        public JsonResult IsSerialNumberModuleExist(string SerialNumber, int? Id)
+        {
+            if (Id == null)
+            {
+                return Json(!_context.Modules.Any(x => x.SerialNumber == SerialNumber));
+            }
+            else
+            {
+                return Json(!_context.Modules.Any(x => x.SerialNumber == SerialNumber
+                                                       && x.Id != Id));
+            }
+        }
 
         public IActionResult GetModules(int destinationOrderCardId)
         {
@@ -447,17 +452,121 @@ namespace Cursa.Controllers
                 .Select(x =>
                     new SelectListItem
                     {
-                        Value = x.Id.ToString(),
-                        Text = x.ModuleType.Name + "(" + x.Place + ")"
+                        //Value = x.Id.ToString(),
+                        Value = x.DestinationPlace.ToString(),
+                        Text = x.ModuleType.Name + "(" + x.DestinationPlace + ")"
                         //Text = x.Name+(x.SerialNum!=null?x.SerialNum:"")+"( от "+x.CreatedDate+ ")"
                     }).ToList();
             var modulesStartEmpty = new SelectListItem()
             {
                 Value = null,
-                Text = "Выберите карту заказа"
+                Text = "Выберите место"
             };
             modules.Insert(0, modulesStartEmpty);
             return Json(new SelectList(modules, "Value", "Text"));
+        }
+
+        private SelectList GetProject(int? selectedValue = null)
+        {
+            var projects = _context.Projects.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name + "(" + x.Code + ")"
+                    }).ToList();
+            var projectEmptyItem = new SelectListItem()
+            {
+                Value = null,
+                Text = "Выберите проект"
+            };
+            projects.Insert(0, projectEmptyItem);
+            if (selectedValue != null && projects.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(projects, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(projects, "Value", "Text");
+        }
+
+        private SelectList GetSubProject(int projectId, int? selectedValue = null)
+        {
+            var subProjects = _context.SubProjects.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where(x => x.ProjectId == projectId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name + "(№ " + x.Code + ")"
+                    }).ToList();
+            if (selectedValue != null && subProjects.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(subProjects, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(subProjects, "Value", "Text");
+        }
+
+        private SelectList GetProducts(int subProjectId, int? selectedValue = null)
+        {
+            var products = _context.Products.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where(x => x.SubProjectId == subProjectId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name + "(№ " + (x.SerialNum ?? " ") + ")"
+                    }).ToList();
+            if (selectedValue != null && products.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(products, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(products, "Value", "Text");
+        }
+
+        private SelectList GetOrderCards(int productId, int? selectedValue = null)
+        {
+            var cardOrders = _context.OrderCards.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where(x => x.ProductId == productId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name + "(№ " + (x.Number ?? " ") + ")"
+                    }).ToList();
+            if (selectedValue != null && cardOrders.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(cardOrders, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(cardOrders, "Value", "Text");
+        }
+
+        private SelectList GetModules(int orderCardId, int moduleTypeId, int? selectedValue = null)
+        {
+            var modules = _context.Modules.AsNoTracking()
+                .OrderBy(n => n.CreatedDate)
+                .Where(x => x.DestinationOrderCardId == orderCardId &&
+                            (x.ActualOrderCardId == null || x.ActualOrderCardId == x.DestinationOrderCardId) &&
+                            x.ModuleTypeId == moduleTypeId)
+                .Select(x =>
+                    new SelectListItem
+                    {
+                       // Value = x.Id.ToString(),
+                        Value = x.DestinationPlace.ToString(),
+                        Text = x.DestinationPlace.ToString()
+                    }).ToList();
+            if (selectedValue != null && modules.Any(x => x.Value == selectedValue.ToString()))
+            {
+                return new SelectList(modules, "Value", "Text", selectedValue);
+            }
+
+            return new SelectList(modules, "Value", "Text");
         }
     }
 }

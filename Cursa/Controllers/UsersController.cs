@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Администратор")]
     public class UsersController : Controller
     {
         readonly UserManager<User> _userManager;
@@ -128,6 +128,7 @@ namespace Cursa.Controllers
                     await _userManager.AddToRolesAsync(user, new[] {"Менеджер"});
                     return RedirectToAction("Index");
                 }
+
                 ModelState.AddModelError(string.Empty, "Ошибка создания пользователя");
                 foreach (var error in resultCreateNewUser.Errors)
                 {
@@ -269,7 +270,10 @@ namespace Cursa.Controllers
             }
 
             var model = new ChangePasswordViewModel
-                {Id = user.Id, FullName = user.GetFullName};
+            {
+                Id = user.Id,
+                FullName = user.GetFullName
+            };
             return View(model);
         }
 
@@ -385,4 +389,3 @@ namespace Cursa.Controllers
         }
     }
 }
-// TODO сделать блокировку пользователей

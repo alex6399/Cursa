@@ -8,10 +8,17 @@ namespace DataLayer.Entities
 {
     public class User : IdentityUser<int>
     {
-        [Display(Name = "Имя")] public string FirstName { get; set; }
-        [Display(Name = "Отчество")] public string MiddleName { get; set; }
-        [Display(Name = "Фамилия")] public string LastName { get; set; }
-        [Display(Name = "Дата создания")] public DateTime? CreatedDate { get; set; }
+        [Display(Name = "Имя")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
+        public string FirstName { get; set; }
+        [Display(Name = "Отчество")] 
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
+        public string MiddleName { get; set; }
+        [Display(Name = "Фамилия")] 
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
+        public string LastName { get; set; }
+        [Display(Name = "Дата создания")] 
+        public DateTime? CreatedDate { get; set; }
 
         [Display(Name = "Дата последнего изменения")]
         public DateTime? ModifiedDate { get; set; }

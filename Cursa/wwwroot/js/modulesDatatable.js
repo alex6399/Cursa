@@ -45,7 +45,7 @@
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true}, // 1
             {
-                "data": "moduleType.name", "name": "ModuleType.Name", "autoWidth": true // 2
+                "data": "moduleType.name", "name": "ModuleType.Name", "Width": "100px" // 2
             },
             {"data": "serialNumber", "name": "SerialNumber", "autoWidth": true,
                 "render": function (data, type, row) {
@@ -58,7 +58,7 @@
                     return data;
                 }},
             {
-                "data": "place", "name": "Place", "autoWidth": true,
+                "data": "destinationPlace", "name": "DestinationPlace", "autoWidth": true,
                 "render": function (data, type, row) {
                     if (row.place === -1 && type === "display") {
                         return "<span class=\"lpbs\">LPBS</span>";
@@ -72,6 +72,9 @@
                 ,
                 "render": function (data, type, row) {
                     if (type === "display") {
+                        if(data===null){
+                            return "<span class=\"empty\">*Не установлен</span>";
+                        }
                         return row.actualOrderCardNumber+" ("+row.actualOrderCardName+")";
                     }
                     return data;

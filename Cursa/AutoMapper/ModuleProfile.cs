@@ -26,7 +26,10 @@ namespace Cursa.AutoMapper
                     => act.MapFrom(src => src.DestinationOrderCard.Number))
                 .ForMember(dest => dest.ModuleTypeName, act
                     => act.MapFrom(src => src.ModuleType.Name));
-
+            CreateMap<ModuleCreateEditViewModel, Module>();
+               
+            
+            
 
 
             CreateMap<ModuleCreateEditViewModel, Module>();

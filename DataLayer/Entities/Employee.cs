@@ -12,22 +12,23 @@ namespace DataLayer.Entities
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Имя")]
-        [MaxLength(256, ErrorMessage = "Максимальное количество символов 256")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Отчество")]
-        [MaxLength(256, ErrorMessage = "Максимальное количество символов 256")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string MiddleName { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Фамилия")]
-        [MaxLength(256, ErrorMessage = "Максимальное количество символов 256")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [RegularExpression(@"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", ErrorMessage = "Неверный формат")]
         [Display(Name = "Телефон")]
+        [MaxLength(21, ErrorMessage = "Максимальное количество символов 21")]
         public string Phone { get; set; }
 
         [Display(Name = "Отдел")] public int DepartmentId { get; set; }

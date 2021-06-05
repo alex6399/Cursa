@@ -11,7 +11,7 @@ namespace DataLayer.Entities
     public class Project:BaseEntityTracking
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100, ErrorMessage = "Максимальная длина")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Наименование проекта")]
         public string Name { get; set; }
         [Display(Name = "Владелец")]
@@ -19,7 +19,7 @@ namespace DataLayer.Entities
         [Display(Name = "Владелец")]
         public virtual Owner Owner { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Код")]
         public string Code { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]

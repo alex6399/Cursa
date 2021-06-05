@@ -35,11 +35,6 @@
                 "visible": false,
                 "searchable": false
             }
-            // ,
-            // {
-            //     "targets": [9],
-            //     "orderable": false
-            // }
         ],
         "columns": [
             {"data": "id", "name": "Id", "autoWidth": true},
@@ -58,20 +53,50 @@
                     return data;
                 }
             },
-            {"data": "actualOrderCardNumber", "name": "actualOrderCardNumber", "width": "40px"},
-            {"data": "productName", "name": "productName", "width": "30px"},
-            {"data": "productNumber", "name": "productNumber", "width": "30px"},
-            {"data": "subProjectName", "name": "subProjectName", "autoWidth": true},
-            {"data": "manufacturingData", "name": "manufacturingData", "autoWidth": true,
+            {"data": "actualOrderCardNumber", "name": "actualOrderCardNumber", "width": "40px",
                 "render": function (data, type, row) {
                     if (type === "display") {
                         if (data === null) {
                             return "<span class=\"empty\">*Не указано</span>";
                         }
+                        return "<a href=''>"+ row.actualOrderCardNumber+"</a>";
+                    }
+                    return data;
+                } 
+            },
+            {"data": "productName", "name": "productName", "width": "30px",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return "<a href=''>"+ row.productName+"</a>";
+                    }
+                    return data;
+                }
+                },
+            {"data": "productNumber", "name": "productNumber", "width": "30px"},
+            {"data": "subProjectName", "name": "subProjectName", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не указано</span>";
+                        }
+                        return "<a href=''>"+ row.subProjectName+"</a>";
+                    }
+                    return data;
+                }},
+            {"data": "manufacturingData", "name": "manufacturingData", "autoWidth": true,
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        if (data === null) {
+                            return "<span class=\"empty\">*Не отгружено</span>";
+                        }
                         return moment(Date.parse(row.manufacturingData)).format('DD.MM.YYYY');
                     }
                     return data;
-                }}
+                }
+            }
             // {"data": "contractor", "name": "Contractor", "autoWidth": true},
             // {"data": "contract", "name": "Contract", "autoWidth": true},
             // ,

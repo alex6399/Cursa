@@ -15,59 +15,62 @@
                 <input asp-for="ModuleTypeName" class="form-control" disabled/>
             </div>
             <div class="form-group">
-                <label asp-for="Place" class="control-label"></label>
-                <input asp-for="Place" class="form-control" disabled/>
-                <span asp-validation-for="Place" class="text-danger"></span>
+                <label asp-for="DestinationPlace" class="control-label"></label>
+                <input asp-for="DestinationPlace" class="form-control" disabled/>
+                <span asp-validation-for="DestinationPlace" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SerialNumber" class="control-label"></label>
-                <input asp-for="SerialNumber" class="form-control"/>
-                <span asp-validation-for="SerialNumber" class="text-danger"></span>
-            </div>
-            <!--  Start: Project -->
-            <div class="form-group">
-                <label class="control-label">Проект</label>
-                <select id="ProjectId" name="ProjectId" class="form-control" asp-items="ViewBag.ProjectId" onchange="onProjectValueChanged();"></select>
-            </div>
-            <!-- End: Project -->
-
-            <!-- Start: SubProject -->
-            <div class="form-group">
-                <label class="control-label">Подпроект</label>
-                <select id="SubProjectId" name="SubProjectId" class="form-control" asp-items="ViewBag.SubProjectId"></select>
-            </div>
-            <!--  End: SubProject -->
-
-            <!-- Start: Product -->
-            <div class="form-group">
-                <label class="control-label">Продукция</label>
-                <select id="ProductId" name="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
-            </div>
-            <!--  End: Product -->
-
-            <!-- Start: CardOrder -->
-            <div class="form-group">
-                <label class="control-label">К.З</label>
-                <select id="CardOrderId" name="CardOrderId" class="form-control" asp-items="ViewBag.CardOrderId"></select>
-            </div>
-            <!-- End:  CardOrder -->
-            
-            <!-- Start: Module -->
-            <div class="form-group">
-                <label class="control-label">Место</label>
-                <select id="ModuleId" name="ModuleId" class="form-control" asp-items="ViewBag.ModuleId"></select>
-            </div>
-            <!-- End:  Module -->
-            @* <div class="form-group"> *@
-            @*     <label asp-for="ActualOrderCardId" class="control-label"></label> *@
-            @*     <select asp-for="ActualOrderCardId" class="form-control" asp-items="ViewBag.ActualOrderCardId"></select> *@
-            @*     <span asp-validation-for="ActualOrderCardId" class="text-danger"></span> *@
-            @* </div> *@
             <div class="form-group">
                 <label asp-for="ManufacturingData" class="control-label"></label>
                 <input asp-for="ManufacturingData" class="form-control"/>
                 <span asp-validation-for="ManufacturingData" class="text-danger"></span>
             </div>
+            <div class="form-group">
+
+                <label asp-for="SerialNumber" class="control-label"></label>
+                <input asp-for="SerialNumber" class="form-control"/>
+                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+            </div>
+            <!--  Start: Project -->
+                <div class="form-group">
+                    <label class="control-label">Проект</label>
+                    <select id="ProjectId" name="ProjectId" class="form-control" asp-items="ViewBag.ProjectId" onchange="onSubProjectValueChanged();"></select>
+                </div>
+                <!-- End: Project -->
+
+                <!-- Start: SubProject -->
+                <div class="form-group">
+                    <label class="control-label">Подпроект</label>
+                    <select id="SubProjectId" name="SubProjectId" class="form-control" asp-items="ViewBag.SubProjectId" onchange="onProductValueChanged();"></select>
+                </div>
+                <!--  End: SubProject -->
+
+                <!-- Start: Product -->
+                <div class="form-group">
+                    <label class="control-label">Продукция</label>
+                    <select id="ProductId" name="ProductId" class="form-control" asp-items="ViewBag.ProductId" onchange="onOrderCardValueChanged();"></select>
+                </div>
+                <!--  End: Product -->
+
+                <!-- Start: CardOrder -->
+                <div class="form-group">
+                    <label class="control-label">К.З</label>
+                    <select id="ActualOrderCardId" name="ActualOrderCardId" class="form-control" asp-items="ViewBag.CardOrderId" onchange="onModulePlaceValueChanged();"></select>
+                </div>
+                <!-- End:  CardOrder -->
+
+                <!-- Start: Module -->
+                <div class="form-group">
+                    <label class="control-label">Место</label>
+                    <select id="ActualPlace" name="ActualPlace" class="form-control" asp-items="ViewBag.ModuleId"></select>
+                 <span asp-validation-for="ActualPlace" class="text-danger"></span>
+                    </div>
+            <!-- End:  Module -->
+            
+                @* <div class="form-group"> *@
+                @*     <label asp-for="ActualOrderCardId" class="control-label"></label> *@
+                @*     <select asp-for="ActualOrderCardId" class="form-control" asp-items="ViewBag.ActualOrderCardId"></select> *@
+                @*     <span asp-validation-for="ActualOrderCardId" class="text-danger"></span> *@
+                @* </div> *@
             <div class="form-group">
                 <label asp-for="FirmwareVersion" class="control-label"></label>
                 <input asp-for="FirmwareVersion" class="form-control"/>
@@ -80,7 +83,7 @@
             <input type="hidden" asp-for="Id"/>
             <input type="hidden" asp-for="DestinationOrderCardId"/>
             <input type="hidden" asp-for="ModuleTypeId"/>
-            <input type="hidden" asp-for="Place"/>
+            <input type="hidden" asp-for="DestinationPlace"/>
             <div class="form-group">
                 <input type="submit" value="Сохранить" class="btn btn-primary"/>
             </div>
@@ -91,18 +94,18 @@
 <div>
     <a asp-action="GetModulesForCardOrder" asp-route-cardOrderId="@Model.DestinationOrderCardId">Назад</a>
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
 
-<script>
-    function onProjectValueChanged() {
+
+    function onSubProjectValueChanged() {
         let selectedProjectId = $('#ProjectId').val();
         if (selectedProjectId) {
             $.get(`/SubProjects/GetSubProjects?projectId=${selectedProjectId}`, function (data) {
-                console.log(data);
-                
                 if (data.length > 0 ) {
-                    $('#SubProjectId').empty();
+                    setEmpty("SubProjectId");
                 }
-                
+
                 data.forEach(row => {
                     let subProjectOption = $(`<option value="${row.value}">`);
                     subProjectOption.text(row.text);
@@ -111,6 +114,82 @@
             });
         }
     }
+    
+    function onProductValueChanged() {
+            let selectedSubProjectId = $('#SubProjectId').val();
+            if (selectedSubProjectId) {
+                $.get(`/Products/GetProducts?subProjectId=${selectedSubProjectId}`, function (data) {
+                    console.log(data);
+
+                    if (data.length > 0 ) {
+                        setEmpty("ProductId");
+                    }
+
+                    data.forEach(row => {
+                        let subProjectOption = $(`<option value="${row.value}">`);
+                        subProjectOption.text(row.text);
+                        $('#ProductId').append(subProjectOption);
+                    });
+                });
+            }
+        }
+        
+        
+        function onOrderCardValueChanged() {
+                    let selectedProductId = $('#ProductId').val();
+                    if (selectedProductId) {
+                        $.get(`/OrderCards/GetCardOrders?productId=${selectedProductId}`, function (data) {
+                            console.log(data);
+        
+                            if (data.length > 0 ) {
+                                setEmpty("ActualOrderCardId");
+                            }
+        
+                            data.forEach(row => {
+                                let productOption = $(`<option value="${row.value}">`);
+                                productOption.text(row.text);
+                                $('#ActualOrderCardId').append(productOption);
+                            });
+                        });
+                    }
+                }
+                
+                function onModulePlaceValueChanged() {
+                                    let selectedOrderCardId = $('#ActualOrderCardId').val();
+                                    if (selectedOrderCardId) {
+                                        $.get(`/Modules/GetModules?destinationOrderCardId=${selectedOrderCardId}`, function (data) {
+                                            console.log(data);
+                        
+                                            if (data.length > 0 ) {
+                                                setEmpty("ActualPlace");
+                                            }
+                        
+                                            data.forEach(row => {
+                                                let productOption = $(`<option value="${row.value}">`);
+                                                productOption.text(row.text);
+                                                $('#ActualPlace').append(productOption);
+                                            });
+                                        });
+                                    }
+                                }
+                                
+                                
+                                
+function setEmpty(field) {
+ switch(field) {
+   case 'SubProjectId':
+   $('#SubProjectId').empty();
+ debugger
+   case 'ProductId':
+   $('#ProductId').empty();
+    
+   case 'ActualOrderCardId':
+   $('#ActualOrderCardId').empty();
+   case 'ActualPlace':
+   $('#ActualPlace').empty(); 
+ }
+                                        
+                                    }
 </script>
 
 @section Scripts {

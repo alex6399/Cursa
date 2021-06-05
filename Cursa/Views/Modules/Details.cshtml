@@ -27,13 +27,13 @@
             @Html.DisplayFor(model => model.SerialNumber)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Place)
+            @Html.DisplayNameFor(model => model.DestinationPlace)
         </dt>
         <dd class="col-sm-10">
            @{
-               if (@Model.Place != -1)
+               if (@Model.DestinationPlace != -1)
                {
-                   @Html.DisplayFor(model => model.Place)
+                   @Html.DisplayFor(model => model.DestinationPlace)
                }else
                {
                    <span>LPBS</span>

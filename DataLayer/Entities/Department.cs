@@ -9,7 +9,7 @@ namespace DataLayer.Entities
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [Display(Name = "Наименование")]
-        [MaxLength(50)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         public string Name { get; set; }
         [Display(Name = "Примечание")]
         [MaxLength(160, ErrorMessage = "Максимальное количество символов 160")]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Cursa.ViewModels.OrderCardVM;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Cursa.ViewModels.ModuleVM
@@ -19,11 +20,15 @@ namespace Cursa.ViewModels.ModuleVM
         [Display(Name = "Изготовлен по карте заказа")]
         public string DestinationOrderCardName { get; set; }
         public string DestinationOrderCardNumber { get; set; }
-        
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Серийный №")]
+        [Remote("IsSerialNumberModuleExist","Modules",
+            ErrorMessage = "Уже существует",
+            AdditionalFields = "Id")]
         public string SerialNumber { get; set; }
         [Display(Name = "№ места")]
-        public int Place { get; set; }
+        public int DestinationPlace { get; set; }
         [Display(Name = "Версия прошивки")]
         public string FirmwareVersion { get; set; }
         [Display(Name = "Установил")]
@@ -34,12 +39,10 @@ namespace Cursa.ViewModels.ModuleVM
         public int? ActualOrderCardId { get; set; }
         [Display(Name = "Дата изготовления")]
         public DateTime? ManufacturingData { get; set; }
+        [Display(Name = "№ места")] public int? ActualPlace { get; set; }
+        public int? SubProjectId { get; set; }
+        public int? ProductId { get; set; }
 
-
-
-        public int ProjectId { get; set; }
-        public int SubProjectId { get; set; }
-        public int ProductId { get; set; }
         //public int ActualOrderCardId { get; set; }
     }
     

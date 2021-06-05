@@ -6,6 +6,7 @@ using AutoMapper;
 using Cursa.ViewModels.DepartmentVM;
 using DataLayer;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Менеджер")]
     public class DepartmentsController : Controller
     {
         private readonly EfDbContext _context;

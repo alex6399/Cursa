@@ -12,14 +12,14 @@ namespace Cursa.ViewModels.SubProjectVM
         [Display(Name = "Проект")]
         public int ProjectId { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Наименование подпроекта")]
         [Remote("IsNameSubProjectExist","SubProjects",
             ErrorMessage = "Подпроект уже существует",
             AdditionalFields = "Id")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100,ErrorMessage = "Превышен лимит символов")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Код")]
         [RegularExpression(@"((^[0-9]+)|(^П-[0-9]+))((\.)*[0-9])*",ErrorMessage = "Неверный формат")]
         [Remote("IsCodeSubProjectExist","SubProjects",

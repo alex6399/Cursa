@@ -13,12 +13,12 @@ namespace DataLayer.Entities
     public class ModuleType : BaseEntity
     {
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(120, ErrorMessage = "Максимальное количество 120 символов")]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Наименование")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Код")]
         public string Code { get; set; }
 

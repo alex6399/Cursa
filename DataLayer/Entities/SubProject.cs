@@ -13,11 +13,11 @@ namespace DataLayer.Entities
         [Display(Name = "Проект")]
         public virtual Project Project { get; set; }
         [Required] 
-        [MaxLength(200)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Наименование подпроекта")]
         public string Name { get; set; }
         [Required] 
-        [MaxLength(100)]
+        [MaxLength(51, ErrorMessage = "Максимальное количество символов 51")]
         [Display(Name = "Код")]
         public string Code { get; set; }
         [Display(Name = "Ответственный сотрудник")]

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cursa.ViewModels.AccountVM;
 using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Cursa.Controllers
 {
+    [Authorize(Roles = "Администратор")]
     public class RoleController : Controller
     {
         RoleManager<IdentityRole<int>> _roleManager;
